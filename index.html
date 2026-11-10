@@ -56,6 +56,9 @@ button:disabled{opacity:.4}
 #run #us{flex:1.2 1 0;min-height:46px;padding:0;font-size:min(6vw,3.4dvh)}
 .bar button{min-width:0;padding:8px 4px;font-size:13px}.bar{gap:6px}
 #si{position:absolute;right:0;top:0;display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:var(--mut)}#si i{width:10px;height:10px;border-radius:50%;display:inline-block}
+#run.abs #w2{border-color:#2ee66b}#run.abs #w3{border-color:#ffb300}
+#run.abs .row2 .win .v{font-size:min(9.5vw,4.6dvh)}#run.abs .row2 .win .k{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#run.abs .row2 small{font-size:10px;margin-left:1px}
+#toast{position:fixed;left:12px;right:12px;top:10px;z-index:20;background:#1d2229;border:2px solid var(--ac);border-radius:10px;padding:10px;text-align:center;font-weight:700}
 #run input{padding:8px}
 #vs{position:fixed;left:0;right:0;bottom:0;font-size:11px;padding:3px 8px;background:var(--bg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;color:var(--mut)}
 body{padding-bottom:26px}
@@ -63,11 +66,12 @@ body{padding-bottom:26px}
 
 <div id="setup">
 <div id="bk" hidden style="position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:8px"><button onclick="voltar()">Voltar à prova</button><button class="s" id="tb" onclick="endTap()">Terminar prova</button></div>
-<h1>Preparar rally <small style="font-size:12px;color:var(--mut);font-weight:400">versão 29</small></h1>
+<h1>Preparar rally <small style="font-size:12px;color:var(--mut);font-weight:400">versão 30</small></h1>
 <div class="card">
 <label>Tipo de regularidade</label>
 <select id="tp" onchange="lab()"><option value="f">Figura</option><option value="h">Hectométrica</option><option value="a">Absoluta</option></select>
 <label>Hora de início (hh:mm:ss)</label><input id="hi" value="10:00:00">
+<div id="ao2" hidden style="display:flex;gap:8px"><div style="flex:1"><label>Unidade das distâncias coladas</label><select id="au"><option value="m">metros</option><option value="k">quilómetros</option></select></div><div style="flex:1"><label>Ordem das colunas</label><select id="aoo"><option value="d">distância, média</option><option value="m">média, distância</option></select></div></div>
 <label id="lb"></label><div class="mut" style="text-align:left;font-size:12px">Tempos: 2 dígitos = segundos (31); 3 ou 4 = minutos e segundos (131 = 1:31, 2031 = 20:31); 5 ou 6 = horas, minutos e segundos. Também aceita 1:31.</div><textarea id="dt"></textarea>
 <label id="ld">Duração total (ex.: 1000 = 10 min)</label><input id="du" inputmode="numeric" value="1000">
 <label id="lt" hidden>Distância total da regularidade (m)</label><input id="dtot" inputmode="numeric" value="10000" hidden>
@@ -92,6 +96,7 @@ body{padding-bottom:26px}
 <div id="er2" style="color:#ff453a;font-weight:700;margin-top:8px"></div>
 <label>A contagem começa quantos segundos antes</label><input id="le" type="number" value="10">
 <label>Antecipação da voz (s): a voz diz o número este tempo antes de ele aparecer</label><input id="vo" type="number" step="0.1" value="0.6">
+<label>Botão «Passei» ativo (segundos antes e depois da passagem; 0 = sempre ativo)</label><input id="pw" type="number" value="5">
 <label>Som da contagem</label><select id="sm"><option value="vb">Voz e bip</option><option value="v">Só voz</option><option value="b">Só bip</option></select>
 <label>Fonte da distância</label><select id="fo" onchange="foCh()"><option value="s">Simulada (velocidade abaixo)</option><option value="g">GPS do telemóvel</option></select>
 <button class="s" onclick="testG()">Testar GPS</button><div id="gt" class="mut" style="font-size:13px"></div>
@@ -111,8 +116,9 @@ body{padding-bottom:26px}
 <div style="position:relative"><div class="mut" id="rt"></div><div id="si"></div></div>
 <div class="mut" id="rl"></div>
 <div class="big" id="rc">0</div>
-<div class="row2"><div class="win"><div class="k" id="kn">Próxima passagem</div><div class="v" id="rn"></div></div>
-<div class="win"><div class="k" id="ks">Média a fazer</div><div class="v" id="rs"></div></div></div>
+<div class="row2"><div class="win" id="w1"><div class="k" id="kn">Próxima passagem</div><div class="v" id="rn"></div></div>
+<div class="win" id="w2"><div class="k" id="ks">Média a fazer</div><div class="v" id="rs"></div></div>
+<div class="win" id="w3" hidden><div class="k">Vel. atual</div><div class="v" id="rv"></div></div></div>
 <div class="frame" id="fr"><div class="st" id="fs"></div><div class="two"><div id="fm"></div><div id="fq"></div></div></div>
 <div id="rd"></div>
 <button id="us" onclick="pass()">Passei</button>
@@ -120,7 +126,7 @@ body{padding-bottom:26px}
 <div class="fb"><button id="fz" class="s" onclick="frz()">Congelar distância</button><button id="un" class="s" onclick="undo()">↶ Desfazer</button></div>
 <div style="display:flex;gap:8px"><input id="ar" inputmode="decimal" placeholder="Distância real (m)"><button class="s" style="width:auto;margin:0;padding:0 16px" onclick="apl()">Aplicar</button></div>
 </div>
-<div id="vs"></div>
+<div id="vs"></div><div id="toast" hidden></div>
 <div id="afp" class="ov" hidden style="border-top:4px solid #7fd1ff;max-height:75dvh;overflow:auto">
 <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:20px">Aferição</b><button class="s" style="width:auto;margin:0;padding:8px 18px" onclick="afClose()">Fechar</button></div>
 <div id="afi" style="font-size:18px;line-height:1.5;margin-top:6px"></div>
@@ -130,6 +136,7 @@ body{padding-bottom:26px}
 <div id="pr" class="ov" hidden style="border-top:4px solid var(--ac)">
 <div id="pq" style="font-size:20px;font-weight:700"></div>
 <button id="pb" onclick="startAny()">Confirmar</button>
+<button id="pn" class="s" hidden onclick="startNow()">Iniciar agora, sem esperar pela hora</button>
 <button class="s" onclick="skipP()">Saltar esta regularidade</button></div>
 <div id="sg" class="ov" hidden style="border-top:4px solid #7fd1ff">
 <div id="sq" style="font-size:18px;font-weight:700"></div>
@@ -141,6 +148,7 @@ const $=i=>document.getElementById(i);
 const num=x=>Number(String(x).trim().replace(',','.'));
 let seq=[],cur=0,ev=[],ps=[],P=[],AB=null,cT='f',tg=[],idx=0,t0=0,end=0,lead=10,off=.6,sv=50,af=0,timer=null,wl=null;
 let lk=null,lkSched=0,hk=1,L=[],winC=[],lid=0,U=[],fzU=[],fz0=null,lastAn=0,lastSeg=-1,sugV=0;
+let pk=-1,PT=[],HT=[],pw=5,cdN=99,aw={},bkT=0;
 let dOff=0,st='wait',sched=0,asked=false,ac=null,bp=[],bi=0,sm='vb',fz=false,fzD=0,fzEl=0,fzDr=0,ei=-1;
 try{seq=JSON.parse(localStorage.getItem('seq')||'[]')}catch(e){}
 try{L=JSON.parse(localStorage.getItem('log')||'[]');lid=L.reduce((m,e)=>Math.max(m,e.id),0)}catch(e){L=[]}
@@ -149,7 +157,7 @@ const NM={f:'Figura',h:'Hectométrica',a:'Absoluta'};
 
 function lab(){const t=$('tp').value;
 $('lb').textContent=t=='f'?'Figuras, uma por linha: distância (m) e tempo de passagem. Ex.: 520 131 (1 min 31 s)':t=='h'?'Uma linha por média: marco onde começa, média (km/h) e marco onde acaba. A linha seguinte começa onde a anterior acabou. Ex.: 12,3 36 13,0 e depois 13,0 45 14,2':'Troços, um por linha: distância onde começa (m) e média (km/h). O primeiro começa em 0. A última linha leva só a distância do fim. Ex.: 0 45, depois 3000 50 e por fim 5000';
-$('ld').hidden=$('du').hidden=true;$('lt').hidden=$('dtot').hidden=true;$('hm').hidden=true}
+$('ao2').hidden=t!='a';$('ld').hidden=$('du').hidden=true;$('lt').hidden=$('dtot').hidden=true;$('hm').hidden=true}
 function hms(s){s=Math.max(0,Math.round(s));const h=Math.floor(s/3600),m=Math.floor(s%3600/60);return(h?h+':':'')+String(m).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
 function durOf(r){if(r.t=='f')return Math.max(...r.r.map(a=>a[1]));if(r.t=='h')return r.du;
 let T=0,q=null;r.r.forEach((x,i)=>{if(q)T+=(x[0]-q[0])/(q[1]/3.6);q=x});return T+(r.dtot-q[0])/(q[1]/3.6)}
@@ -164,16 +172,20 @@ if(x.includes(':')){const a=x.split(':').map(Number);if(a.length<2||a.length>3||
 else if(/^\d{4}$|^\d{6}$/.test(x)){h=+x.slice(0,2);m=+x.slice(2,4);sc=+(x.slice(4,6)||0)}else return null;
 if(h>23||m>59||sc>59||h<0||m<0||sc<0)return null;return[h,m,sc].map(v=>String(v).padStart(2,'0')).join(':')}
 function err(m){$('er').textContent=m}
+function nums(l){return(String(l).match(/-?\d+(?:[.,]\d+)?/g)||[]).map(v=>num(v))}
+function absLines(raw){const k=$('au').value=='k'?1000:1,mf=$('aoo').value=='m',L2=raw.map(x=>x.trim()).filter(x=>/\d/.test(x));
+if(L2.length==2){const A=nums(L2[0]),B=nums(L2[1]);if(Math.max(A.length,B.length)>=3&&Math.min(A.length,B.length)>=2&&Math.abs(A.length-B.length)<=1){const D=mf?B:A,M=mf?A:B,o=[];for(let i=0;i<M.length;i++)o.push((D[i]*k)+' '+M[i]);if(D.length>M.length)o.push(String(D[M.length]*k));return o}}
+return L2}
 function rowOf(l,t){if(t=='h'){const a=l.split(/[\s;]+/);if(a.length<3)return null;const x=[num(a[0]),num(a[1]),num(a[2])];return x.every(v=>!isNaN(v))?x:null}
-if(t=='a'){const a=l.split(/[\s;]+/);if(a.length<2)return null;const x=[num(a[0]),num(a[1])];return x.every(v=>!isNaN(v))?x:null}
+if(t=='a'){const a=nums(l);if(a.length!=2)return null;return $('aoo').value=='m'?[a[1]*($('au').value=='k'?1000:1),a[0]]:[a[0]*($('au').value=='k'?1000:1),a[1]]}
 const a=l.split(/[\s;,]+/);if(a.length<2)return null;const x=t=='f'?[Number(a[0]),tp(a[1])]:[tp(a[0]),tp(a[1])];return x.every(v=>!isNaN(v))?x:null}
 function add(){err('');const t=$('tp').value,hi=ck($('hi').value);
 if(!hi){err('Hora de início inválida. Use hh:mm:ss, por exemplo 10:30:00.');return}
-const LN=$('dt').value.split('\n').map(x=>x.trim()).filter(Boolean);let r=[];
+let LN=$('dt').value.split('\n').map(x=>x.trim()).filter(Boolean);if(t=='a')LN=absLines(LN);let r=[];
 if(!LN.length){err('Falta preencher o quadro.');return}
 let endL=null;
 for(let i=0;i<LN.length;i++){const x=rowOf(LN[i],t);
-if(!x&&t=='a'&&i==LN.length-1&&i>=1&&LN[i].split(/[\s;]+/).length==1&&!isNaN(num(LN[i]))){endL=num(LN[i]);continue}
+if(!x&&t=='a'&&i==LN.length-1&&i>=1&&nums(LN[i]).length==1){endL=nums(LN[i])[0]*($('au').value=='k'?1000:1);continue}
 if(!x){err('Linha '+(i+1)+' ("'+LN[i]+'"): não percebi. Escreva dois valores separados por espaço.');return}
 if(t=='h'){const km=v=>Math.abs(v*10-Math.round(v*10))<1e-6;
 if(x[1]<=0){err('Linha '+(i+1)+': a média tem de ser maior que zero.');return}
@@ -195,10 +207,11 @@ if(t=='h'){qh=r;mi=qh[0][0];sen=qh[0][2]>qh[0][0]?'c':'d';let T=0;r=qh.map(x=>{c
 if(t=='a'){if(endL===null){err('Falta o fim da regularidade: escreva uma última linha só com a distância, sem média. Por exemplo: 5000');return}dtot=endL;if(!(dtot>r[r.length-1][0])){err('O fim da regularidade ('+dtot+' m) tem de ser maior que o início do último troço ('+r[r.length-1][0]+' m).');return}}
 const o={t,hi,r,du:du>0?du:600,mi,sen,dtot};if(qh)o.q=qh;if(ei>=0&&seq[ei].lk)o.lk=seq[ei].lk;if(ei>=0&&seq[ei].man)o.man=true;
 const ix=ei>=0?ei:seq.length;if(ei>=0)seq[ei]=o;else seq.push(o);
-if(ix>0&&seq[ix-1].lk&&seq[ix-1].r&&seq[ix-1].r.length){const c=hAdd(seq[ix-1].hi,seq[ix-1].lk.tempo);if(c!=hi)o.man=true}
+if(ix>0&&seq[ix-1].lk&&seq[ix-1].r&&seq[ix-1].r.length){const c=hAdd(seq[ix-1].hi,seq[ix-1].lk.tempo);if(ei<0)o.hi=c;else if(c!=hi)o.man=true}
 cancelEdit();save();show()}
-function cancelEdit(){ei=-1;$('ab').textContent='Adicionar à sequência';$('cb').hidden=true;$('dt').value='';err('')}
-function edit(i){const x=seq[i];ei=i;$('tp').value=x.t;lab();$('hi').value=x.hi;
+function cancelEdit(){ei=-1;$('ab').textContent='Adicionar à sequência';$('cb').hidden=true;$('dt').value='';err('');nowDef()}
+function nowDef(){const d=new Date(Date.now()+60000);$('hi').value=[d.getHours(),d.getMinutes(),0].map(v=>String(v).padStart(2,'0')).join(':')}
+function edit(i){const x=seq[i];ei=i;$('tp').value=x.t;lab();$('au').value='m';$('aoo').value='d';$('hi').value=x.hi;
 $('dt').value=x.t=='f'?x.r.map(a=>a[0]+' '+hms(a[1])).join('\n'):x.t=='h'?(x.q?x.q.map(a=>a.map(v=>String(v).replace('.',',')).join(' ')).join('\n'):''):x.r.map(a=>a[0]+' '+String(a[1]).replace('.',',')).join('\n')+(x.t=='a'&&x.dtot?'\n'+x.dtot:'');
 $('du').value=hms(x.du);if(x.t=='h'){$('mi').value=String(x.mi==null?0:x.mi).replace('.',',');$('sen').value=x.sen||'c'}
 if(x.t=='a')$('dtot').value=x.dtot||'';
@@ -233,7 +246,7 @@ if(d<=e){err2('Ligação após a regularidade '+(i+1)+': a distância final ('+d
 err2('');seq[i].lk={dist:d,tempo:t};save();show()}
 function show(){recalc();$('ls').innerHTML=seq.length?`<div class="it" style="flex-wrap:wrap;gap:6px;background:#12161b;padding:8px;border-radius:8px;margin:4px 0"><span style="font-size:13px;color:var(--mut)">↓ Ligação da partida até à regularidade 1${lk0?' · partida às '+hAdd(seq[0].hi,-lk0.tempo):''}</span><span style="display:flex;gap:6px"><input placeholder="distância (m)" inputmode="decimal" value="${lk0?lk0.dist:''}" style="width:135px;padding:6px" onchange="setLk0(this)"><input placeholder="tempo (mm:ss)" value="${lk0?hms(lk0.tempo):''}" style="width:105px;padding:6px" onchange="setLk0(this)"></span></div>`+seq.map((x,i)=>`<div class="it" style="flex-wrap:wrap;gap:6px"><span>${i+1}. ${NM[x.t]}${x.man?' · hora fixa':''}${fimTxt(x)} (${(x.r||[]).length}${(x.r||[]).length==1?' linha':' linhas'})</span><span style="display:flex;gap:6px;align-items:center"><input class="mn" placeholder="± min" inputmode="decimal" aria-label="Minutos a somar ou subtrair" style="width:62px;padding:6px" onchange="shiftMin(${i},this)"><input value="${x.hi}" aria-label="Hora de início" style="width:105px;padding:6px" title="${i&&seq[i-1].lk?(x.man?'Hora fixa, escrita por si. Apague para voltar ao cálculo pela ligação.':'Calculada pela ligação. Escreva outra hora para a fixar.'):''}" onchange="setHi(${i},this.value)">${$('bk').hidden?`<button class="s" onclick="go(${i})">Começar daqui</button>`:''}<button class="s" onclick="edit(${i})">Editar</button><button class="s" onclick="rem(${i})">Remover</button></span></div>`+(`<div class="it" style="flex-wrap:wrap;gap:6px;background:#12161b;padding:8px;border-radius:8px;margin:4px 0"><span style="font-size:13px;color:var(--mut)">↓ ${i<seq.length-1?'Ligação até à regularidade '+(i+2):'Ligação final até ao controlo horário'}${fimTxt(x,1)}</span><span style="display:flex;gap:6px"><input placeholder="distância final (m)" inputmode="decimal" value="${x.lk?x.lk.dist:''}" style="width:135px;padding:6px" onchange="setLk(${i},this)"><input placeholder="tempo (mm:ss)" value="${x.lk?hms(x.lk.tempo):''}" style="width:105px;padding:6px" onchange="setLk(${i},this)"></span></div>`)).join(''):'Ainda vazia.'}
 
-function build(r){const e=[],p=[];P=[[0,0]];AB=null;
+function build(r){const e=[],p=[];P=[[0,0]];AB=null;PT=[];HT=[];
 if(r.t=='f'){const f=r.r.map(x=>[x[1],x[0]]).sort((a,b)=>a[0]-b[0]);let pv=-99;
 f.forEach(([T,D],i)=>{p.push(T);P.push([T,D]);const gap=T-pv;
 e.push({at:gap>=3?Math.max(T-lead-2.5,i?pv+.5:0):pv+.5,s:'Passagem aos '+(T%60)+' segundos'});
@@ -251,7 +264,10 @@ for(let j=n-5;j<n;j++)if(j>=lo&&j<T-.3)e.push({at:j,s:String(j%60)});
 e.push({at:T,s:String(n%60)})}
 pendPrev=chg;prevT=T;k++;T+=m[i][1]}}
 else{const A=[];let T=0;r.r.forEach((x,i)=>{if(i){const q=A[i-1];T=q.T+(x[0]-q.s)/q.v}A.push({s:x[0],avg:x[1],v:x[1]/3.6,T})});
-const q=A[A.length-1];AB={s:A,dtot:r.dtot,Ttot:q.T+(r.dtot-q.s)/q.v}}
+A.forEach((a,i)=>{a.g=i?a.T-A[i-1].T:Infinity});const q=A[A.length-1];AB={s:A,dtot:r.dtot,Ttot:q.T+(r.dtot-q.s)/q.v}}
+HT=P.slice(1).map(a=>a[0]);
+if(r.t=='f')PT=r.r.map(x=>({D:x[0],T:x[1],l:'Passei · '+x[0]+' m'})).sort((a,b)=>a.T-b.T);
+else if(r.t=='h')PT=HT.map((T,k)=>({D:100*k,T,l:'Passei · marco '+mk(r,k)})).filter((x,k)=>k>0);
 e.forEach(x=>x.f=Math.max(0,x.at-off));e.sort((a,b)=>a.f-b.f);return{e,p}}
 
 function beep(f,d){try{if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();ac.resume();const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;g.gain.value=.35;o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}
@@ -276,9 +292,9 @@ function init(){const r=seq[cur];lk=null;hk=1;$('pr').hidden=true;$('sg').hidden
 if(!r){st='done';$('rt').textContent='Prova terminada';$('rl').textContent='';$('rc').textContent='✓';$('rc').style.color='';blank();$('us').hidden=true;ev=[];ps=[];return}
 cT=r.t;const b=build(r);ev=b.e;ps=b.p;idx=0;bi=0;lastSeg=-1;bp=ev.filter(x=>/^\d+$/.test(x.s)).map(x=>x.at).sort((a,b)=>a-b);
 tg=r.t=='f'?r.r.map(x=>x[0]).sort((a,b)=>a-b):[];
-const q=r.hi.split(':').map(Number),d=new Date();d.setHours(q[0],q[1],q[2]||0,0);sched=d.getTime();t0=sched;
+sched=msOf(cur);t0=sched;pk=-1;aw={};cdN=99;$('w3').hidden=r.t!='a';
 end=(r.t=='a'?AB.Ttot:(r.t=='f'?(ps.length?ps[ps.length-1]:0):r.du))+3;st='wait';asked=false;
-$('kn').textContent=r.t=='a'?'Média atual':r.t=='h'?'Próximo marco':'Próxima passagem';$('rc').classList.toggle('ab',r.t=='a');$('run').classList.toggle('abs',r.t=='a');$('ks').textContent=r.t=='a'?'Próxima mudança em':'Média a fazer';
+$('kn').textContent=r.t=='a'?'Média troço':r.t=='h'?'Próximo marco':'Próxima passagem';$('rc').classList.toggle('ab',r.t=='a');$('run').classList.toggle('abs',r.t=='a');$('ks').textContent=r.t=='a'?'Vel. necessária':'Média a fazer';
 $('us').hidden=r.t=='a';
 $('rt').textContent='Regularidade '+(cur+1)+' de '+seq.length+' · '+NM[r.t]}
 
@@ -315,14 +331,19 @@ function frz(){const el=(Date.now()-t0)/1000;if(st!='run'||el<0)return;
 if(!fz){fz=true;fzEl=el;fzDr=dr(el);fzD=fzDr+dOff;fz0={dOff,fzD};fzU=[]}
 else{const net=fzD-fz0.fzD;if(Math.abs(net)>=.5){const id=++lid;U.push({dOff:fz0.dOff,id});logC(id,'congelada',true,fz0.fzD,fzD)}dOff=fzD-fzDr;fz=false;fzU=[]}}
 function undo(){if(st!='run')return;if(fz){if(fzU.length)fzD=fzU.pop();return}
-const u=U.pop();if(!u)return;dOff=u.dOff;if(u.hk)hk=u.hk;L=L.filter(e=>e.id!=u.id);winC=winC.filter(e=>e.id!=u.id);saveL();showLog()}
+const u=U.pop();if(!u)return;dOff=u.dOff;if(u.pk!==undefined)pk=u.pk;L=L.filter(e=>e.id!=u.id);winC=winC.filter(e=>e.id!=u.id);saveL();showLog()}
 function mk(r,k){const v=r.mi+(r.sen=='d'?-1:1)*k/10;return String(Number(v.toFixed(3))).replace('.',',')}
 function hSec(k){const x=P.find(a=>Math.abs(a[1]-100*k)<.5);if(!x)return null;const v=Math.round(x[0]*10)/10%60;return String(Math.round(v*10)/10).replace('.',',')}
-function tgt(d,r){d=Math.max(0,d);if(r.t=='f'){const D=tg.find(x=>x>d);return D===undefined?null:{D,l:'Passei · '+D+' m'}}
-if(r.t=='h')return hk>Math.round(P[P.length-1][1]/100)?null:{D:100*hk,l:'Passei · marco '+mk(r,hk)};return null}
-function pass(){const r=seq[cur];if(!r)return;const x=tgt(dNow(),r);if(!x)return;
-if(r.t!='h'){act('figura',x.D,true);return}
-if(st!='run'||Date.now()<t0)return;const h0=hk,n0=U.length;act('marco',x.D,true);hk=h0+1;if(U.length>n0)U[U.length-1].hk=h0;const ns=hSec(hk);if(ns!==null&&sm.includes('v')){const tx='Próximo aos '+Math.round(parseFloat(ns.replace(',','.')))%60;if(!(lastS==tx&&Date.now()-lastT<3000))say(tx)}}
+function tgt(el,d){let best=null,bd=1e9;
+for(let i=pk+1;i<PT.length;i++){const p=PT[i];
+if(pw>0){const dt=Math.abs(el-p.T);if(dt<=pw&&dt<bd){bd=dt;best=i}else if(p.T-el>pw)break}
+else if(p.D>d-15){best=i;break}}
+return best===null?null:{i:best,D:PT[best].D,l:PT[best].l}}
+function pass(){const r=seq[cur];if(!r||st!='run'||Date.now()<t0)return;const el=(Date.now()-t0)/1000,g=tgt(el,dNow());if(!g)return;
+const n0=U.length,p0=pk;act(r.t=='h'?'marco':'figura',g.D,true);pk=g.i;if(U.length>n0)U[U.length-1].pk=p0}
+function hkSync(el){const m=HT.length-1;hk=1;while(hk<m&&el>=HT[hk]+3)hk++}
+function vNow(){return src=='g'?(gT&&Date.now()-gT<3000?gV*3.6:0):Math.max(0,sv)}
+function vNeed(el,d){if(el<0||el>=AB.Ttot)return null;const t2=Math.min(el+10,AB.Ttot),tt=t2-el;if(tt<=0)return null;return Math.max(0,Math.min(999,Math.round((abIdeal(t2)-d)/tt*3.6)))}
 
 function setAf(nv){const el=(Date.now()-t0)/1000,raw=rawM(el),a0=1+af/1000,dl=nv-af;
 af=nv;dOff-=raw*dl/1000;if(fz)fzDr=src=='g'?fzDr*(1+af/1000)/a0:dr(el);U=[];fzU=[];
@@ -341,22 +362,25 @@ function siUp(){let c,t;if(src=='g'){t='GPS';c=!(gT&&Date.now()-gT<=3000)?'#ff45
 const h='<i style="background:'+c+'"></i>'+t;if($('si').dataset.h!=h){$('si').dataset.h=h;$('si').innerHTML=h}}
 function recSug(){$('sg').hidden=true}
 
-function start(testNow){if(!seq[cur])return;lk=null;hk=1;gM=0;fz=false;idx=0;bi=0;dOff=0;U=[];fzU=[];lastAn=0;winC=[];lastSeg=-1;t0=testNow?Date.now():sched;st='run';$('pr').hidden=true;$('sg').hidden=true;blank();
+function start(testNow){if(!seq[cur])return;lk=null;hk=1;pk=-1;cdN=99;aw={};gM=0;fz=false;idx=0;bi=0;dOff=0;U=[];fzU=[];lastAn=0;winC=[];lastSeg=-1;t0=testNow?Date.now():sched;st='run';$('pr').hidden=true;$('sg').hidden=true;blank();
 if(!testNow){const e=(Date.now()-sched)/1000;if(e>0)dOff=-dr(e)}}
 function pqt(r,sch,n,lim){const late=Math.round((Date.now()-sch)/1000);
 $('pq').textContent=late<0?'A regularidade '+n+' ('+NM[r.t]+') começa às '+r.hi+', daqui a '+(-late)+' s. Dar início?':'Chegou a hora da regularidade '+n+' ('+NM[r.t]+', '+r.hi+'). Dar início?';
-$('pb').hidden=!(late<lim);$('pb').textContent=late<0?'Confirmar: arranca às '+r.hi:'Dar início: tempo da hora oficial, km 0 agora (atraso de '+late+' s)'}
+$('pb').hidden=!(late<lim);$('pn').hidden=late<lim;$('pb').textContent=late<0?'Confirmar: arranca às '+r.hi:'Dar início: tempo da hora oficial, km 0 agora (atraso de '+late+' s)'}
 function ask(r,sch,n,lim){if($('run').hidden&&!$('setup').hidden&&!$('bk').hidden)voltar();pqt(r,sch,n,lim);$('pr').hidden=false;if(sm.includes('v'))say('Dar início à regularidade '+n+'?');beep(1200,.3)}
 function startAny(){if(lk){cur=lk.nx;init()}start()}
+function startNow(){if(lk){cur=lk.nx;init()}start(true)}
 function skipP(){cur=lk?lk.nx+1:cur+1;init()}
-function enterLink(r){const nx=seq[cur+1],fin=!nx;let ls;
-if(fin){ls=hiMs(hAdd(r.hi,r.lk.tempo));if(ls<hiMs(r.hi))ls+=864e5}else ls=hiMs(nx.hi);lkSched=ls;
-lk={D0:dEnd(r),Dl:r.lk.dist,Tl:Math.max(1,r.lk.tempo-(end-3)),te:end-3,nx:cur+1,src:'r',fin};asked=false;$('us').hidden=true;
-$('kn').textContent='Faltam';$('ks').textContent='Média a fazer';$('rt').textContent=fin?'Ligação final · '+(cur+1)+' → controlo horário':'Ligação '+(cur+1)+' → '+(cur+2)}
+function enterLink(r){const nx=seq[cur+1],fin=!nx;
+lkSched=fin?msOf(cur)+r.lk.tempo*1000:msOf(cur+1);
+lk={D0:dEnd(r),Dl:r.lk.dist,Tl:Math.max(1,r.lk.tempo-(end-3)),te:end-3,nx:cur+1,src:'r',fin};asked=false;$('us').hidden=true;$('w3').hidden=true;
+$('kn').textContent='Faltam';$('ks').textContent='Média a fazer';$('rt').textContent=fin?'Ligação final · '+(cur+1)+' → controlo horário':'Ligação '+(cur+1)+' → '+(cur+2);
+const tt=Math.round(lk.Tl),m=Math.floor(tt/60),sc=tt%60,du=(m?m+(m==1?' minuto':' minutos'):'')+(m&&sc?' e ':'')+(sc?sc+(sc==1?' segundo':' segundos'):'');
+if(sm.includes('v'))say('Fim de prova. Início da deslocação. Tem '+du+'.');if(sm.includes('b'))beep(1200,.3)}
 
 function enterLink0(){lkSched=sched;t0=sched-lk0.tempo*1000;lk={D0:0,Dl:lk0.dist,Tl:lk0.tempo,te:0,nx:0,src:'z'};
 ev=[];bp=[];ps=[];idx=0;bi=0;gM=0;fz=false;dOff=0;U=[];fzU=[];lastAn=0;winC=[];st='run';asked=false;blank();$('us').hidden=true;$('rc').classList.remove('ab');
-$('kn').textContent='Faltam';$('ks').textContent='Média a fazer';$('rt').textContent='Ligação partida → 1'}
+$('w3').hidden=true;$('kn').textContent='Faltam';$('ks').textContent='Média a fazer';$('rt').textContent='Ligação partida → 1'}
 
 function tick(){const r=seq[cur];if(!r)return;
 if(st=='wait'){const rm=(sched-Date.now())/1000;$('rl').textContent='Início às '+r.hi+' · faltam';$('rc').textContent=rm>0?hms(rm):'0';$('rc').style.color='';
@@ -364,6 +388,8 @@ if(rm<=15&&!asked){asked=true;ask(r,sched,cur+1,end-3)}else if(asked&&!$('pr').h
 const el=(Date.now()-t0)/1000,fl=Math.floor(el),v=Math.max(0,sv)/3.6,d=fz?fzD:dr(el)+dOff,eI=fz?fzEl:el;
 $('rl').textContent=el<0?'Arranca em':'Minuto '+Math.floor(fl/60)+' · segundo';
 $('rc').textContent=el<0?hms(-el):fl%60;
+if(!lk){if(el<0&&el>=-lead-1){const n=Math.ceil(-(el+off));if(n>=1&&n<=lead&&n!==cdN){cdN=n;if(sm.includes('v'))say(String(n));if(sm.includes('b'))beep(880,.12)}}
+else if(el>=0&&cdN<99&&cdN!==0){cdN=0;if(sm.includes('b'))beep(1400,.35)}}
 while(idx<ev.length&&ev[idx].f<=el){if(el-ev[idx].f<2.5&&sm.includes('v')){lastS=ev[idx].s;lastT=Date.now();say(ev[idx].s)}idx++}
 while(bi<bp.length&&bp[bi]<=el){if(el-bp[bi]<1&&sm.includes('b')){ps.includes(bp[bi])?beep(1400,.35):beep(880,.12)}bi++}
 if(lk){const rt=lk.Tl-(eI-lk.te),dl=lk.Dl-d;
@@ -372,17 +398,20 @@ $('rn').innerHTML=Math.max(0,Math.round(dl))+'<small>m</small>';
 $('rs').innerHTML=rt>0?Math.max(0,dl/rt*3.6).toFixed(0)+'<small>km/h</small>':'—'}
 else if(r.t=='a'){const i=abSeg(d),S=AB.s[i],N=AB.s[i+1];
 if(el>=0){const mt=Math.max(0,Math.round((N?N.s:AB.dtot)-d));$('rl').textContent='Cronómetro '+hms(el);$('rc').innerHTML='<span class="ab1">'+mt+'<small>m</small></span><span class="ab2">'+(N?'→ '+(Math.round(N.avg*10)/10)+' km/h':'→ fim')+'</span>'}
-if(el>=0&&i!=lastSeg){lastSeg=i;if(sm.includes('v'))say('Média '+Math.round(S.avg))}
+if(el>=0&&i!=lastSeg){lastSeg=i;if(i>0&&S.g<10){if(sm.includes('v'))say(S.avg>AB.s[i-1].avg?'sobe':'desce')}else if(sm.includes('v'))say('Média '+Math.round(S.avg));if(i>0&&sm.includes('b'))beep(1400,.35)}
+if(el>=0&&N&&!(N.g<10)){const vi=vNow()/3.6,tt=(N.s-d)/(vi>1?vi:S.v),k=i+1;
+if(tt>5.5&&tt<=10&&!aw['v'+k]){aw['v'+k]=1;if(sm.includes('v'))say('Média '+Math.round(N.avg)+' daqui a '+Math.round(tt)+' segundos')}
+if(tt>0&&tt<5.5){const n=Math.round(tt);if(n>=1&&aw['b'+k]!==n){aw['b'+k]=n;if(sm.includes('b'))beep(880,.12)}}}
 $('rc').style.color='';
 $('rn').innerHTML=(Math.round(S.avg*10)/10)+'<small>km/h</small>';
-$('rs').innerHTML=N?Math.max(0,Math.round(N.s-d))+'<small>m</small>':'—'}
-else{const n=ps.find(x=>Math.round(x)>=fl),ni=n===undefined?undefined:Math.round(n),rem=ni===undefined?99:ni-fl;
+const vn=vNeed(eI,d);$('rs').innerHTML=vn===null?'—':vn+'<small>km/h</small>';$('rv').innerHTML=Math.round(vNow())+'<small>km/h</small>'}
+else{if(r.t=='h'&&el>=0){const m=HT.length-1;while(hk<m&&el>=HT[hk]+3)hk++}const n=ps.find(x=>Math.round(x)>=fl),ni=n===undefined?undefined:Math.round(n),rem=ni===undefined?99:ni-fl;
 $('rc').style.color=el<0?'':rem==0?'#2ee66b':rem==3?'#ff3b30':(rem==1||rem==2)?'#ffd60a':'';
 if(r.t=='h'){const hs=hSec(hk);$('rn').innerHTML=hs===null?'—':'<span class="hm">'+mk(r,hk)+'</span><span class="hs">'+hs+'</span>'}else $('rn').textContent=n!==undefined?hms(ni):'—';
 const nx=P.find(x=>x[0]>eI&&ps.includes(x[0]));
 $('rs').innerHTML=nx&&el>=0?Math.max(0,(nx[1]-d)/(nx[0]-eI)*3.6).toFixed(0)+'<small>km/h</small>':'—';
-if(r.t=='h'){const hm=Math.round(P[P.length-1][1]/100);while(d>=100*hk+15&&hk<hm)hk++}
-const g=tgt(d,r);$('us').textContent=g?g.l:(r.t=='h'?'Sem mais marcos':'Sem mais figuras');$('us').disabled=!g}
+const g=tgt(el,d);if(g){$('us').textContent=g.l;$('us').disabled=false}else{let nx=null;for(let i=pk+1;i<PT.length;i++){const q=PT[i];if(pw>0?el<=q.T+pw:q.D>d-15){nx=q;break}}$('us').textContent=nx?nx.l:(r.t=='h'?'Sem mais marcos':'Sem mais figuras');$('us').disabled=true}}
+if(!lk){if(el<0)$('rc').style.color=-el<=5?'#ffd60a':'';else if(el<1)$('rc').style.color='#2ee66b'}
 $('rd').innerHTML='<span class="dl">Distância</span> '+Math.round(d)+' m'+(src=='g'?' <span class="dl">'+gst()+'</span>':'')+(fz?' <span class="dl">congelada</span>':'');$('rd').style.color=fz?'#7fd1ff':'';
 $('fz').textContent=fz?'Soltar distância':'Congelar distância';siUp();afUpd();
 const dm=d-ideal(eI),ds=v>0?dm/v:0,ok=Math.abs(dm)<=1,ad=dm>0,col=el<0?'#555':ok?'#ffd60a':ad?'#ff453a':'#2ee66b',sg=ad?'+':'−';
@@ -401,31 +430,34 @@ if(r.t=='h'&&r.mi==null)return'A regularidade '+(i+1)+' (hectométrica) precisa 
 if(r.t=='a'&&!(r.dtot>0))return'A regularidade '+(i+1)+' (absoluta) precisa da distância total. Carregue em Editar.';return''}
 async function go(k){if(!seq.length){err('Adicione pelo menos uma regularidade.');return}
 for(let i=0;i<seq.length;i++){const m=bad(seq[i],i);if(m){err(m);scrollTo(0,0);return}}
-err('');sm=$('sm').value;try{beep(1,.01)}catch(e){}lead=+$('le').value||10;off=+$('vo').value;if(isNaN(off))off=.6;sv=+$('sv').value||0;af=num($('afv').value)||0;cur=k||0;src=$('fo').value;if(src=='g'){if(!gps()){err(gS);return}clearInterval(gti)}else gOff();
-$('setup').hidden=true;$('run').hidden=false;
+err('');sm=$('sm').value;try{beep(1,.01)}catch(e){}lead=+$('le').value||10;off=+$('vo').value;if(isNaN(off))off=.6;sv=+$('sv').value||0;af=num($('afv').value)||0;pw=num($('pw').value);if(isNaN(pw)||pw<0)pw=5;cur=k||0;src=$('fo').value;if(src=='g'){if(!gps()){err(gS);return}clearInterval(gti)}else gOff();
+$('setup').hidden=true;$('run').hidden=false;try{history.pushState({r:1},'')}catch(e){}
 try{wl=await navigator.wakeLock.request('screen')}catch(e){}
 init();if(lk0&&seq[0]&&cur==0)enterLink0();clearInterval(timer);timer=setInterval(tick,100)}
 function now(){if(!seq[cur]){cur=0;init()}start(true)}
 function skip(){cur++;init()}
 let tbT=null;
 function toPrep(){$('afp').hidden=true;if(st=='done'){stop();return}$('run').hidden=true;$('setup').hidden=false;$('bk').hidden=false;$('go').hidden=true;show();scrollTo(0,0)}
+function msOf(i){const b=new Date();b.setHours(0,0,0,0);let prev=-1;
+for(let j=0;j<=i&&j<seq.length;j++){const q=seq[j].hi.split(':').map(Number);let m=b.getTime()+((q[0]*60+q[1])*60+(q[2]||0))*1000;if(prev>=0)while(m<prev)m+=864e5;prev=m}
+return prev}
 function hiMs(hi){const q=hi.split(':').map(Number),d=new Date();d.setHours(q[0],q[1],q[2]||0,0);return d.getTime()}
-function setLabels(r){$('kn').textContent=r.t=='a'?'Média atual':r.t=='h'?'Próximo marco':'Próxima passagem';$('rc').classList.toggle('ab',r.t=='a');$('run').classList.toggle('abs',r.t=='a');$('ks').textContent=r.t=='a'?'Próxima mudança em':'Média a fazer';$('us').hidden=r.t=='a';$('rt').textContent='Regularidade '+(cur+1)+' de '+seq.length+' · '+NM[r.t]}
+function setLabels(r){$('kn').textContent=r.t=='a'?'Média troço':r.t=='h'?'Próximo marco':'Próxima passagem';$('rc').classList.toggle('ab',r.t=='a');$('run').classList.toggle('abs',r.t=='a');$('ks').textContent=r.t=='a'?'Vel. necessária':'Média a fazer';$('us').hidden=r.t=='a';$('w3').hidden=r.t!='a';$('rt').textContent='Regularidade '+(cur+1)+' de '+seq.length+' · '+NM[r.t]}
 function rebuild(r,d0){const el=(Date.now()-t0)/1000;cT=r.t;const b=build(r);ev=b.e;ps=b.p;
 tg=r.t=='f'?r.r.map(x=>x[0]).sort((a,b)=>a-b):[];
 bp=ev.filter(x=>/^\d+$/.test(x.s)).map(x=>x.at).sort((a,b)=>a-b);
 idx=ev.findIndex(x=>x.f>el);if(idx<0)idx=ev.length;bi=bp.findIndex(x=>x>el);if(bi<0)bi=bp.length;
-const ns=hiMs(r.hi);if(Math.abs(t0-sched)<1500)t0=ns;sched=ns;
+const ns=msOf(cur);if(Math.abs(t0-sched)<1500)t0=ns;sched=ns;
 end=(r.t=='a'?AB.Ttot:(r.t=='f'?(ps.length?ps[ps.length-1]:0):r.du))+3;
-hk=Math.max(1,Math.floor((d0-15)/100)+1);lastSeg=-1;setLabels(r)}
+hkSync(el);pk=-1;PT.forEach((p,i)=>{if(p.D<=d0+1)pk=i});aw={};lastSeg=-1;setLabels(r)}
 function refresh(){recalc();
 let d0=0;const run=st=='run';if(run){const el0=(Date.now()-t0)/1000;d0=fz?fzD:dr(el0)+dOff}
-const a0=af;af=num($('afv').value)||0;sm=$('sm').value;lead=+$('le').value||10;off=+$('vo').value;if(isNaN(off))off=.6;sv=+$('sv').value||0;
+const a0=af;af=num($('afv').value)||0;sm=$('sm').value;lead=+$('le').value||10;off=+$('vo').value;if(isNaN(off))off=.6;sv=+$('sv').value||0;pw=num($('pw').value);if(isNaN(pw)||pw<0)pw=5;
 const ns=$('fo').value;if(ns!=src){src=ns;if(src=='g'){gM=0;if(!gps()){src='s';$('fo').value='s'}}else gOff()}
 if(run&&!fz){const el1=(Date.now()-t0)/1000;dOff+=d0-(dr(el1)+dOff)}
 if(lk&&lk.src=='r'){const a=seq[lk.nx-1],n=seq[lk.nx];if(!a||!a.lk){cur=Math.min(lk.nx,seq.length);init();return}
-lk.fin=!n;lk.Dl=a.lk.dist;lk.Tl=Math.max(1,a.lk.tempo-lk.te);let ls=n?hiMs(n.hi):hiMs(hAdd(a.hi,a.lk.tempo));if(!n&&ls<hiMs(a.hi))ls+=864e5;lkSched=ls}
-else if(lk&&lk.src=='z'){if(!lk0||!seq[0]){cur=0;init();return}lk.Dl=lk0.dist;lk.Tl=lk0.tempo;sched=hiMs(seq[0].hi);lkSched=sched;t0=sched-lk0.tempo*1000}
+lk.fin=!n;lk.Dl=a.lk.dist;lk.Tl=Math.max(1,a.lk.tempo-lk.te);lkSched=n?msOf(lk.nx):msOf(lk.nx-1)+a.lk.tempo*1000}
+else if(lk&&lk.src=='z'){if(!lk0||!seq[0]){cur=0;init();return}lk.Dl=lk0.dist;lk.Tl=lk0.tempo;sched=msOf(0);lkSched=sched;t0=sched-lk0.tempo*1000}
 else if(st=='wait'){if(seq[cur])rebuild(seq[cur],0);else{cur=seq.length;init()}}
 else if(run&&!lk){if(!seq[cur]){cur=seq.length;init()}else rebuild(seq[cur],d0)}}
 function voltar(){refresh();$('setup').hidden=true;$('run').hidden=false;$('bk').hidden=true;clearTimeout(tbT);$('tb').textContent='Terminar prova'}
@@ -440,6 +472,13 @@ function afFim(){afOn=false;clearInterval(ati);const M=afM(),O=num($('ao').value
 if(!(M>50)||!(O>0)){$('ar2').textContent='Medição demasiado curta ou distância oficial inválida.';return}
 const f=(O-M)/M*1000;$('afv').value=f.toFixed(1).replace('.',',');afSet();
 $('ar2').textContent='Medido '+Math.round(M)+' m para '+O+' m oficiais. O equipamento mede '+Math.abs(f).toFixed(1).replace('.',',')+' m a '+(f>0?'menos':'mais')+' por quilómetro. Fator guardado.'}
+nowDef();
+function toast(m){const t=$('toast');t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>{t.hidden=true},2500)}
+addEventListener('popstate',()=>{if(st=='done'||($('run').hidden&&$('bk').hidden))return;const n=Date.now();if(n-bkT<3000){bkT=0;history.back()}else{bkT=n;try{history.pushState({r:1},'')}catch(e){}toast('Carregue outra vez em retroceder para sair da prova')}});
+document.addEventListener('visibilitychange',async()=>{if(document.visibilityState=='visible'&&st!='done'&&(!$('run').hidden||!$('bk').hidden)){try{wl=await navigator.wakeLock.request('screen')}catch(e){}}});
+addEventListener('error',e=>{try{$('vs').textContent='Erro: '+e.message}catch(_){}});
 lab();show();showLog();
-if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});
+if('serviceWorker' in navigator&&/^https?:/.test(location.protocol)){const had=!!navigator.serviceWorker.controller;
+navigator.serviceWorker.register('sw.js').catch(()=>{});
+navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had&&$('run').hidden&&$('bk').hidden&&!window.__rl){window.__rl=1;location.reload()}})}
 </script></body></html>
