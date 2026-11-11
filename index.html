@@ -94,6 +94,7 @@ body{padding-bottom:26px}
 .lr .m2{color:var(--mut);font-size:14px}
 #cfb button{margin-top:8px}
 button.dg2{background:#c62828;color:#fff}
+button.gr{background:#1c7c3a;color:#fff;font-weight:800}
 #run .ar{display:flex;gap:8px;flex:1.1 1 0;min-height:40px}
 #run .ar input{flex:1;min-width:0;height:100%;font-size:min(6vw,3.4dvh);padding:0 10px}
 #run .ar button{flex:0 0 34%;margin:0;height:100%;padding:0;font-size:min(6vw,3.4dvh)}
@@ -102,7 +103,7 @@ button.dg2{background:#c62828;color:#fff}
 
 <div id="setup">
 <div id="bk" hidden style="position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:8px"><button onclick="voltar()">Voltar à prova</button><button class="s" id="tb" onclick="endTap()">Terminar prova</button></div>
-<div class="hd"><h1>Preparar rally <small style="font-size:15px;color:var(--mut);font-weight:400">versão 34</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
+<div class="hd"><h1>Preparar rally <small style="font-size:15px;color:var(--mut);font-weight:400">versão 38</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
 <div class="card"><h1>Rally</h1>
 <label style="margin-top:0">Nome do rally</label><input id="rn0" placeholder="Ex.: Rally de Fafe" aria-label="Nome do rally" onchange="setRName(this.value)">
 <label>Hora de início do rally (partida)</label><input id="h0" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0n" style="text-align:left;font-size:15px;margin-top:4px"></div>
@@ -120,8 +121,9 @@ button.dg2{background:#c62828;color:#fff}
 <label>Tipo de regularidade</label>
 <select id="tp" onchange="lab()"><option value="f">Figura</option><option value="h">Hectométrica</option><option value="a">Absoluta</option></select>
 <label>Hora de início (hh:mm:ss)</label><input id="hi" value="10:00:00">
-<div id="ao2" hidden style="display:flex;gap:8px"><div style="flex:1"><label>Unidade das distâncias coladas</label><select id="au"><option value="m">metros</option><option value="k">quilómetros</option></select></div><div style="flex:1"><label>Ordem das colunas</label><select id="aoo"><option value="d">distância, média</option><option value="m">média, distância</option></select></div></div>
+<div id="ao2" hidden style="display:flex;gap:8px"><div style="flex:1"><label>Unidade das distâncias coladas</label><select id="au"><option value="k">quilómetros</option><option value="m">metros</option></select></div><div id="aow" style="flex:1"><label>Ordem das colunas</label><select id="aoo"><option value="d">distância, média</option><option value="m">média, distância</option></select></div></div>
 <label id="lb"></label><div class="mut" style="text-align:left;font-size:15px">Tempos: 2 dígitos = segundos (31); 3 ou 4 = minutos e segundos (131 = 1:31, 2031 = 20:31); 5 ou 6 = horas, minutos e segundos. Também aceita 1:31.</div><textarea id="dt"></textarea>
+<div id="dtx" hidden class="mut" style="text-align:left;font-size:15px"></div>
 <label id="ld">Duração total (ex.: 1000 = 10 min)</label><input id="du" inputmode="numeric" value="1000">
 <label id="lt" hidden>Distância total da regularidade (m)</label><input id="dtot" inputmode="numeric" value="10000" hidden>
 <div id="hm" hidden><label>Marco inicial (km), por exemplo 12,3</label><input id="mi" inputmode="decimal" value="0">
@@ -132,8 +134,8 @@ button.dg2{background:#c62828;color:#fff}
 </div>
 
 <div class="card"><h1>Aferição do equipamento</h1>
-<label>Distância oficial do troço de teste (m)</label><input id="ao" inputmode="decimal" value="1000">
-<div class="mut" id="am" style="font-size:24px;font-weight:700;margin-top:8px">0 m</div>
+<label>Distância oficial do troço de teste (km)</label><input id="ao" inputmode="decimal" value="1,000">
+<div class="mut" id="am" style="font-size:24px;font-weight:700;margin-top:8px">0,000 km</div>
 <div class="mut" style="font-size:15px;text-align:left">Carregue em Iniciar ao passar no início do troço e em Terminar ao passar no fim.</div>
 <div style="display:flex;gap:8px"><button id="a1" onclick="afIni()">Iniciar aferição</button><button id="a2" class="s" disabled onclick="afFim()">Terminar aferição</button></div>
 <div class="mut" id="ar2" style="font-size:15px;text-align:left"></div>
@@ -221,8 +223,23 @@ const LIVE_N=10,NUS='6e400001-b5a3-f393-e0a9-e50e24dcca9e',NTX='6e400003-b5a3-f3
 let rb={dev:null,ch:null,on:false,want:false,busy:false,t:0,v:0,pv:null,it:0,fix:0,sv:0,acc:0,good:0,n:0,buf:null,msg:'',rt:null,fails:0,bat:null,chg:false,model:''};
 
 function lab(){const t=$('tp').value;
-$('lb').textContent=t=='f'?'Figuras, uma por linha: distância (m) e tempo de passagem. Ex.: 520 131 (1 min 31 s)':t=='h'?'Uma linha por média: marco onde começa, média (km/h) e marco onde acaba. A linha seguinte começa onde a anterior acabou. Ex.: 12,3 36 13,0 e depois 13,0 45 14,2':'Troços, um por linha: distância onde começa (m) e média (km/h). O primeiro começa em 0. A última linha leva só a distância do fim. Ex.: 0 45, depois 3000 50 e por fim 5000';
-$('ao2').hidden=t!='a';$('ld').hidden=$('du').hidden=true;$('lt').hidden=$('dtot').hidden=true;$('hm').hidden=true}
+$('lb').textContent=t=='f'?'Figuras, uma por linha: distância (km) e tempo de passagem. Ex.: 0,520 1:31. Pode colar de um PDF ou de uma folha.':t=='h'?'Uma linha por média: marco onde começa, média (km/h) e marco onde acaba. A linha seguinte começa onde a anterior acabou. Ex.: 12,3 36 13,0 e depois 13,0 45 14,2':'Troços, um por linha: início (km), fim (km) e média (km/h). O primeiro começa em 0. Ex.: 0,000 1,000 36. Pode colar de um PDF ou de uma folha.';
+$('ao2').hidden=true;$('dtx').hidden=true;$('ld').hidden=$('du').hidden=true;$('lt').hidden=$('dtot').hidden=true;$('hm').hidden=true}
+function kmf(m){return(m/1000).toFixed(3).replace('.',',')}
+
+function figPairs(raw){const tk=String(raw).split(/[\s;]+/).filter(Boolean);if(tk.some(x=>x.includes(':'))){const o=[];tk.forEach((x,i)=>{if(x.includes(':')&&i>0&&!tk[i-1].includes(':'))o.push(tk[i-1]+' '+x)});return o.length?o:null}
+const L=String(raw).split(/\r\n|\r|\n|\u2028|\u2029/).filter(x=>x.trim());if(L.length==1&&tk.length>2&&tk.length%2==0){const o=[];for(let i=0;i<tk.length;i+=2)o.push(tk[i]+' '+tk[i+1]);return o}return null}
+function absTri(raw){const L=String(raw).split(/\r\n|\r|\n|\u2028|\u2029/).map(l=>l.trim().split(/[\s;]+/).filter(Boolean)).filter(a=>a.length);
+const R=L.map(a=>{const o=[];a.forEach((x,i)=>{if(x.includes(':'))return;if(a[i+1]&&a[i+1].includes(':'))return;o.push(x)});return o}).filter(a=>a.length);
+const all=[].concat(...R);if(all.length<3||all.length%3||!all.every(x=>/^-?\d+(?:[.,]\d+)?$/.test(x)))return null;
+if(!(R.every(a=>a.length==3)||R.some(a=>a.length>3)))return null;
+const T=[];for(let i=0;i<all.length;i+=3)T.push(all.slice(i,i+3).map(num));
+T.sort((a,b)=>a[0]-b[0]);
+for(let i=0;i<T.length;i++){const x=T[i];if(!(x[1]>x[0]))return{err:'Troço '+(i+1)+': o fim ('+kmf(x[1]*1000)+' km) tem de ser maior que o início ('+kmf(x[0]*1000)+' km).'};
+if(!(x[2]>0))return{err:'Troço '+(i+1)+': a média tem de ser maior que zero.'};
+if(i&&Math.abs(T[i-1][1]-x[0])>1e-6)return{err:'Troço '+i+' acaba em '+kmf(T[i-1][1]*1000)+' km mas o seguinte começa em '+kmf(x[0]*1000)+' km. Veja se faltam ou sobram linhas.'}}
+const f=v=>String(v).replace('.',',');
+return{lines:T.map(x=>f(x[0])+' '+f(x[2])).concat([f(T[T.length-1][1])]),show:T.map(x=>kmf(x[0]*1000)+' '+kmf(x[1]*1000)+' '+f(x[2])).join('\n')}}
 function hms(s){s=Math.max(0,Math.round(s));const h=Math.floor(s/3600),m=Math.floor(s%3600/60);return(h?h+':':'')+String(m).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
 function durOf(r){if(r.t=='f')return Math.max(...r.r.map(a=>a[1]));if(r.t=='h')return r.du;
 let T=0,q=null;r.r.forEach((x,i)=>{if(q)T+=(x[0]-q[0])/(q[1]/3.6);q=x});return T+(r.dtot-q[0])/(q[1]/3.6)}
@@ -243,15 +260,15 @@ function absLines(raw){const k=$('au').value=='k'?1000:1,mf=$('aoo').value=='m',
 if(L2.length==2){const A=nums(L2[0]),B=nums(L2[1]);if(Math.max(A.length,B.length)>=3&&Math.min(A.length,B.length)>=2&&Math.abs(A.length-B.length)<=1){const D=mf?B:A,M=mf?A:B,o=[];for(let i=0;i<M.length;i++)o.push((D[i]*k)+' '+M[i]);if(D.length>M.length)o.push(String(D[M.length]*k));return o}}
 return L2}
 function rowOf(l,t){if(t=='h'){const a=l.split(/[\s;]+/);if(a.length<3)return null;const x=[num(a[0]),num(a[1]),num(a[2])];return x.every(v=>!isNaN(v))?x:null}
-if(t=='a'){const a=nums(l);if(a.length!=2)return null;return $('aoo').value=='m'?[a[1]*($('au').value=='k'?1000:1),a[0]]:[a[0]*($('au').value=='k'?1000:1),a[1]]}
-const a=l.split(/[\s;,]+/);if(a.length<2)return null;const x=t=='f'?[Number(a[0]),tp(a[1])]:[tp(a[0]),tp(a[1])];return x.every(v=>!isNaN(v))?x:null}
+if(t=='a'){const a=nums(l);if(a.length!=2)return null;const K=$('au').value=='k'?1000:1,R=v=>Math.round(v*K*1000)/1000;return $('aoo').value=='m'?[R(a[1]),a[0]]:[R(a[0]),a[1]]}
+const a=l.split(/[\s;]+/).length>1?l.split(/[\s;]+/):l.split(/[;,]+/);if(a.length<2)return null;const x=t=='f'?[Math.round(num(a[0])*($('au').value=='k'?1000:1)*1000)/1000,tp(a[1])]:[tp(a[0]),tp(a[1])];return x.every(v=>!isNaN(v))?x:null}
 function add(){err('');const t=$('tp').value,hi=ck($('hi').value);
 if(!hi){err('Hora de início inválida. Use hh:mm:ss, por exemplo 10:30:00.');return}
-let LN=$('dt').value.split('\n').map(x=>x.trim()).filter(Boolean);if(t=='a')LN=absLines(LN);let r=[];
+let LN=$('dt').value.split(/\r\n|\r|\n|\u2028|\u2029/).map(x=>x.trim()).filter(Boolean);if(t=='f'){const P=figPairs($('dt').value);if(P)LN=P}if(t=='f'&&LN.length){const z=rowOf(LN[0],'f');if(z&&z[0]==0&&z[1]==0)LN.shift()}if(t=='a'){const A=absTri($('dt').value);if(A&&A.err){err(A.err);return}LN=A?A.lines:absLines(LN)}let r=[];
 if(!LN.length){err('Falta preencher o quadro.');return}
 let endL=null;
 for(let i=0;i<LN.length;i++){const x=rowOf(LN[i],t);
-if(!x&&t=='a'&&i==LN.length-1&&i>=1&&nums(LN[i]).length==1){endL=nums(LN[i])[0]*($('au').value=='k'?1000:1);continue}
+if(!x&&t=='a'&&i==LN.length-1&&i>=1&&nums(LN[i]).length==1){endL=Math.round(nums(LN[i])[0]*($('au').value=='k'?1000:1)*1000)/1000;continue}
 if(!x){err('Linha '+(i+1)+' ("'+LN[i]+'"): não percebi. Escreva dois valores separados por espaço.');return}
 if(t=='h'){const km=v=>Math.abs(v*10-Math.round(v*10))<1e-6;
 if(x[1]<=0){err('Linha '+(i+1)+': a média tem de ser maior que zero.');return}
@@ -275,10 +292,25 @@ const o={t,hi,r,du:du>0?du:600,mi,sen,dtot};if(qh)o.q=qh;if(ei>=0&&seq[ei].lk)o.
 const ix=ei>=0?ei:seq.length;if(ei>=0)seq[ei]=o;else seq.push(o);
 if(ix>0&&lkT(seq[ix-1])!==null){const c=hAdd(seq[ix-1].hi,lkT(seq[ix-1]));if(ei<0)o.hi=c;else if(c!=hi)o.man=true}
 cancelEdit();save();show()}
-function cancelEdit(){ei=-1;$('ab').textContent='Adicionar à sequência';$('cb').hidden=true;$('dt').value='';err('');nowDef()}
+
+let dtL=null,dtR=null;
+function dtShow(){const b=$('dtx');if(!dtR){b.hidden=true;return}b.hidden=false;b.innerHTML='Colou duas tabelas lado a lado. Está a ver a da <b>'+dtSide+'</b>. <button class="s" type="button" onclick="dtSwap()">Trocar para a da '+(dtSide=='esquerda'?'direita':'esquerda')+'</button>'}
+let dtSide='esquerda';
+function dtSwap(){const a=$('dt').value;$('dt').value=dtR;dtR=a;dtSide=dtSide=='esquerda'?'direita':'esquerda';dtShow()}
+$('dt').addEventListener('input',()=>{if(dtR&&!$('dt').value.trim()){dtR=null;dtShow()}});
+$('dt').addEventListener('paste',e=>{const c=e.clipboardData;if(!c)return;e.preventDefault();
+let tx=c.getData('text').replace(/[\u00a0\t]+/g,' ').split(/\r\n|\r|\n|\u2028|\u2029/).map(x=>x.trim()).filter(Boolean);
+const tk=tx.map(l=>l.split(/[\s;]+/));
+if(($('tp').value=='f')&&tk.length>1&&tk.some(a=>a.length==4)&&tk.every(a=>a.length==4||a.length==2)){
+dtL=tk.map(a=>a[0]+' '+a[1]).join('\n');dtR=tk.filter(a=>a.length==4).map(a=>a[2]+' '+a[3]).join('\n');dtSide='esquerda';
+$('dt').value=dtL;[dtL,dtR]=[dtL,dtR];dtR=dtR;dtShow();return}
+dtR=null;dtShow();const d=$('dt'),a=d.selectionStart,b=d.selectionEnd;let t=tx.join('\n');const ty=$('tp').value;
+if(ty=='f'){const P=figPairs(t);if(P)t=P.join('\n')}else if(ty=='a'){const A=absTri(t);if(A&&A.show)t=A.show}
+d.setRangeText(t,a,b,'end')});
+function cancelEdit(){dtR=null;dtShow();ei=-1;$('ab').textContent='Adicionar à sequência';$('cb').hidden=true;$('dt').value='';err('');nowDef()}
 function nowDef(){const d=new Date(Date.now()+60000);$('hi').value=[d.getHours(),d.getMinutes(),0].map(v=>String(v).padStart(2,'0')).join(':')}
-function edit(i){const x=seq[i];ei=i;$('tp').value=x.t;lab();$('au').value='m';$('aoo').value='d';$('hi').value=x.hi;
-$('dt').value=x.t=='f'?x.r.map(a=>a[0]+' '+hms(a[1])).join('\n'):x.t=='h'?(x.q?x.q.map(a=>a.map(v=>String(v).replace('.',',')).join(' ')).join('\n'):''):x.r.map(a=>a[0]+' '+String(a[1]).replace('.',',')).join('\n')+(x.t=='a'&&x.dtot?'\n'+x.dtot:'');
+function edit(i){const x=seq[i];ei=i;$('tp').value=x.t;lab();$('au').value='k';$('aoo').value='d';$('hi').value=x.hi;
+$('dt').value=x.t=='f'?x.r.map(a=>kmf(a[0])+' '+hms(a[1])).join('\n'):x.t=='h'?(x.q?x.q.map(a=>a.map(v=>String(v).replace('.',',')).join(' ')).join('\n'):''):x.r.map((a,i)=>kmf(a[0])+' '+kmf(i<x.r.length-1?x.r[i+1][0]:x.dtot)+' '+String(a[1]).replace('.',',')).join('\n');
 $('du').value=hms(x.du);if(x.t=='h'){$('mi').value=String(x.mi==null?0:x.mi).replace('.',',');$('sen').value=x.sen||'c'}
 if(x.t=='a')$('dtot').value=x.dtot||'';
 $('ab').textContent='Guardar alterações da regularidade '+(i+1);$('cb').hidden=false;err('');scrollTo(0,0)}
@@ -306,24 +338,24 @@ const sv0=()=>{try{localStorage.setItem('lk0',JSON.stringify(lk0))}catch(e){}per
 if(!ds&&!ts){lk0=null;err2('');sv0();show();return}
 if(!ds||!ts)return;
 const d=num(ds),t=tp(ts);
-if(isNaN(d)||isNaN(t)||t<=0||d<=0){err2('Ligação da partida: escreva a distância em metros e o tempo, por exemplo 4200 e 8:00.');show();return}
-err2('');lk0={dist:d,tempo:t};sv0();show()}
+if(isNaN(d)||isNaN(t)||t<=0||d<=0){err2('Ligação da partida: escreva a distância em quilómetros e o tempo, por exemplo 4,200 e 8:00.');show();return}
+err2('');lk0={dist:Math.round(d*1000),tempo:t};sv0();show()}
 function setLk(i,el){const inp=el.parentNode.querySelectorAll('input'),ds=inp[0].value.trim(),ts=inp[1].value.trim();
 if(!ds&&!ts){delete seq[i].lk;delete seq[i].z;err2('');save();show();return}
 const e=dEnd(seq[i]);
-if(ds&&(num(ds)===0||num(ds)===e)){delete seq[i].lk;seq[i].z=true;err2('');save();show();return}
+if(ds&&(Math.round(num(ds)*1000)===0||Math.round(num(ds)*1000)===e)){delete seq[i].lk;seq[i].z=true;err2('');save();show();return}
 if(!ds||!ts)return;
-const d=num(ds),t=tp(ts);
-if(isNaN(d)||isNaN(t)||t<=0){err2('Ligação após a regularidade '+(i+1)+': escreva a distância final em metros e o tempo, por exemplo 180 ou 3:00.');show();return}
+const d=Math.round(num(ds)*1000),t=tp(ts);
+if(isNaN(d)||isNaN(t)||t<=0){err2('Ligação após a regularidade '+(i+1)+': escreva a distância final em quilómetros e o tempo, por exemplo 0,180 e 3:00.');show();return}
 const du_=durOf(seq[i]);if(t<=du_){err2('Ligação após a regularidade '+(i+1)+': o tempo inclui a regularidade, que dura '+hms(du_)+'. Escreva um tempo maior.');show();return}
-if(d<=e){err2('Ligação após a regularidade '+(i+1)+': a distância final ('+d+' m) tem de ser maior que o fim da regularidade ('+e+' m).');show();return}
+if(d<=e){err2('Ligação após a regularidade '+(i+1)+': a distância final ('+kmf(d)+' km) tem de ser maior que o fim da regularidade ('+kmf(e)+' km).');show();return}
 err2('');delete seq[i].z;seq[i].lk={dist:d,tempo:t};save();show()}
 function fimH(x){try{const d=durOf(x);return d>0?hAdd(x.hi,d):''}catch(e){return''}}
 function show(){recalc();
 const rn=$('rn0');if(rn)rn.value=(rid&&RL[rid])?RL[rid].name||'':'';if(!$('rlist').hidden)renderRL();
 const hh=$('h0');if(hh){hh.value=seq.length?hAdd(seq[0].hi,-(lk0?lk0.tempo:0)):'';hh.disabled=!seq.length;
 $('h0n').textContent=!seq.length?'Adicione uma regularidade para definir a hora de início.':lk0?'A regularidade 1 começa às '+seq[0].hi+' (partida + ligação de '+hms(lk0.tempo)+').':'Sem ligação da partida: a regularidade 1 começa a esta hora.'}
-$('ls').innerHTML=seq.length?`<div class="lkr"><div class="lt">↓ Ligação da partida até à regularidade 1</div><div class="ct"><input placeholder="Dist. (m)" inputmode="decimal" value="${lk0?lk0.dist:''}" onchange="setLk0(this)"><input placeholder="Tempo mm:ss" value="${lk0?hms(lk0.tempo):''}" onchange="setLk0(this)"></div></div>`+seq.map((x,i)=>{const nl=(x.r||[]).length,f=fimH(x);return `<div class="rg"><div class="h"><span class="n">${i+1} · ${NM[x.t]}${x.man?'<span class="tg">hora fixa</span>':''}</span><span class="t">${nl} ${nl==1?'linha':'linhas'}</span></div><div class="tm">${x.hi}${f?' → '+f:''}</div><div class="ct"><div class="f a"><span>Mover (± min)</span><input class="mn" placeholder="± min" inputmode="decimal" aria-label="Minutos a somar ou subtrair" onchange="shiftMin(${i},this)"></div><div class="f"><span>Hora de início</span><input value="${x.hi}" aria-label="Hora de início" title="${i&&lkT(seq[i-1])!==null?(x.man?'Hora fixa, escrita por si. Apague para voltar ao cálculo pela ligação.':'Calculada pela ligação. Escreva outra hora para a fixar.'):''}" onchange="setHi(${i},this.value)"></div></div><div class="ac">${$('bk').hidden?`<button class="ok" onclick="go(${i})">Iniciar</button>`:''}<button class="ed" onclick="edit(${i})">Editar</button><button class="dg" onclick="rem(${i})">Remover</button></div></div>`+`<div class="lkr"><div class="lt">↓ ${i<seq.length-1?'Ligação até à regularidade '+(i+2):'Ligação final até ao controlo horário'}${fimTxt(x,1)}${x.z?' · ligação 0: a seguinte começa sozinha ao chegar à distância final':''}</div><div class="ct"><input placeholder="Dist. final (m)" inputmode="decimal" value="${x.lk?x.lk.dist:x.z?'0':''}" onchange="setLk(${i},this)"><input placeholder="Tempo mm:ss" value="${x.lk?hms(x.lk.tempo):x.z?'0':''}" onchange="setLk(${i},this)"></div></div>`}).join(''):'Ainda vazia.'}
+$('ls').innerHTML=seq.length?`<div class="lkr"><div class="lt">↓ Ligação da partida até à regularidade 1</div><div class="ct"><input placeholder="Dist. (km)" inputmode="decimal" value="${lk0?kmf(lk0.dist):''}" onchange="setLk0(this)"><input placeholder="Tempo mm:ss" value="${lk0?hms(lk0.tempo):''}" onchange="setLk0(this)"></div></div>`+seq.map((x,i)=>{const nl=(x.r||[]).length,f=fimH(x);return `<div class="rg"><div class="h"><span class="n">${i+1} · ${NM[x.t]}${x.man?'<span class="tg">hora fixa</span>':''}</span><span class="t">${nl} ${nl==1?'linha':'linhas'}</span></div><div class="tm">${x.hi}${f?' → '+f:''}</div><div class="ct"><div class="f a"><span>Mover (± min)</span><input class="mn" placeholder="± min" inputmode="decimal" aria-label="Minutos a somar ou subtrair" onchange="shiftMin(${i},this)"></div><div class="f"><span>Hora de início</span><input value="${x.hi}" aria-label="Hora de início" title="${i&&lkT(seq[i-1])!==null?(x.man?'Hora fixa, escrita por si. Apague para voltar ao cálculo pela ligação.':'Calculada pela ligação. Escreva outra hora para a fixar.'):''}" onchange="setHi(${i},this.value)"></div></div><div class="ac">${$('bk').hidden?`<button class="ok" onclick="go(${i})">Iniciar</button>`:''}<button class="ed" onclick="edit(${i})">Editar</button><button class="dg" onclick="rem(${i})">Remover</button></div></div>`+`<div class="lkr"><div class="lt">↓ ${i<seq.length-1?'Ligação até à regularidade '+(i+2):'Ligação final até ao controlo horário'}${fimTxt(x,1)}${x.z?' · ligação 0: a seguinte começa sozinha ao chegar à distância final':''}</div><div class="ct"><input placeholder="Dist. final (km)" inputmode="decimal" value="${x.lk?kmf(x.lk.dist):x.z?'0':''}" onchange="setLk(${i},this)"><input placeholder="Tempo mm:ss" value="${x.lk?hms(x.lk.tempo):x.z?'0':''}" onchange="setLk(${i},this)"></div></div>`}).join(''):'Ainda vazia.'}
 
 function build(r){const e=[],p=[];P=[[0,0]];AB=null;PT=[];HT=[];
 if(r.t=='f'){const f=r.r.map(x=>[x[1],x[0]]).sort((a,b)=>a[0]-b[0]);let pv=-99;
@@ -500,7 +532,7 @@ const nx=P.find(x=>x[0]>eI&&ps.includes(x[0]));
 $('rs').innerHTML=nx&&el>=0?Math.max(0,(nx[1]-d)/(nx[0]-eI)*3.6).toFixed(0)+'<small>km/h</small>':'—';
 const g=tgt(el,d);if(g){$('us').textContent=g.l;$('us').disabled=false}else{let nx=null;for(let i=pk+1;i<PT.length;i++){const q=PT[i];if(pw>0?el<=q.T+pw:q.D>d-15){nx=q;break}}$('us').textContent=nx?nx.l:(r.t=='h'?'Sem mais marcos':'Sem mais figuras');$('us').disabled=true}}
 if(!lk){if(el<0)$('rc').style.color=-el<=5?'#ffd60a':'';else if(el<1)$('rc').style.color='#2ee66b'}
-$('rd').innerHTML='<span class="dl">'+(fz?'Distância congelada':'Distância')+'</span> '+Math.round(d)+' m';$('rd').style.color=fz?'#7fd1ff':'';
+$('rd').innerHTML='<span class="dl">'+(fz?'Distância congelada':'Distância')+'</span> '+kmf(Math.round(d))+' km';$('rd').style.color=fz?'#7fd1ff':'';
 $('fz').textContent=fz?'Soltar distância':'Congelar distância';siUp();afUpd();if(Date.now()-wkT>15000&&(!wl||wl.released))keepAwake();
 const dm=d-ideal(eI),ds=v>0?dm/v:0,ok=Math.abs(dm)<=1,ad=dm>0,col=el<0?'#555':ok?'#ffd60a':ad?'#ff453a':'#2ee66b',sg=ad?'+':'−';
 $('fr').style.borderColor=col;$('fs').style.color=col;$('fm').style.color=col;$('fq').style.color=col;
@@ -555,18 +587,18 @@ function stop(){$('bk').hidden=true;$('go').hidden=false;show();$('tb').dataset.
 
 let ta0=0,ati=null;
 function afM(){return src!='s'?gA:(Date.now()-ta0)/1000*(Math.max(0,sv)/3.6)}
-function afIni(){sv=+$('sv').value||0;src=$('fo').value;if(src!='s'){if(!gps()&&!(src=='r'&&rbLive())){$('ar2').textContent=gS;return}gA=0;afOn=true}$('afc').hidden=true;afP=null;ta0=Date.now();$('a1').disabled=true;$('a2').disabled=false;$('ar2').textContent='';clearInterval(ati);ati=setInterval(()=>{$('am').textContent=Math.round(afM())+' m'},200)}
+function afIni(){sv=+$('sv').value||0;src=$('fo').value;if(src!='s'){if(!gps()&&!(src=='r'&&rbLive())){$('ar2').textContent=gS;return}gA=0;afOn=true}$('afc').hidden=true;afP=null;ta0=Date.now();$('a1').disabled=true;$('a2').disabled=false;$('ar2').textContent='';clearInterval(ati);ati=setInterval(()=>{$('am').textContent=kmf(Math.round(afM()))+' km'},200)}
 function afSet(){af=num($('afv').value)||0;try{localStorage.setItem('af',String(af))}catch(e){}}
-function afFim(){afOn=false;clearInterval(ati);const M=afM(),O=num($('ao').value);$('a1').disabled=false;$('a2').disabled=true;
+function afFim(){afOn=false;clearInterval(ati);const M=afM(),O=Math.round(num($('ao').value)*1000);$('a1').disabled=false;$('a2').disabled=true;
 if(!(M>50)||!(O>0)){$('ar2').textContent='Medição demasiado curta ou distância oficial inválida.';return}
 const f=(O-M)/M*1000;afP={M:Math.round(M),O,f:Math.round(f*10)/10};
-$('afct').innerHTML='Medido <b>'+afP.M+' m</b> para <b>'+O+' m</b> oficiais.<br>O equipamento mede '+Math.abs(f).toFixed(1).replace('.',',')+' m a '+(f>0?'menos':'mais')+' por quilómetro.<br>Fator novo: <b>'+f1(afP.f)+' m/km</b> (agora: '+f1(af)+').';$('afc').hidden=false;$('ar2').textContent=''}
+$('afct').innerHTML='Medido <b>'+kmf(afP.M)+' km</b> para <b>'+kmf(O)+' km</b> oficiais.<br>O equipamento mede '+Math.abs(f).toFixed(1).replace('.',',')+' m a '+(f>0?'menos':'mais')+' por quilómetro.<br>Fator novo: <b>'+f1(afP.f)+' m/km</b> (agora: '+f1(af)+').';$('afc').hidden=false;$('ar2').textContent=''}
 function afSave(){if(!afP)return;const p=af;$('afv').value=afP.f.toFixed(1).replace('.',',');afSet();afhAdd('Aferição no troço',{f:afP.f,M:afP.M,O:afP.O,prev:p});afP=null;$('afc').hidden=true;$('ar2').textContent='Fator '+f1(af)+' m/km guardado.'}
 function afDisc(){afP=null;$('afc').hidden=true;$('ar2').textContent='Descartado. Fica o fator anterior ('+f1(af)+' m/km).'}
 function afhAdd(kind,o){AFH.unshift(Object.assign({t:Date.now(),kind},o));AFH=AFH.slice(0,10);try{localStorage.setItem('afh',JSON.stringify(AFH))}catch(e){}afhRender()}
 function esc(x){return String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function fmtD(t){const d=new Date(t);return d.toLocaleDateString('pt-PT')+' '+d.toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'})}
-function afhHtml(){return AFH.length?AFH.map((e,i)=>`<div class="lr"><div><b>${f1(e.f)} m/km</b> · ${fmtD(e.t)}<div class="m2">${esc(e.kind)}${e.M?': '+e.M+' m medidos de '+e.O+' m':''}${e.prev!=null?' · antes '+f1(e.prev):''}</div></div><button class="s" onclick="afUse(${i})">Usar</button></div>`).join(''):'<div class="mut">Ainda sem aferições guardadas.</div>'}
+function afhHtml(){return AFH.length?AFH.map((e,i)=>`<div class="lr"><div><b>${f1(e.f)} m/km</b> · ${fmtD(e.t)}<div class="m2">${esc(e.kind)}${e.M?': '+kmf(e.M)+' km medidos de '+kmf(e.O)+' km':''}${e.prev!=null?' · antes '+f1(e.prev):''}</div></div><button class="s" onclick="afUse(${i})">Usar</button></div>`).join(''):'<div class="mut">Ainda sem aferições guardadas.</div>'}
 function afhRender(){if(!$('afh').hidden)$('afh').innerHTML=afhHtml();if(!$('afh2').hidden)$('afh2').innerHTML=afhHtml()}
 function toggleAfh(){const e=$('afh');e.hidden=!e.hidden;afhRender()}
 function toggleAfh2(){const e=$('afh2');e.hidden=!e.hidden;afhRender()}
@@ -620,7 +652,7 @@ rd.readAsText(f)}
 
 /* ---------- Racebox (Bluetooth) ---------- */
 function rbSet(m){rb.msg=m;rbPaint()}
-function rbPaint(){const b=$('rbb');if(!b)return;b.textContent=rb.on?'Desligar Racebox':rb.want?'Parar de ligar':'Ligar Racebox';
+function rbPaint(){const b=$('rbb');if(!b)return;b.textContent=rb.on?'✓ Racebox ligada · Desligar':rb.want?'A ligar… (parar)':'Ligar Racebox';b.className=rb.on?'gr':rb.want?'s':'';
 let t;if(rb.on){t=rbLive()?'Racebox ligada, com sinal · '+Math.round(rb.v*3.6)+' km/h · '+rb.sv+' satélites · precisão ±'+rb.acc.toFixed(1).replace('.',',')+' m'+(rb.bat!=null&&/mini/i.test(rb.model||'')?' · bateria '+rb.bat+' %'+(rb.chg?' (a carregar)':''):''):'Racebox ligada, à espera do sinal GPS ('+rb.sv+' satélites). Ponha-a ao ar livre.'}else t=rb.msg||'Racebox não ligada.';
 if($('rbs').textContent!==t)$('rbs').textContent=t}
 function rbBtn(){if(rb.on||rb.want)rbOff();else rbPick()}
