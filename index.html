@@ -63,12 +63,16 @@ button:disabled{opacity:.4}
 #vs{position:fixed;left:0;right:0;bottom:0;font-size:11px;padding:3px 8px;background:var(--bg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;color:var(--mut)}
 body{padding-bottom:26px}
 
-#setup{font-size:18px}
+#setup{font-size:18px;zoom:var(--zs,1)}
+#setup .mut,#setup label,.rg .t,.ct .f span,.lkr .lt,.lr .m2{color:#b9c2ce}
+.rg{color:var(--fg)}.ct .f span{text-align:left}
+#rd{white-space:nowrap;overflow:hidden;font-variant-numeric:tabular-nums;height:1.05em}
 #setup label{font-size:15px}
 #setup input,#setup select,#setup textarea,#setup button{font-size:18px}
 .card{border:1px solid #232a33}
 .card h1{font-size:15px;color:var(--ac);text-transform:uppercase;letter-spacing:.8px;margin:0 0 6px}
-#setup>h1{font-size:26px;margin:4px 0 12px;font-weight:800}
+.hd{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:4px 0 12px}.hd h1{font-size:26px;margin:0;font-weight:800}
+.zs{display:flex;gap:6px}.zs button{width:auto;margin:0;padding:6px 14px;font-size:17px;font-weight:800}
 .r2{display:flex;gap:8px}.r2 button{flex:1;min-width:0;margin-top:10px;padding:12px 6px}
 .rg{background:#1b2028;border:1px solid #2a313b;border-radius:12px;padding:12px;margin:10px 0}
 .rg .h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
@@ -98,7 +102,7 @@ button.dg2{background:#c62828;color:#fff}
 
 <div id="setup">
 <div id="bk" hidden style="position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:8px"><button onclick="voltar()">Voltar à prova</button><button class="s" id="tb" onclick="endTap()">Terminar prova</button></div>
-<h1>Preparar rally <small style="font-size:15px;color:var(--mut);font-weight:400">versão 33</small></h1>
+<div class="hd"><h1>Preparar rally <small style="font-size:15px;color:var(--mut);font-weight:400">versão 34</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
 <div class="card"><h1>Rally</h1>
 <label style="margin-top:0">Nome do rally</label><input id="rn0" placeholder="Ex.: Rally de Fafe" aria-label="Nome do rally" onchange="setRName(this.value)">
 <label>Hora de início do rally (partida)</label><input id="h0" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0n" style="text-align:left;font-size:15px;margin-top:4px"></div>
@@ -203,6 +207,11 @@ try{seq=JSON.parse(localStorage.getItem('seq')||'[]')}catch(e){}
 try{L=JSON.parse(localStorage.getItem('log')||'[]');lid=L.reduce((m,e)=>Math.max(m,e.id),0)}catch(e){L=[]}
 try{const a=localStorage.getItem('af');if(a!==null){af=num(a)||0;$('afv').value=String(af).replace('.',',')}}catch(e){}
 const NM={f:'Figura',h:'Hectométrica',a:'Absoluta'};
+let zsI=1;const ZS=[.85,1,1.15,1.3];
+try{const g=localStorage.getItem('zs');if(g!==null&&+g>=0&&+g<=3)zsI=+g}catch(e){}
+function applyZ(){document.documentElement.style.setProperty('--zs',ZS[zsI])}
+function setZ(d){zsI=Math.max(0,Math.min(3,zsI+d));try{localStorage.setItem('zs',String(zsI))}catch(e){}applyZ()}
+applyZ();
 let RL={},rid='',AFH=[],dStart=0,lastCorrD=0,afP=null,cfKind='',rbWas=false,rbDown=false;
 try{RL=JSON.parse(localStorage.getItem('rl')||'{}')||{}}catch(e){RL={}}
 try{rid=localStorage.getItem('rid')||''}catch(e){}
@@ -446,7 +455,9 @@ $('pq').textContent=late<0?'A regularidade '+n+' ('+NM[r.t]+') começa às '+r.h
 $('pb').hidden=!(late<lim);$('pn').hidden=late<lim;$('pb').textContent=late<0?'Confirmar: arranca às '+r.hi:'Dar início: tempo da hora oficial, km 0 agora (atraso de '+late+' s)'}
 function ask(r,sch,n,lim){if($('run').hidden&&!$('setup').hidden&&!$('bk').hidden)voltar();pqt(r,sch,n,lim);$('pr').hidden=false;if(sm.includes('v'))say('Dar início à regularidade '+n+'?');beep(1200,.3)}
 function startAny(){if(lk){cur=lk.nx;init()}start()}
-function startNow(){if(lk){cur=lk.nx;init()}start(true)}
+function startNow(){if(lk){cur=lk.nx;init()}
+const dl=Math.round((Date.now()-sched)/1000);if(dl>0&&seq[cur]){shiftBy(cur,dl);save();sched=msOf(cur);toast('Horas seguintes ajustadas: +'+dl+' s',3500)}
+start(true)}
 function skipP(){cur=lk?lk.nx+1:cur+1;init()}
 function enterLink(r){const nx=seq[cur+1],fin=!nx;
 lkSched=fin?msOf(cur)+r.lk.tempo*1000:msOf(cur+1);
@@ -489,7 +500,7 @@ const nx=P.find(x=>x[0]>eI&&ps.includes(x[0]));
 $('rs').innerHTML=nx&&el>=0?Math.max(0,(nx[1]-d)/(nx[0]-eI)*3.6).toFixed(0)+'<small>km/h</small>':'—';
 const g=tgt(el,d);if(g){$('us').textContent=g.l;$('us').disabled=false}else{let nx=null;for(let i=pk+1;i<PT.length;i++){const q=PT[i];if(pw>0?el<=q.T+pw:q.D>d-15){nx=q;break}}$('us').textContent=nx?nx.l:(r.t=='h'?'Sem mais marcos':'Sem mais figuras');$('us').disabled=true}}
 if(!lk){if(el<0)$('rc').style.color=-el<=5?'#ffd60a':'';else if(el<1)$('rc').style.color='#2ee66b'}
-$('rd').innerHTML='<span class="dl">Distância</span> '+Math.round(d)+' m'+(src!='s'?' <span class="dl">'+dst()+'</span>':'')+(fz?' <span class="dl">congelada</span>':'');$('rd').style.color=fz?'#7fd1ff':'';
+$('rd').innerHTML='<span class="dl">'+(fz?'Distância congelada':'Distância')+'</span> '+Math.round(d)+' m';$('rd').style.color=fz?'#7fd1ff':'';
 $('fz').textContent=fz?'Soltar distância':'Congelar distância';siUp();afUpd();if(Date.now()-wkT>15000&&(!wl||wl.released))keepAwake();
 const dm=d-ideal(eI),ds=v>0?dm/v:0,ok=Math.abs(dm)<=1,ad=dm>0,col=el<0?'#555':ok?'#ffd60a':ad?'#ff453a':'#2ee66b',sg=ad?'+':'−';
 $('fr').style.borderColor=col;$('fs').style.color=col;$('fm').style.color=col;$('fq').style.color=col;
@@ -540,7 +551,7 @@ else if(st=='wait'){if(seq[cur])rebuild(seq[cur],0);else{cur=seq.length;init()}}
 else if(run&&!lk){if(!seq[cur]){cur=seq.length;init()}else rebuild(seq[cur],d0)}}
 function voltar(){refresh();$('setup').hidden=true;$('run').hidden=false;$('bk').hidden=true;clearTimeout(tbT);$('tb').textContent='Terminar prova'}
 function endTap(){if($('tb').dataset.a){clearTimeout(tbT);$('tb').dataset.a='';stop();return}$('tb').dataset.a='1';$('tb').textContent='Toque de novo para terminar';tbT=setTimeout(()=>{$('tb').dataset.a='';$('tb').textContent='Terminar prova'},4000)}
-function stop(){$('bk').hidden=true;$('go').hidden=false;show();$('tb').dataset.a='';$('tb').textContent='Terminar prova';gOff();lk=null;clearInterval(timer);try{speechSynthesis.cancel()}catch(e){}try{wl&&wl.release()}catch(e){}$('run').hidden=true;$('setup').hidden=false;$('pr').hidden=true;$('sg').hidden=true;$('afp').hidden=true;$('afv').value=String(af).replace('.',',');if($('fo').value!='s')testG()}
+function stop(){$('bk').hidden=true;$('go').hidden=false;show();$('tb').dataset.a='';$('tb').textContent='Terminar prova';gOff();lk=null;clearInterval(timer);try{speechSynthesis.cancel()}catch(e){}$('run').hidden=true;$('setup').hidden=false;$('pr').hidden=true;$('sg').hidden=true;$('afp').hidden=true;$('afv').value=String(af).replace('.',',');if($('fo').value!='s')testG()}
 
 let ta0=0,ati=null;
 function afM(){return src!='s'?gA:(Date.now()-ta0)/1000*(Math.max(0,sv)/3.6)}
@@ -626,6 +637,8 @@ rb.on=true;rb.fails=0;$('fo').value='r';rb.msg='';if(cfKind=='rb')cfClose();toas
 catch(e){rb.on=false;rb.fails++;if(e&&(e.name=='NotAllowedError'||e.name=='SecurityError')){rb.want=false;rbSet('Sem permissão para ligar. Carregue em «Ligar Racebox» e escolha o aparelho.')}else{rbSet(rb.want?'Não consegui ligar. A tentar de novo…':'Não consegui ligar.');rbRetry()}}
 rb.busy=false}
 function rbRetry(){clearTimeout(rb.rt);if(!rb.want)return;rb.rt=setTimeout(()=>{if(rb.want&&!rb.on)rbLink()},Math.min(1500*Math.pow(2,Math.max(0,rb.fails-1)),15000))}
+function rbKick(){if(!rb.dev||!rb.want||rb.busy)return;if(rb.on&&Date.now()-rb.t<3000)return;clearTimeout(rb.rt);rb.fails=0;
+if(rb.on){rb.on=false;rb.good=0;try{rb.dev.gatt.disconnect()}catch(e){}setTimeout(rbLink,400)}else rbLink()}
 function rbDrop(){rb.on=false;rb.good=0;rb.pv=null;rb.buf=null;if(rb.want){rb.msg='Ligação perdida. A voltar a ligar…';rbRetry()}rbPaint()}
 function rbOff(){rb.want=false;clearTimeout(rb.rt);try{if(rb.dev&&rb.dev.gatt&&rb.dev.gatt.connected)rb.dev.gatt.disconnect()}catch(e){}rb.on=false;rb.good=0;rb.msg='Racebox desligada.';try{localStorage.removeItem('rbid')}catch(e){}if(!prova()&&$('fo').value=='r')$('fo').value='g';rbPaint()}
 function rbOn(ev){const v=ev.target.value,d=new Uint8Array(v.buffer,v.byteOffset,v.byteLength);
@@ -653,12 +666,13 @@ setTimeout(rbBoot,600)}
 function toast(m,ms){const t=$('toast');t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>{t.hidden=true},ms||2500)}
 function prova(){return st!='done'&&(!$('run').hidden||!$('bk').hidden)}
 async function keepAwake(){wkT=Date.now();try{if(!navigator.wakeLock)throw 0;if(wl&&!wl.released){wkOk=true;return}
-wl=await navigator.wakeLock.request('screen');wkOk=true;wl.addEventListener('release',()=>{if(prova())setTimeout(keepAwake,300)})}catch(e){wkOk=false}}
+wl=await navigator.wakeLock.request('screen');wkOk=true;wl.addEventListener('release',()=>{if(document.visibilityState=='visible')setTimeout(keepAwake,300)})}catch(e){wkOk=false}}
 addEventListener('popstate',()=>{if(st=='done'||($('run').hidden&&$('bk').hidden))return;const n=Date.now();if(n-bkT<3000){bkT=0;history.back()}else{bkT=n;try{history.pushState({r:1},'')}catch(e){}toast('Carregue outra vez em retroceder para sair da prova')}});
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState=='visible'&&prova())keepAwake()});
-addEventListener('pointerdown',()=>{if(prova()&&(!wl||wl.released)&&Date.now()-wkT>2000)keepAwake()},true);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState=='visible'){keepAwake();rbKick()}});
+addEventListener('pageshow',e=>{if(e.persisted){keepAwake();rbKick()}});
+addEventListener('pointerdown',()=>{if((!wl||wl.released)&&Date.now()-wkT>2000)keepAwake()},true);
 addEventListener('error',e=>{try{$('vs').textContent='Erro: '+e.message}catch(_){}});
-lab();show();showLog();if($('fo').value!='s')testG();rbInit();
+lab();show();showLog();if($('fo').value!='s')testG();rbInit();keepAwake();
 if('serviceWorker' in navigator&&/^https?:/.test(location.protocol)){const had=!!navigator.serviceWorker.controller;
 navigator.serviceWorker.register('sw.js').catch(()=>{});
 navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had&&$('run').hidden&&$('bk').hidden&&!window.__rl){window.__rl=1;location.reload()}})}
