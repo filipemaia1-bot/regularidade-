@@ -101,25 +101,53 @@ button.gr{background:#1c7c3a;color:#fff;font-weight:800}
 #run .ar input{flex:1;min-width:0;height:100%;font-size:min(6vw,3.4dvh);padding:0 10px}
 #run .ar button{flex:0 0 34%;margin:0;height:100%;padding:0;font-size:min(6vw,3.4dvh)}
 @media (min-height:620px){#rd{font-size:min(15vw,8.5vh);font-size:min(15vw,8.5dvh)}#run .ar{min-height:48px}}
+.mc{display:block;text-align:left;background:#1d2229;color:var(--fg);border:1px solid #333a44;padding:16px;margin:0 0 10px;font-size:19px;font-weight:700}.mc span{display:block;font-weight:400;font-size:14px;color:var(--mut);margin-top:3px}
+.pgh{position:sticky;top:0;z-index:5;background:var(--bg);padding:6px 0}.pgh button{margin:0}
+#go{font-size:21px;padding:18px}
+#run.pilot{height:100vh;height:100dvh}
+#run.pilot .bar,#run.pilot #us,#run.pilot .adj,#run.pilot .fb,#run.pilot .ar{display:none!important}
+#run.pilot .frame{flex:1;display:flex;flex-direction:column;justify-content:center}
+#run.pilot .two div{font-size:min(19vw,110px)}#run.pilot .st{font-size:min(7vw,38px)}
+#pex{position:fixed;right:6px;top:6px;z-index:20;width:auto;padding:4px 12px;margin:0;background:#2a3038;color:var(--fg);opacity:.5}
 </style></head><body>
 
 <div id="setup">
 <div id="bk" hidden style="position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:8px"><button onclick="voltar()">Voltar à prova</button><button class="s" id="tb" onclick="endTap()">Terminar prova</button></div>
-<div class="hd"><h1>Preparar rally <small style="font-size:15px;color:var(--mut);font-weight:400">versão 43</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
-<div class="card"><h1>Rally</h1>
+<div class="hd"><h1>Preparar rally <small style="font-size:15px;color:var(--mut);font-weight:400">versão 44</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
+<div id="pm"><div class="card"><h1>Rally</h1>
 <label style="margin-top:0">Nome do rally</label><input id="rn0" placeholder="Ex.: Rally de Fafe" aria-label="Nome do rally" onchange="setRName(this.value)">
 <label>Hora de início do rally (partida)</label><input id="h0" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0n" style="text-align:left;font-size:15px;margin-top:4px"></div>
-<div class="r2"><button class="s" onclick="newRally()">Novo rally (limpar tudo)</button><button class="s" onclick="toggleRL()">Os meus rallies</button></div>
-<div id="rlist" hidden style="margin-top:6px"></div>
-<div class="r2"><button class="s" onclick="expRally()">Exportar</button><button class="s" onclick="if(!$('bk').hidden){toast('Termine a prova primeiro.')}else $('imf').click()">Importar</button></div>
-<input type="file" id="imf" accept=".json,application/json" hidden onchange="impRally(this)">
-<div class="mut" id="rmsg" style="text-align:left;font-size:15px;margin-top:6px"></div></div>
-<div class="card" id="rbc"><h1>Racebox</h1>
-<div class="mut" id="rbs" style="text-align:left;font-size:16px">Racebox não ligada.</div>
-<button id="rbb" onclick="rbBtn()">Ligar Racebox</button>
-<button class="s" id="rbb2" hidden onclick="rbPick(true)">Não aparece? Mostrar todos os aparelhos</button>
-<div class="mut" style="text-align:left;font-size:15px;margin-top:6px">Feche a app do Racebox antes de ligar: o aparelho só aceita uma ligação de cada vez. Com a Racebox ligada, ela passa a ser a fonte da distância e o GPS do telemóvel fica de reserva.</div></div>
-<div class="card">
+</div>
+<div class="card"><h1>Preparar</h1>
+<button class="mc" onclick="pgOpen('af')"><b>Aferição</b><span id="sAf"></span></button>
+<button class="mc" onclick="pgOpen('ck')"><b>Relógio</b><span id="sCk"></span></button>
+<button class="mc" onclick="pgOpen('rg')"><b>Regularidades e ligações</b><span id="sRg"></span></button>
+<button class="mc" onclick="pgOpen('rb')"><b>Racebox e distância</b><span id="sRb"></span></button>
+<button class="mc" onclick="pgOpen('vz')"><b>Voz e avisos</b><span id="sVz"></span></button>
+<button class="mc" onclick="pgOpen('rl')"><b>Rallies guardados</b><span>Os meus rallies, exportar, importar, novo rally</span></button>
+<button class="mc" onclick="pgOpen('lg')"><b>Registo de correções</b><span id="sLg"></span></button>
+<button class="mc" onclick="pgOpen('pl')"><b>Modo piloto</b><span id="sPl">Espelhar o ecrã da prova noutro telemóvel</span></button>
+</div>
+<button id="go" onclick="go()">Começar prova</button>
+</div>
+<div class="pg" id="pg_af" hidden><div class="pgh"><button class="s" onclick="pgBack()">← Preparar rally</button></div><div class="card"><h1>Aferição do equipamento</h1>
+<label>Distância oficial do troço de teste (km)</label><input id="ao" inputmode="decimal" value="1,000">
+<div class="mut" id="am" style="font-size:24px;font-weight:700;margin-top:8px">0,000 km</div>
+<div class="mut" style="font-size:15px;text-align:left">Carregue em Iniciar ao passar no início do troço e em Terminar ao passar no fim.</div>
+<div style="display:flex;gap:8px"><button id="a1" onclick="afIni()">Iniciar aferição</button><button id="a2" class="s" disabled onclick="afFim()">Terminar aferição</button></div>
+<div class="mut" id="ar2" style="font-size:15px;text-align:left"></div>
+<div id="afc" hidden style="margin-top:8px;text-align:left"><div id="afct" style="font-size:18px"></div><div class="r2"><button onclick="afSave()">Guardar fator</button><button class="s" onclick="afDisc()">Descartar</button></div></div>
+<button class="s" onclick="toggleAfh()">Histórico de aferições</button><div id="afh" hidden style="margin-top:6px"></div>
+<label>Fator de aferição (metros por km; + soma, − tira)</label><input id="afv" readonly value="0" onclick="afeOpen()" style="cursor:pointer"><div class="mut" style="font-size:13px;text-align:left">Toque no valor para o alterar (pede confirmação).</div>
+<div class="mut" style="font-size:15px;text-align:left;margin-top:6px">Em casa a distância é simulada pela velocidade simulada. Com o Racebox será a distância real.</div>
+</div>
+
+</div>
+<div class="pg" id="pg_ck" hidden><div class="pgh"><button class="s" onclick="pgBack()">← Preparar rally</button></div><div class="card"><h1>Relógio</h1><div class="mut" id="ck1" style="font-size:28px;font-weight:700;font-variant-numeric:tabular-nums">--:--:--</div><div class="mut" id="ck2" style="font-size:15px;text-align:left"></div>
+<div class="adj" style="margin-top:8px"><button class="s rm" onclick="clkAdj(-100)">−0,1 s</button><button class="s gp" onclick="clkAdj(100)">+0,1 s</button></div>
+<label>Hora oficial (hh:mm:ss) para acertar sem GPS</label><div class="r2"><input id="ck3" placeholder="hh:mm:ss" inputmode="numeric" style="flex:1;min-width:0"><button onclick="clkMan()">Acertar agora</button></div><div class="mut" id="ck4" style="font-size:15px;text-align:left"></div></div>
+</div>
+<div class="pg" id="pg_rg" hidden><div class="pgh"><button class="s" onclick="pgBack()">← Preparar rally</button></div><div class="card">
 <label>Tipo de regularidade</label>
 <select id="tp" onchange="lab()"><option value="f">Figura</option><option value="h">Hectométrica</option><option value="a">Absoluta</option><option value="k">Tabelas / Hitos quilómetro</option></select>
 <label>Hora de início (hh:mm:ss)</label><input id="hi" value="10:00:00">
@@ -136,38 +164,54 @@ button.gr{background:#1c7c3a;color:#fff;font-weight:800}
 <button class="s" id="cb" hidden onclick="cancelEdit()">Cancelar edição</button>
 </div>
 
-<div class="card"><h1>Relógio</h1><div class="mut" id="ck1" style="font-size:28px;font-weight:700;font-variant-numeric:tabular-nums">--:--:--</div><div class="mut" id="ck2" style="font-size:15px;text-align:left"></div>
-<div class="adj" style="margin-top:8px"><button class="s rm" onclick="clkAdj(-100)">−0,1 s</button><button class="s gp" onclick="clkAdj(100)">+0,1 s</button></div>
-<label>Hora oficial (hh:mm:ss) para acertar sem GPS</label><div class="r2"><input id="ck3" placeholder="hh:mm:ss" inputmode="numeric" style="flex:1;min-width:0"><button onclick="clkMan()">Acertar agora</button></div><div class="mut" id="ck4" style="font-size:15px;text-align:left"></div></div>
-<div class="card"><h1>Aferição do equipamento</h1>
-<label>Distância oficial do troço de teste (km)</label><input id="ao" inputmode="decimal" value="1,000">
-<div class="mut" id="am" style="font-size:24px;font-weight:700;margin-top:8px">0,000 km</div>
-<div class="mut" style="font-size:15px;text-align:left">Carregue em Iniciar ao passar no início do troço e em Terminar ao passar no fim.</div>
-<div style="display:flex;gap:8px"><button id="a1" onclick="afIni()">Iniciar aferição</button><button id="a2" class="s" disabled onclick="afFim()">Terminar aferição</button></div>
-<div class="mut" id="ar2" style="font-size:15px;text-align:left"></div>
-<div id="afc" hidden style="margin-top:8px;text-align:left"><div id="afct" style="font-size:18px"></div><div class="r2"><button onclick="afSave()">Guardar fator</button><button class="s" onclick="afDisc()">Descartar</button></div></div>
-<button class="s" onclick="toggleAfh()">Histórico de aferições</button><div id="afh" hidden style="margin-top:6px"></div>
-<label>Fator de aferição (metros por km; + soma, − tira)</label><input id="afv" readonly value="0" onclick="afeOpen()" style="cursor:pointer"><div class="mut" style="font-size:13px;text-align:left">Toque no valor para o alterar (pede confirmação).</div>
-<div class="mut" style="font-size:15px;text-align:left;margin-top:6px">Em casa a distância é simulada pela velocidade simulada. Com o Racebox será a distância real.</div>
-</div>
-
 <div class="card"><h1>Sequência</h1><div id="ls" class="mut">Ainda vazia.</div>
 <div id="er2" style="color:#ff453a;font-weight:700;margin-top:8px"></div>
-<label>A contagem começa quantos segundos antes</label><input id="le" type="number" value="5">
+</div></div>
+<div class="pg" id="pg_rb" hidden><div class="pgh"><button class="s" onclick="pgBack()">← Preparar rally</button></div><div class="card" id="rbc"><h1>Racebox</h1>
+<div class="mut" id="rbs" style="text-align:left;font-size:16px">Racebox não ligada.</div>
+<button id="rbb" onclick="rbBtn()">Ligar Racebox</button>
+<button class="s" id="rbb2" hidden onclick="rbPick(true)">Não aparece? Mostrar todos os aparelhos</button>
+<div class="mut" style="text-align:left;font-size:15px;margin-top:6px">Feche a app do Racebox antes de ligar: o aparelho só aceita uma ligação de cada vez. Com a Racebox ligada, ela passa a ser a fonte da distância e o GPS do telemóvel fica de reserva.</div></div>
+<div class="card"><h1>Fonte da distância</h1><label style="margin-top:0">Fonte da distância</label><select id="fo" onchange="foCh()"><option value="g">GPS do telemóvel</option><option value="r">Racebox (GPS do telemóvel de reserva)</option><option value="s">Simulada (velocidade abaixo)</option></select>
+<button class="s" onclick="testG()">Testar GPS</button><div id="gt" class="mut" style="font-size:15px"></div>
+<label>Velocidade simulada (km/h), só para testar em casa</label><input id="sv" type="number" value="50">
+</div></div>
+<div class="pg" id="pg_vz" hidden><div class="pgh"><button class="s" onclick="pgBack()">← Preparar rally</button></div><div class="card"><h1>Voz e avisos</h1><label>A contagem começa quantos segundos antes</label><input id="le" type="number" value="5">
 <label>Antecipação da voz (s): a voz diz o número este tempo antes de ele aparecer</label><input id="vo" type="number" step="0.1" value="0.6">
 <label>Botão «Passei» ativo (segundos antes e depois da passagem; 0 = sempre ativo)</label><input id="pw" type="number" value="5">
 <label>Som da contagem</label><select id="sm"><option value="vb">Voz e bip</option><option value="v">Só voz</option><option value="b">Só bip</option></select>
-<label>Fonte da distância</label><select id="fo" onchange="foCh()"><option value="g">GPS do telemóvel</option><option value="r">Racebox (GPS do telemóvel de reserva)</option><option value="s">Simulada (velocidade abaixo)</option></select>
-<button class="s" onclick="testG()">Testar GPS</button><div id="gt" class="mut" style="font-size:15px"></div>
-<label>Velocidade simulada (km/h), só para testar em casa</label><input id="sv" type="number" value="50">
-<button id="go" onclick="go()">Começar prova</button>
 <div class="mut" id="vi" style="text-align:left;font-size:15px;margin-top:8px"></div>
 <button class="s" onclick="sm=$('sm').value;beep(880,.15);say('Teste de voz. Dez, onze, doze.');setTimeout(()=>{$('vi').textContent=voiceInfo()+' · '+$('vs').textContent},700)">Testar voz</button></div>
 
-<div class="card"><h1>Registo de correções</h1>
+</div>
+<div class="pg" id="pg_rl" hidden><div class="pgh"><button class="s" onclick="pgBack()">← Preparar rally</button></div><div class="card"><h1>Rallies guardados</h1><div class="r2"><button class="s" onclick="newRally()">Novo rally (limpar tudo)</button><button class="s" onclick="toggleRL()">Os meus rallies</button></div>
+<div id="rlist" hidden style="margin-top:6px"></div>
+<div class="r2"><button class="s" onclick="expRally()">Exportar</button><button class="s" onclick="if(!$('bk').hidden){toast('Termine a prova primeiro.')}else $('imf').click()">Importar</button></div>
+<input type="file" id="imf" accept=".json,application/json" hidden onchange="impRally(this)">
+<div class="mut" id="rmsg" style="text-align:left;font-size:15px;margin-top:6px"></div></div>
+</div>
+<div class="pg" id="pg_lg" hidden><div class="pgh"><button class="s" onclick="pgBack()">← Preparar rally</button></div><div class="card"><h1>Registo de correções</h1>
 <div class="mut" id="lc" style="text-align:left;font-size:15px"></div>
 <div id="lg" style="font-size:15px;color:var(--mut);max-height:150px;overflow:auto;margin-top:6px"></div>
-<button class="s" onclick="clrLog()">Limpar registo</button></div>
+<button class="s" onclick="clrLog()">Limpar registo</button></div></div>
+<div class="pg" id="pg_pl" hidden><div class="pgh"><button class="s" onclick="pgBack()">← Preparar rally</button></div><div class="card"><h1>Modo piloto</h1>
+<div class="mut" style="text-align:left;font-size:15px">Dois telemóveis com a app aberta, ligados à mesma rede (por exemplo o ponto de acesso do navegador). Não precisa de internet. O ecrã do piloto mostra o essencial e não tem botões de correção.</div>
+<div class="mut" id="pls" style="text-align:left;font-size:16px;margin-top:8px"></div>
+<div class="mut" style="text-align:left;margin-top:8px">Qualquer telemóvel pode ser navegador ou piloto. Escolha o papel deste telemóvel:</div>
+<div class="r2"><button id="plrn" onclick="plRoleSel('n')">Sou o navegador</button><button id="plrp" onclick="plRoleSel('p')">Sou o piloto</button></div></div>
+<div class="card" id="plN" hidden><h1>Navegador: envia o ecrã da prova</h1>
+<button id="plb1" onclick="plHost()">1. Criar código</button>
+<textarea id="plc1" readonly placeholder="O código aparece aqui" hidden></textarea>
+<div class="r2" id="plc1b" hidden><button class="s" onclick="plCopy('plc1')">Copiar</button><button class="s" onclick="plShare('plc1')">Partilhar</button></div>
+<label>2. Código de resposta do piloto</label><textarea id="plc2" placeholder="Cole aqui o código que o piloto lhe enviou"></textarea>
+<div class="r2"><button class="s" onclick="plPaste('plc2')">Colar</button><button onclick="plFin()">3. Ligar</button></div></div>
+<div class="card" id="plP" hidden><h1>Piloto: recebe o ecrã</h1>
+<label style="margin-top:0">1. Código do navegador</label><textarea id="plp1" placeholder="Cole aqui o código que o navegador lhe enviou"></textarea>
+<div class="r2"><button class="s" onclick="plPaste('plp1')">Colar</button><button onclick="plJoin()">2. Gerar resposta</button></div>
+<textarea id="plp2" readonly placeholder="O código de resposta aparece aqui" hidden></textarea>
+<div class="r2" id="plp2b" hidden><button class="s" onclick="plCopy('plp2')">Copiar</button><button class="s" onclick="plShare('plp2')">Partilhar</button></div>
+<div class="mut" style="text-align:left;font-size:15px;margin-top:6px">Envie o código de resposta ao navegador. Quando ele carregar em «Ligar», este ecrã passa a espelhar a prova.</div></div></div>
+
 </div>
 
 <div id="run" hidden>
@@ -187,7 +231,7 @@ button.gr{background:#1c7c3a;color:#fff;font-weight:800}
 <div class="fb"><button id="fz" class="s" onclick="frz()">Congelar distância</button><button id="un" class="s" onclick="undo()">↶ Desfazer</button></div>
 <div class="ar"><input id="ar" inputmode="decimal" placeholder="Distância real (km)"><button onclick="apl()">Aplicar</button></div>
 </div>
-<div id="vs"></div><div id="toast" hidden></div>
+<div id="vs"></div><div id="toast" hidden></div><button id="pex" hidden onclick="location.reload()">✕</button>
 <div id="afe" class="ov" hidden style="border-top:4px solid #7fd1ff"><div class="mut" style="font-size:16px">Fator de aferição</div><div id="afen" style="font-size:20px;margin-top:6px"></div><div class="adj" style="margin-top:8px"><button class="s rm" onclick="afeAdj(-1)">−1</button><button class="s rm" onclick="afeAdj(-.1)">−0,1</button><button class="s gp" onclick="afeAdj(.1)">+0,1</button><button class="s gp" onclick="afeAdj(1)">+1</button></div><div class="mut" style="font-size:12px">metros por quilómetro</div><div class="r2"><button onclick="afeSv()">Guardar</button><button class="s" onclick="afeCn()">Cancelar</button></div></div>
 <div id="afp" class="ov" hidden style="border-top:4px solid #7fd1ff;max-height:75dvh;overflow:auto">
 <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:20px">Aferição</b><button class="s" style="width:auto;margin:0;padding:8px 18px" onclick="afClose()">Fechar</button></div>
@@ -383,7 +427,7 @@ const du_=durOf(seq[i]);if(t<=du_){err2('Ligação após a regularidade '+(i+1)+
 if(d<=e){err2('Ligação após a regularidade '+(i+1)+': a distância final ('+kmf(d)+' km) tem de ser maior que o fim da regularidade ('+kmf(e)+' km).');show();return}
 err2('');delete seq[i].z;seq[i].lk={dist:d,tempo:t};save();show()}
 function fimH(x){try{const d=durOf(x);return d>0?hAdd(x.hi,d):''}catch(e){return''}}
-function show(){recalc();
+function show(){recalc();try{pmSum()}catch(e){}
 const rn=$('rn0');if(rn)rn.value=(rid&&RL[rid])?RL[rid].name||'':'';if(!$('rlist').hidden)renderRL();
 const hh=$('h0');if(hh){hh.value=seq.length?hAdd(seq[0].hi,-(lk0?lk0.tempo:0)):'';hh.disabled=!seq.length;
 $('h0n').textContent=!seq.length?'Adicione uma regularidade para definir a hora de início.':lk0?'A regularidade 1 começa às '+seq[0].hi+' (partida + ligação de '+hms(lk0.tempo)+').':'Sem ligação da partida: a regularidade 1 começa a esta hora.'}
@@ -573,8 +617,8 @@ $('fz').textContent=fz?'Soltar distância':'Congelar distância';siUp();afUpd();
 if(r.t=='k')kFr();else{const dm=d-ideal(eI),ds=v>0?dm/v:0,ok=v>1?Math.abs(ds)<=.3:Math.abs(dm)<=1,ad=dm>0,col=el<0?'#555':ok?'#ffd60a':ad?'#ff453a':'#2ee66b',sg=ad?'+':'−';
 $('fr').style.borderColor=col;$('fs').style.color=col;$('fm').style.color=col;$('fq').style.color=col;
 $('fs').textContent=el<0?'AGUARDA INÍCIO':ok?'NO IDEAL · MANTER':ad?'ADIANTADO · TRAVAR':'ATRASADO · ACELERAR';
-$('fm').textContent=el<0?'0 m':(ok?'':sg)+Math.abs(dm).toFixed(0)+' m';
-$('fq').textContent=el<0?'0,0 s':(ok?'':sg)+Math.abs(ds).toFixed(1).replace('.',',')+' s';barUp(r,el,dm)}
+$('fm').textContent=el<0?'0 m':(Math.abs(dm).toFixed(0)=='0'?'':sg)+Math.abs(dm).toFixed(0)+' m';
+$('fq').textContent=el<0?'0,0 s':(Math.abs(ds).toFixed(1)=='0.0'?'':sg)+Math.abs(ds).toFixed(1).replace('.',',')+' s';barUp(r,el,dm)}
 if(!fz&&el>=0&&$('sg').hidden&&$('afp').hidden&&d-lastAn>=2000){const f=afF(),n=f.u.length;lastAn=d;winC=[];
 if(n&&f.s!==null){const s=f.s;if(Math.abs(s)>=1){sugV=s;$('sq').textContent='O equipamento mede '+Math.abs(s).toFixed(1).replace('.',',')+' m a '+(s>0?'menos':'mais')+' por quilómetro (com base em '+n+(n==1?' correção':' correções')+'). Aplicar correção?';$('sg').hidden=false;if(sm.includes('v'))say('Sugestão de correção da aferição');beep(1200,.3)}}}
 if(lk&&lk.fin){const rm2=(lkSched-Date.now())/1000;if(rm2<=0&&!asked){asked=true;if(sm.includes('v'))say('Chegada ao controlo horário');beep(1200,.3)}if(rm2<-8){cur=seq.length;init()}}
@@ -615,7 +659,7 @@ init();if(lk0&&seq[0]&&cur==0)enterLink0();clearInterval(timer);timer=setInterva
 function now(){if(!seq[cur]){cur=0;init()}start(true)}
 function skip(){cur++;init()}
 let tbT=null;
-function toPrep(){$('afp').hidden=true;if(st=='done'){stop();return}$('run').hidden=true;$('setup').hidden=false;$('bk').hidden=false;$('go').hidden=true;show();scrollTo(0,0)}
+function toPrep(){$('afp').hidden=true;pgReset();if(st=='done'){stop();return}$('run').hidden=true;$('setup').hidden=false;$('bk').hidden=false;$('go').hidden=true;show();scrollTo(0,0)}
 function chainMs(){const b=new Date(Date.now());b.setHours(0,0,0,0);let prev=-1;const o=[];
 for(let j=0;j<seq.length;j++){const q=seq[j].hi.split(':').map(Number);let m=b.getTime()+((q[0]*60+q[1])*60+(q[2]||0))*1000;if(prev>=0)while(m<prev)m+=864e5;prev=m;o.push(m)}return o}
 function msOf(i){const o=chainMs();if(!o.length)return -1;const ref=Math.min(Math.max(cur,0),o.length-1),sh=o[ref]-Date.now()>18*36e5?-864e5:0;return o[Math.min(i,o.length-1)]+sh}
@@ -761,6 +805,56 @@ function rbInit(){setInterval(rbPaint,500);
 if(!navigator.bluetooth||!window.isSecureContext){$('rbs').textContent='Este navegador não deixa ligar por Bluetooth. Abra a app no Chrome, no Android.';$('rbb').disabled=true;return}
 setTimeout(rbBoot,600)}
 
+
+/* ===== páginas do Preparar rally, botão retroceder, modo piloto ===== */
+let pgCur='',pgPushed=false,armed=false,leaving=false,ign=0;
+function pmSum(){const g=i=>$(i),n=seq.length;g('sRg').textContent=n?n+(n==1?' regularidade':' regularidades')+' na sequência':'Ainda vazia';
+g('sAf').textContent='Fator atual: '+f1(af)+' m/km';g('sCk').textContent=$('ck1')?$('ck1').textContent:'';
+g('sRb').textContent=($('rbs').textContent||'').slice(0,70);g('sVz').textContent='';g('sLg').textContent=$('lc')?$('lc').textContent.slice(0,70):''}
+setInterval(()=>{if(!$('setup').hidden&&!pgCur)try{pmSum()}catch(e){}},1000);
+function arm(){if(armed||leaving)return;armed=true;try{history.pushState({m:1},'')}catch(e){}}
+['pointerdown','touchstart','keydown'].forEach(ev=>addEventListener(ev,arm,{capture:true,passive:true}));
+function pgShow(id){document.querySelectorAll('.pg').forEach(e=>e.hidden=true);$('pm').hidden=!!id;if(id)$('pg_'+id).hidden=false;pgCur=id;scrollTo(0,0)}
+function pgOpen(id){arm();pgShow(id);try{history.pushState({m:2},'');pgPushed=true}catch(e){}if(id=='pl')plPaint()}
+function pgClose(){pgShow('');try{pmSum()}catch(e){}}
+function pgBack(){if(pgPushed)history.back();else pgClose()}
+function pgReset(){if(pgCur){pgClose();if(pgPushed){pgPushed=false;ign++;history.back()}}}
+function overlayOpen(){if(!$('afe').hidden)return 'afe';if(!$('afp').hidden)return 'afp';if(!$('cf').hidden)return 'cf';return ''}
+addEventListener('popstate',()=>{if(leaving)return;if(ign>0){ign--;return}
+if(cfKind=='exit'){cfClose();armed=false;return}
+const o=overlayOpen();
+if(o){if(o=='afe')afeCn();else if(o=='afp')afClose();else cfClose();if(pgPushed&&pgCur){pgPushed=false}else armed=false;return}
+if(pgCur){pgClose();pgPushed=false;return}
+armed=false;askC('Sair da app?',[['Não, ficar',null],['Sim, sair',()=>{leaving=true;history.back();setTimeout(()=>history.back(),120);setTimeout(()=>{try{window.close()}catch(e){}},400)}]],'exit')});
+/* ---- modo piloto ---- */
+let plPC=null,plCh=null,plRole='',plLast='',plTm=0;
+function plRoleSel(r){$('plN').hidden=r!='n';$('plP').hidden=r!='p';$('plrn').className=r=='n'?'':'s';$('plrp').className=r=='p'?'':'s'}
+function plSet(t){$('pls').textContent=t}
+function plPaint(){plSet(plRole=='pilot'?'Ligado como piloto.':plRole=='host'?'Ligado: este telemóvel envia o ecrã ao piloto.':plPC?'A aguardar a ligação…':'Sem ligação.')}
+async function plEnc(d){const b=new Blob([JSON.stringify({t:d.type,s:d.sdp})]).stream().pipeThrough(new CompressionStream('deflate-raw')),a=new Uint8Array(await new Response(b).arrayBuffer());let x='';a.forEach(c=>x+=String.fromCharCode(c));return 'P1.'+btoa(x)}
+async function plDec(c){c=c.replace(/\s+/g,'');if(!c.startsWith('P1.'))throw new Error('código inválido');const x=atob(c.slice(3)),a=new Uint8Array(x.length);for(let i=0;i<x.length;i++)a[i]=x.charCodeAt(i);
+const b=new Blob([a]).stream().pipeThrough(new DecompressionStream('deflate-raw'));return JSON.parse(await new Response(b).text())}
+function plIce(pc){return new Promise(r=>{if(pc.iceGatheringState=='complete')return r();const f=()=>{if(pc.iceGatheringState=='complete'){pc.removeEventListener('icegatheringstatechange',f);r()}};pc.addEventListener('icegatheringstatechange',f);setTimeout(r,4000)})}
+function plMk(){plClose();const pc=new RTCPeerConnection({iceServers:[]});plPC=pc;pc.onconnectionstatechange=()=>{if(['failed','closed'].includes(pc.connectionState)&&plPC===pc)plLost()};return pc}
+function plClose(){clearInterval(plTm);try{plCh&&plCh.close()}catch(e){}try{plPC&&plPC.close()}catch(e){}plPC=null;plCh=null}
+function plLost(){clearInterval(plTm);if(plRole=='pilot'){toast('Ligação perdida. Toque no ✕ para sair.',6000)}else if(plRole=='host'){plRole='';plSet('Ligação com o piloto perdida.');toast('Piloto desligado',4000)}}
+async function plHost(){try{plSet('A criar o código…');const pc=plMk(),ch=pc.createDataChannel('p');plCh=ch;ch.onopen=plOpenHost;ch.onclose=()=>{if(plRole=='host')plLost()};
+await pc.setLocalDescription(await pc.createOffer());await plIce(pc);$('plc1').value=await plEnc(pc.localDescription);$('plc1').hidden=false;$('plc1b').hidden=false;plSet('Envie este código ao piloto e cole depois a resposta dele.')}catch(e){plSet('Erro: '+(e.message||e))}}
+async function plFin(){try{const d=await plDec($('plc2').value);if(!plPC||d.t!='answer')throw new Error('use primeiro «Criar código» e cole a resposta do piloto');await plPC.setRemoteDescription({type:'answer',sdp:d.s});plSet('A ligar…')}catch(e){plSet('Erro: '+(e.message||e))}}
+async function plJoin(){try{const d=await plDec($('plp1').value);if(d.t!='offer')throw new Error('este não é o código do navegador');plSet('A gerar a resposta…');const pc=plMk();
+pc.ondatachannel=e=>{plCh=e.channel;e.channel.onopen=plOpenPilot;e.channel.onmessage=plMsg;e.channel.onclose=()=>{if(plRole=='pilot')plLost()}};
+await pc.setRemoteDescription({type:'offer',sdp:d.s});await pc.setLocalDescription(await pc.createAnswer());await plIce(pc);$('plp2').value=await plEnc(pc.localDescription);$('plp2').hidden=false;$('plp2b').hidden=false;plSet('Envie a resposta ao navegador.')}catch(e){plSet('Erro: '+(e.message||e))}}
+function plOpenHost(){plRole='host';plLast='';plPaint();toast('Piloto ligado',3000);clearInterval(plTm);plTm=setInterval(plSend,120)}
+let plBeat=0;
+function plSend(){if(!plCh||plCh.readyState!='open')return;let m;if($('run').hidden||$('run').classList.contains('pilot')){m={w:1}}else m={h:$('run').innerHTML};
+const j=JSON.stringify(m),n=Date.now();if(j===plLast&&n-plBeat<2000)return;plLast=j;plBeat=n;try{plCh.send(j)}catch(e){}}
+function plOpenPilot(){plRole='pilot';$('setup').hidden=true;const r=$('run');r.hidden=false;r.classList.add('pilot');r.innerHTML='<div class="mut" style="margin:auto;font-size:22px">Ligado. A aguardar a prova…</div>';$('pex').hidden=false;try{keepAwake()}catch(e){}}
+function plMsg(e){let m;try{m=JSON.parse(e.data)}catch(x){return}const r=$('run');
+if(m.w){const w='<div class="mut" style="margin:auto;font-size:22px">A aguardar a prova…</div>';if(r.dataset.w!='1'){r.innerHTML=w;r.dataset.w='1'}return}
+if(m.h!==undefined){r.dataset.w='';if(r.dataset.h!==m.h){r.innerHTML=m.h;r.dataset.h=m.h}}}
+async function plCopy(i){try{await navigator.clipboard.writeText($(i).value);toast('Copiado')}catch(e){$(i).select();toast('Selecione e copie à mão')}}
+async function plShare(i){try{if(navigator.share)await navigator.share({text:$(i).value});else plCopy(i)}catch(e){}}
+async function plPaste(i){try{$(i).value=await navigator.clipboard.readText()}catch(e){toast('Cole à mão no campo (toque longo)')}}
 function toast(m,ms){const t=$('toast');t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>{t.hidden=true},ms||2500)}
 function prova(){return st!='done'&&(!$('run').hidden||!$('bk').hidden)}
 async function keepAwake(){wkT=Date.now();try{if(!navigator.wakeLock)throw 0;if(wl&&!wl.released){wkOk=true;return}
