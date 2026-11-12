@@ -104,7 +104,7 @@ button.gr{background:#1c7c3a;color:#fff;font-weight:800}
 
 <div id="setup">
 <div id="bk" hidden style="position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:8px"><button onclick="voltar()">Voltar à prova</button><button class="s" id="tb" onclick="endTap()">Terminar prova</button></div>
-<div class="hd"><h1>Preparar rally <small style="font-size:15px;color:var(--mut);font-weight:400">versão 40</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
+<div class="hd"><h1>Preparar rally <small style="font-size:15px;color:var(--mut);font-weight:400">versão 41</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
 <div class="card"><h1>Rally</h1>
 <label style="margin-top:0">Nome do rally</label><input id="rn0" placeholder="Ex.: Rally de Fafe" aria-label="Nome do rally" onchange="setRName(this.value)">
 <label>Hora de início do rally (partida)</label><input id="h0" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0n" style="text-align:left;font-size:15px;margin-top:4px"></div>
@@ -212,7 +212,8 @@ const _DN=Date.now.bind(Date);let CLKG=0,CLKM=0,CLKA=0,clkSrc='',CLK=0;const clk
 try{CLKA=Math.round(+localStorage.getItem('ca'))||0}catch(e){}
 CLK=CLKA;Date.now=()=>_DN()+CLK;
 function clkSet(){CLK=Math.round((clkSrc?CLKG:CLKM)+CLKA)}
-function clkIn(k,utc){const t=_DN();if(k=='g'&&t-clkLast.r<5000)return;const w=clkW[k];w.push(utc-t);if(w.length>(k=='r'?40:8))w.shift();clkLast[k]=t;const nv=Math.max(...w);
+function clkIn(k,utc){const t=_DN();if(k=='g'&&t-clkLast.r<5000)return;if(Math.abs(utc-t)>216e5)return;const w=clkW[k];w.push(utc-t);if(w.length>(k=='r'?40:8))w.shift();clkLast[k]=t;
+if(k=='g'){if(w.length<3)return;const l=w.slice(-3);if(Math.max(...l)-Math.min(...l)>1500)return}const nv=Math.max(...(k=='g'?w.slice(-3):w));
 if(clkSrc!=k||Math.abs(nv-CLKG)>500)CLKG=nv;else CLKG+=(nv-CLKG)*.05;clkSrc=k;clkSet()}
 function clkLabel(){const t=_DN();if(clkSrc){const f=t-clkLast[clkSrc]<10000;return(clkSrc=='r'?'GPS da Racebox':'GPS do telemóvel')+(f?'':' (sem leituras agora)')}return CLKM?'acerto manual':'relógio do telemóvel'}
 function clkAdj(x){CLKA+=x;try{localStorage.setItem('ca',String(CLKA))}catch(e){}clkSet();clkPaint()}
@@ -602,9 +603,9 @@ function now(){if(!seq[cur]){cur=0;init()}start(true)}
 function skip(){cur++;init()}
 let tbT=null;
 function toPrep(){$('afp').hidden=true;if(st=='done'){stop();return}$('run').hidden=true;$('setup').hidden=false;$('bk').hidden=false;$('go').hidden=true;show();scrollTo(0,0)}
-function msOf(i){const b=new Date(Date.now());b.setHours(0,0,0,0);let prev=-1;
-for(let j=0;j<=i&&j<seq.length;j++){const q=seq[j].hi.split(':').map(Number);let m=b.getTime()+((q[0]*60+q[1])*60+(q[2]||0))*1000;if(prev>=0)while(m<prev)m+=864e5;prev=m}
-return prev}
+function chainMs(){const b=new Date(Date.now());b.setHours(0,0,0,0);let prev=-1;const o=[];
+for(let j=0;j<seq.length;j++){const q=seq[j].hi.split(':').map(Number);let m=b.getTime()+((q[0]*60+q[1])*60+(q[2]||0))*1000;if(prev>=0)while(m<prev)m+=864e5;prev=m;o.push(m)}return o}
+function msOf(i){const o=chainMs();if(!o.length)return -1;const ref=Math.min(Math.max(cur,0),o.length-1),sh=o[ref]-Date.now()>18*36e5?-864e5:0;return o[Math.min(i,o.length-1)]+sh}
 function hiMs(hi){const q=hi.split(':').map(Number),d=new Date(Date.now());d.setHours(q[0],q[1],q[2]||0,0);return d.getTime()}
 function setLabels(r){$('kn').textContent=r.t=='a'?'Média troço':r.t=='h'?'Próximo marco':'Próxima passagem';$('rc').classList.toggle('ab',r.t=='a');$('run').classList.toggle('abs',r.t=='a');$('ks').textContent=r.t=='a'?'Vel. necessária':'Média a fazer';$('us').hidden=r.t=='a'||r.t=='k';$('w3').hidden=!(r.t=='a'||r.t=='k');$('rt').textContent='Regularidade '+(cur+1)+' de '+seq.length+' · '+NM[r.t];$('kl').hidden=r.t!='k';$('rn').style.fontSize=r.t=='k'?'min(11vw,6dvh)':'';if(r.t=='k'){$('kn').textContent='Marca (km)';$('ks').textContent='Intervalo (m)'}}
 function rebuild(r,d0){const el=(Date.now()-t0)/1000;cT=r.t;const b=build(r);ev=b.e;ps=b.p;
