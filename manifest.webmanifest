@@ -1,6 +1,6 @@
 {
-  "name": "Regularidade",
-  "short_name": "Regularidade",
+  "name": "RallyPace",
+  "short_name": "RallyPace",
   "description": "Aplicação de apoio a rallies de regularidade",
   "lang": "pt-PT",
   "start_url": "./",
@@ -10,8 +10,23 @@
   "background_color": "#0c0e11",
   "theme_color": "#0c0e11",
   "icons": [
-    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
-    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
-    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }

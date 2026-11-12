@@ -1,6 +1,6 @@
 // Guarda a aplicação no telemóvel para funcionar sem internet.
-const C='regularidade-v44';
-const F=['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png'];
+const C='regularidade-v45';
+const F=['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png','icon-maskable.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(F)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{
