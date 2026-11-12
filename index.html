@@ -39,7 +39,7 @@ button:disabled{opacity:.4}
 #run{display:flex;flex-direction:column;gap:6px;height:calc(100vh - 44px);height:calc(100dvh - 44px)}
 #run>*{flex:none;margin:0}
 #kl{font-size:15px;line-height:1.5;max-height:11dvh;overflow:auto;text-align:center;color:var(--mut);display:flex;flex-wrap:wrap;justify-content:center;gap:2px 14px}#kl[hidden]{display:none}
-#bar{position:fixed;left:0;top:0;bottom:0;width:9px;z-index:6;pointer-events:none}#bar[hidden]{display:none}#bu,#bd{position:absolute;left:0;width:100%;height:0}#bu{bottom:50%;background:#2ee66b}#bd{top:50%;background:#ff453a}
+#bar{position:fixed;left:0;top:0;bottom:0;width:9px;z-index:6;pointer-events:none}#bar[hidden]{display:none}#bu,#bd{position:absolute;left:0;width:100%;height:0}#bu{bottom:50%;background:linear-gradient(to top,#ffd60a 0,#2ee66b 50%,#2f7bff 100%);background-size:100% 50dvh;background-position:bottom}#bd{top:50%;background:linear-gradient(to bottom,#ffd60a 0,#ff453a 50%,#ff2fd0 100%);background-size:100% 50dvh;background-position:top}
 #run .mut{font-size:12px;line-height:1.2}
 #run #rc{flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:min(18vw,8.5vh);font-size:min(18vw,8.5dvh);line-height:1;padding:2px 0}
 #run.abs #rc{flex:2 1 0;min-height:0}
@@ -105,7 +105,7 @@ button.gr{background:#1c7c3a;color:#fff;font-weight:800}
 
 <div id="setup">
 <div id="bk" hidden style="position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:8px"><button onclick="voltar()">Voltar à prova</button><button class="s" id="tb" onclick="endTap()">Terminar prova</button></div>
-<div class="hd"><h1>Preparar rally <small style="font-size:15px;color:var(--mut);font-weight:400">versão 42</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
+<div class="hd"><h1>Preparar rally <small style="font-size:15px;color:var(--mut);font-weight:400">versão 43</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
 <div class="card"><h1>Rally</h1>
 <label style="margin-top:0">Nome do rally</label><input id="rn0" placeholder="Ex.: Rally de Fafe" aria-label="Nome do rally" onchange="setRName(this.value)">
 <label>Hora de início do rally (partida)</label><input id="h0" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0n" style="text-align:left;font-size:15px;margin-top:4px"></div>
@@ -147,7 +147,7 @@ button.gr{background:#1c7c3a;color:#fff;font-weight:800}
 <div class="mut" id="ar2" style="font-size:15px;text-align:left"></div>
 <div id="afc" hidden style="margin-top:8px;text-align:left"><div id="afct" style="font-size:18px"></div><div class="r2"><button onclick="afSave()">Guardar fator</button><button class="s" onclick="afDisc()">Descartar</button></div></div>
 <button class="s" onclick="toggleAfh()">Histórico de aferições</button><div id="afh" hidden style="margin-top:6px"></div>
-<label>Fator de aferição (metros por km; + soma, − tira)</label><input id="afv" inputmode="decimal" value="0" onchange="afSetM()">
+<label>Fator de aferição (metros por km; + soma, − tira)</label><input id="afv" readonly value="0" onclick="afeOpen()" style="cursor:pointer"><div class="mut" style="font-size:13px;text-align:left">Toque no valor para o alterar (pede confirmação).</div>
 <div class="mut" style="font-size:15px;text-align:left;margin-top:6px">Em casa a distância é simulada pela velocidade simulada. Com o Racebox será a distância real.</div>
 </div>
 
@@ -188,6 +188,7 @@ button.gr{background:#1c7c3a;color:#fff;font-weight:800}
 <div class="ar"><input id="ar" inputmode="decimal" placeholder="Distância real (km)"><button onclick="apl()">Aplicar</button></div>
 </div>
 <div id="vs"></div><div id="toast" hidden></div>
+<div id="afe" class="ov" hidden style="border-top:4px solid #7fd1ff"><div class="mut" style="font-size:16px">Fator de aferição</div><div id="afen" style="font-size:20px;margin-top:6px"></div><div class="adj" style="margin-top:8px"><button class="s rm" onclick="afeAdj(-1)">−1</button><button class="s rm" onclick="afeAdj(-.1)">−0,1</button><button class="s gp" onclick="afeAdj(.1)">+0,1</button><button class="s gp" onclick="afeAdj(1)">+1</button></div><div class="mut" style="font-size:12px">metros por quilómetro</div><div class="r2"><button onclick="afeSv()">Guardar</button><button class="s" onclick="afeCn()">Cancelar</button></div></div>
 <div id="afp" class="ov" hidden style="border-top:4px solid #7fd1ff;max-height:75dvh;overflow:auto">
 <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:20px">Aferição</b><button class="s" style="width:auto;margin:0;padding:8px 18px" onclick="afClose()">Fechar</button></div>
 <div id="afi" style="font-size:18px;line-height:1.5;margin-top:6px"></div>
@@ -573,7 +574,7 @@ if(r.t=='k')kFr();else{const dm=d-ideal(eI),ds=v>0?dm/v:0,ok=v>1?Math.abs(ds)<=.
 $('fr').style.borderColor=col;$('fs').style.color=col;$('fm').style.color=col;$('fq').style.color=col;
 $('fs').textContent=el<0?'AGUARDA INÍCIO':ok?'NO IDEAL · MANTER':ad?'ADIANTADO · TRAVAR':'ATRASADO · ACELERAR';
 $('fm').textContent=el<0?'0 m':(ok?'':sg)+Math.abs(dm).toFixed(0)+' m';
-$('fq').textContent=el<0?'0,0 s':(ok?'':sg)+Math.abs(ds).toFixed(1).replace('.',',')+' s';barUp(r,el,ds)}
+$('fq').textContent=el<0?'0,0 s':(ok?'':sg)+Math.abs(ds).toFixed(1).replace('.',',')+' s';barUp(r,el,dm)}
 if(!fz&&el>=0&&$('sg').hidden&&$('afp').hidden&&d-lastAn>=2000){const f=afF(),n=f.u.length;lastAn=d;winC=[];
 if(n&&f.s!==null){const s=f.s;if(Math.abs(s)>=1){sugV=s;$('sq').textContent='O equipamento mede '+Math.abs(s).toFixed(1).replace('.',',')+' m a '+(s>0?'menos':'mais')+' por quilómetro (com base em '+n+(n==1?' correção':' correções')+'). Aplicar correção?';$('sg').hidden=false;if(sm.includes('v'))say('Sugestão de correção da aferição');beep(1200,.3)}}}
 if(lk&&lk.fin){const rm2=(lkSched-Date.now())/1000;if(rm2<=0&&!asked){asked=true;if(sm.includes('v'))say('Chegada ao controlo horário');beep(1200,.3)}if(rm2<-8){cur=seq.length;init()}}
@@ -598,9 +599,9 @@ let bH=[];
 function barUp(r,el,ds){const B=$('bar');if(!B)return;if(!(r.t=='f'||r.t=='a')||el<0||fz||st!='run'){B.hidden=true;bH=[];return}
 B.hidden=false;const tn=Date.now();bH.push([tn,ds]);while(bH.length&&tn-bH[0][0]>1500)bH.shift();
 let pr=ds;if(bH.length>=3){const a=bH[0],z=bH[bH.length-1],dt=(z[0]-a[0])/1000;if(dt>.3)pr=ds+1.5*(z[1]-a[1])/dt}
-const m=Math.min(1,Math.abs(pr)/BARFULL)*(Math.abs(pr)<.05?0:1);
+const m=Math.min(1,Math.abs(pr)/BARFULL)*(Math.abs(pr)<.3?0:1);
 $('bu').style.height=(pr<0?m*50:0)+'%';$('bd').style.height=(pr>0?m*50:0)+'%'}
-const BARFULL=1;
+const BARFULL=10;
 function kFr(){const l=kL[0];$('fr').style.borderColor='#555';$('fs').style.color='';$('fm').style.color='';$('fq').style.color='';$('fs').textContent='Última passagem';$('fm').textContent=l?kmf(l.m)+' km':'—';$('fq').textContent=l?hms(l.t):'—'}
 function bad(r,i){if(r.t!='k'&&(!r.r||!r.r.length))return'A regularidade '+(i+1)+' não tem quadro. Carregue em Editar.';
 if(r.t=='h'&&r.mi==null)return'A regularidade '+(i+1)+' (hectométrica) precisa do marco inicial. Carregue em Editar.';
@@ -644,6 +645,12 @@ function stop(){$('bk').hidden=true;$('go').hidden=false;show();$('tb').dataset.
 let ta0=0,ati=null;
 function afM(){return src!='s'?gA:(Date.now()-ta0)/1000*(Math.max(0,sv)/3.6)}
 function afIni(){sv=+$('sv').value||0;src=$('fo').value;if(src!='s'){if(!gps()&&!(src=='r'&&rbLive())){$('ar2').textContent=gS;return}gA=0;afOn=true}$('afc').hidden=true;afP=null;ta0=Date.now();$('a1').disabled=true;$('a2').disabled=false;$('ar2').textContent='';clearInterval(ati);ati=setInterval(()=>{$('am').textContent=kmf(Math.round(afM()))+' km'},200)}
+let afeP=null;
+function afeOpen(){afeP=af;afePaint();$('afe').hidden=false}
+function afePaint(){$('afen').innerHTML='Atual: <b>'+f1(af)+'</b> m/km<br>Novo: <b>'+f1(afeP)+'</b> m/km'+(afeP===af?' <span style="color:var(--mut)">(sem alteração)</span>':' <span style="color:var(--mut)">(ainda não guardado)</span>')}
+function afeAdj(x){afeP=Math.round((afeP+x)*10)/10;afePaint()}
+function afeSv(){if(afeP!==null&&afeP!==af){const p=af;af=afeP;try{localStorage.setItem('af',String(af))}catch(e){}$('afv').value=af.toFixed(1).replace('.',',');afhAdd('Ajuste na preparação',{f:af,prev:p})}afeCn()}
+function afeCn(){afeP=null;$('afe').hidden=true}
 function afSetM(){const o=af;afSet();if(af!==o)afhAdd('Valor escrito à mão',{f:af,prev:o})}
 function afSet(){af=num($('afv').value)||0;try{localStorage.setItem('af',String(af))}catch(e){}}
 function afFim(){afOn=false;clearInterval(ati);const M=afM(),O=Math.round(num($('ao').value)*1000);$('a1').disabled=false;$('a2').disabled=true;
