@@ -39,6 +39,7 @@ button:disabled{opacity:.4}
 #run{display:flex;flex-direction:column;gap:6px;height:calc(100vh - 44px);height:calc(100dvh - 44px)}
 #run>*{flex:none;margin:0}
 #kl{font-size:15px;line-height:1.5;max-height:11dvh;overflow:auto;text-align:center;color:var(--mut);display:flex;flex-wrap:wrap;justify-content:center;gap:2px 14px}#kl[hidden]{display:none}
+#bar{position:fixed;left:0;top:0;bottom:0;width:9px;z-index:6;pointer-events:none}#bar[hidden]{display:none}#bu,#bd{position:absolute;left:0;width:100%;height:0}#bu{bottom:50%;background:#2ee66b}#bd{top:50%;background:#ff453a}
 #run .mut{font-size:12px;line-height:1.2}
 #run #rc{flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:min(18vw,8.5vh);font-size:min(18vw,8.5dvh);line-height:1;padding:2px 0}
 #run.abs #rc{flex:2 1 0;min-height:0}
@@ -104,7 +105,7 @@ button.gr{background:#1c7c3a;color:#fff;font-weight:800}
 
 <div id="setup">
 <div id="bk" hidden style="position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:8px"><button onclick="voltar()">Voltar à prova</button><button class="s" id="tb" onclick="endTap()">Terminar prova</button></div>
-<div class="hd"><h1>Preparar rally <small style="font-size:15px;color:var(--mut);font-weight:400">versão 41</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
+<div class="hd"><h1>Preparar rally <small style="font-size:15px;color:var(--mut);font-weight:400">versão 42</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
 <div class="card"><h1>Rally</h1>
 <label style="margin-top:0">Nome do rally</label><input id="rn0" placeholder="Ex.: Rally de Fafe" aria-label="Nome do rally" onchange="setRName(this.value)">
 <label>Hora de início do rally (partida)</label><input id="h0" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0n" style="text-align:left;font-size:15px;margin-top:4px"></div>
@@ -178,6 +179,7 @@ button.gr{background:#1c7c3a;color:#fff;font-weight:800}
 <div class="win" id="w2"><div class="k" id="ks">Média a fazer</div><div class="v" id="rs"></div></div>
 <div class="win" id="w3" hidden><div class="k">Vel. atual</div><div class="v" id="rv"></div></div></div>
 <div class="frame" id="fr"><div class="st" id="fs"></div><div class="two"><div id="fm"></div><div id="fq"></div></div></div>
+<div id="bar" hidden><div id="bu"></div><div id="bd"></div></div>
 <div id="kl" hidden></div>
 <div id="rd"></div>
 <button id="us" onclick="pass()">Passei</button>
@@ -427,7 +429,7 @@ function abIdeal(el){if(el<=0)return 0;const A=AB.s;for(let i=A.length-1;i>=0;i-
 function abSeg(d){let k=0;AB.s.forEach((x,i)=>{if(d>=x.s)k=i});return k}
 function ideal(el){if(lk){const f=Math.min(Math.max((el-lk.te)/lk.Tl,0),1);return lk.D0+(lk.Dl-lk.D0)*f}if(cT=='a')return abIdeal(el);if(el<=0)return 0;for(let i=1;i<P.length;i++){if(el<=P[i][0]){const a=P[i-1],b=P[i];return a[1]+(b[1]-a[1])*(el-a[0])/((b[0]-a[0])||1)}}return P[P.length-1][1]}
 
-function blank(){$('kl').hidden=true;['rn','rs','fs','fm','fq','rd'].forEach(i=>$(i).textContent='');$('fr').style.borderColor='#555'}
+function blank(){$('kl').hidden=true;$('bar').hidden=true;bH=[];['rn','rs','fs','fm','fq','rd'].forEach(i=>$(i).textContent='');$('fr').style.borderColor='#555'}
 function init(){const r=seq[cur];lk=null;hk=1;$('pr').hidden=true;$('sg').hidden=true;
 if(!r){st='done';$('rt').textContent='Prova terminada';$('rl').textContent='';$('rc').textContent='✓';$('rc').style.color='';blank();$('us').hidden=true;ev=[];ps=[];return}
 cT=r.t;const b=build(r);ev=b.e;ps=b.p;idx=0;kN=0;kL=[];bi=0;lastSeg=-1;bp=ev.filter(x=>/^\d+$/.test(x.s)).map(x=>x.at).sort((a,b)=>a-b);
@@ -436,7 +438,7 @@ sched=msOf(cur);t0=sched;pk=-1;aw={};cdN=99;$('w3').hidden=!(r.t=='a'||r.t=='k')
 end=(r.t=='k'?1e9:r.t=='a'?AB.Ttot:(r.t=='f'?(ps.length?ps[ps.length-1]:0):r.du))+3;st='wait';asked=false;
 $('kn').textContent=r.t=='a'?'Média troço':r.t=='h'?'Próximo marco':'Próxima passagem';$('rc').classList.toggle('ab',r.t=='a');$('run').classList.toggle('abs',r.t=='a');$('ks').textContent=r.t=='a'?'Vel. necessária':'Média a fazer';
 $('us').hidden=r.t=='a'||r.t=='k';
-$('rt').textContent='Regularidade '+(cur+1)+' de '+seq.length+' · '+NM[r.t];$('kl').hidden=r.t!='k';$('rn').style.fontSize=r.t=='k'?'min(11vw,6dvh)':'';if(r.t=='k'){$('kn').textContent='Marca (km)';$('ks').textContent='Intervalo (m)'}}
+$('rt').textContent='Regularidade '+(cur+1)+' de '+seq.length+' · '+NM[r.t];$('kl').hidden=r.t!='k';$('rn').style.fontSize=r.t=='k'?'min(9.5vw,5.2dvh)':'';if(r.t=='k'){$('kn').textContent='Marca (km)';$('ks').textContent='Média (km/h)'}}
 
 let gAc=0,src='s',gW=null,gP=null,gM=0,gA=0,gV=0,gT=0,gS='a procurar GPS…',afOn=false,gti=null;
 function hav(a,b){const R=6371000,t=Math.PI/180,x=(b.latitude-a.latitude)*t,y=(b.longitude-a.longitude)*t,q=Math.sin(x/2)**2+Math.cos(a.latitude*t)*Math.cos(b.latitude*t)*Math.sin(y/2)**2;return 2*R*Math.asin(Math.sqrt(q))}
@@ -567,11 +569,11 @@ const g=tgt(el,d);if(g){$('us').textContent=g.l;$('us').disabled=false}else{let 
 if(!lk){if(el<0)$('rc').style.color=-el<=5?'#ffd60a':'';else if(el<1)$('rc').style.color='#2ee66b'}
 $('rd').innerHTML='<span class="dl">'+(fz?'Distância congelada':'Distância')+'</span> '+kmf(Math.round(d))+' km';$('rd').style.color=fz?'#7fd1ff':'';
 $('fz').textContent=fz?'Soltar distância':'Congelar distância';siUp();afUpd();if(Date.now()-wkT>15000&&(!wl||wl.released))keepAwake();
-if(r.t=='k')kFr();else{const dm=d-ideal(eI),ds=v>0?dm/v:0,ok=Math.abs(dm)<=1,ad=dm>0,col=el<0?'#555':ok?'#ffd60a':ad?'#ff453a':'#2ee66b',sg=ad?'+':'−';
+if(r.t=='k')kFr();else{const dm=d-ideal(eI),ds=v>0?dm/v:0,ok=v>1?Math.abs(ds)<=.3:Math.abs(dm)<=1,ad=dm>0,col=el<0?'#555':ok?'#ffd60a':ad?'#ff453a':'#2ee66b',sg=ad?'+':'−';
 $('fr').style.borderColor=col;$('fs').style.color=col;$('fm').style.color=col;$('fq').style.color=col;
 $('fs').textContent=el<0?'AGUARDA INÍCIO':ok?'NO IDEAL · MANTER':ad?'ADIANTADO · TRAVAR':'ATRASADO · ACELERAR';
 $('fm').textContent=el<0?'0 m':(ok?'':sg)+Math.abs(dm).toFixed(0)+' m';
-$('fq').textContent=el<0?'0,0 s':(ok?'':sg)+Math.abs(ds).toFixed(1).replace('.',',')+' s'}
+$('fq').textContent=el<0?'0,0 s':(ok?'':sg)+Math.abs(ds).toFixed(1).replace('.',',')+' s';barUp(r,el,ds)}
 if(!fz&&el>=0&&$('sg').hidden&&$('afp').hidden&&d-lastAn>=2000){const f=afF(),n=f.u.length;lastAn=d;winC=[];
 if(n&&f.s!==null){const s=f.s;if(Math.abs(s)>=1){sugV=s;$('sq').textContent='O equipamento mede '+Math.abs(s).toFixed(1).replace('.',',')+' m a '+(s>0?'menos':'mais')+' por quilómetro (com base em '+n+(n==1?' correção':' correções')+'). Aplicar correção?';$('sg').hidden=false;if(sm.includes('v'))say('Sugestão de correção da aferição');beep(1200,.3)}}}
 if(lk&&lk.fin){const rm2=(lkSched-Date.now())/1000;if(rm2<=0&&!asked){asked=true;if(sm.includes('v'))say('Chegada ao controlo horário');beep(1200,.3)}if(rm2<-8){cur=seq.length;init()}}
@@ -580,15 +582,25 @@ else if(r.z){if(d>=dEnd(r)||el>end+60)autoNext()}
 else if((r.lk?el>end-3:el>end)&&cur<seq.length){if(r.lk)enterLink(r);else{cur++;init()}}}
 
 let kN=0,kL=[],kLn=-1;
+let vK=0,vKt=0;
+function fmtT(t){const m=Math.floor(t/60),s=t-m*60,x=(Math.round(s*10)/10).toFixed(1).replace('.',',');return m?m+':'+(s<9.95?'0':'')+x:x}
 function tickK(r,el,d){const iv=r.iv||100,v=Math.max(0,vNow())/3.6;$('kl').hidden=false;
+{const tn=Date.now(),dt=(tn-vKt)/1000;if(!vKt||dt>1||dt<0)vK=v;else vK+=(v-vK)*(1-Math.exp(-dt/.3));vKt=tn}
 $('rv').innerHTML=Math.round(vNow())+'<small>km/h</small>';
-const nx=(Math.floor(Math.max(0,d)/iv)+1)*iv;$('rn').textContent=kmf(nx);$('rs').textContent=iv;
+const nx=(Math.floor(Math.max(0,d)/iv)+1)*iv;$('rn').textContent=kmf(nx);{const l=kL[0],d0=l?l.m:0,t0k=l?l.t:0,dtk=el-t0k;$('rs').textContent=dtk>1&&el>=0?Math.round((d-d0)/dtk*3.6):'—'}
 if(el<0){$('rl').textContent='Arranca em';return}
 while((kN+1)*iv<=d){kN++;const m=kN*iv;kL.unshift({m,t:Math.max(0,el-(d-m)/Math.max(v,.5))})}
-$('rl').textContent='Previsão aos '+kmf(nx)+' km, a esta velocidade';
-$('rc').textContent=v>.5?hms(el+(nx-d)/v):'—';$('rc').style.color='#ffd60a';
+$('rl').textContent='Previsão aos '+kmf(nx)+' km (intervalo '+(iv>=1000?'1 km':iv+' m')+')';
+$('rc').textContent=vK>.5?fmtT(el+(nx-d)/vK):'—';$('rc').style.color='#ffd60a';
 if(kLn!==kL.length){kLn=kL.length;$('kl').innerHTML=kL.map(x=>'<span>'+kmf(x.m)+' km · '+hms(x.t)+'</span>').join('')}
 const nxt=seq[cur+1];if(nxt&&msOf(cur+1)-Date.now()<=15000){cur++;init()}}
+let bH=[];
+function barUp(r,el,ds){const B=$('bar');if(!B)return;if(!(r.t=='f'||r.t=='a')||el<0||fz||st!='run'){B.hidden=true;bH=[];return}
+B.hidden=false;const tn=Date.now();bH.push([tn,ds]);while(bH.length&&tn-bH[0][0]>1500)bH.shift();
+let pr=ds;if(bH.length>=3){const a=bH[0],z=bH[bH.length-1],dt=(z[0]-a[0])/1000;if(dt>.3)pr=ds+1.5*(z[1]-a[1])/dt}
+const m=Math.min(1,Math.abs(pr)/BARFULL)*(Math.abs(pr)<.05?0:1);
+$('bu').style.height=(pr<0?m*50:0)+'%';$('bd').style.height=(pr>0?m*50:0)+'%'}
+const BARFULL=1;
 function kFr(){const l=kL[0];$('fr').style.borderColor='#555';$('fs').style.color='';$('fm').style.color='';$('fq').style.color='';$('fs').textContent='Última passagem';$('fm').textContent=l?kmf(l.m)+' km':'—';$('fq').textContent=l?hms(l.t):'—'}
 function bad(r,i){if(r.t!='k'&&(!r.r||!r.r.length))return'A regularidade '+(i+1)+' não tem quadro. Carregue em Editar.';
 if(r.t=='h'&&r.mi==null)return'A regularidade '+(i+1)+' (hectométrica) precisa do marco inicial. Carregue em Editar.';
@@ -607,7 +619,7 @@ function chainMs(){const b=new Date(Date.now());b.setHours(0,0,0,0);let prev=-1;
 for(let j=0;j<seq.length;j++){const q=seq[j].hi.split(':').map(Number);let m=b.getTime()+((q[0]*60+q[1])*60+(q[2]||0))*1000;if(prev>=0)while(m<prev)m+=864e5;prev=m;o.push(m)}return o}
 function msOf(i){const o=chainMs();if(!o.length)return -1;const ref=Math.min(Math.max(cur,0),o.length-1),sh=o[ref]-Date.now()>18*36e5?-864e5:0;return o[Math.min(i,o.length-1)]+sh}
 function hiMs(hi){const q=hi.split(':').map(Number),d=new Date(Date.now());d.setHours(q[0],q[1],q[2]||0,0);return d.getTime()}
-function setLabels(r){$('kn').textContent=r.t=='a'?'Média troço':r.t=='h'?'Próximo marco':'Próxima passagem';$('rc').classList.toggle('ab',r.t=='a');$('run').classList.toggle('abs',r.t=='a');$('ks').textContent=r.t=='a'?'Vel. necessária':'Média a fazer';$('us').hidden=r.t=='a'||r.t=='k';$('w3').hidden=!(r.t=='a'||r.t=='k');$('rt').textContent='Regularidade '+(cur+1)+' de '+seq.length+' · '+NM[r.t];$('kl').hidden=r.t!='k';$('rn').style.fontSize=r.t=='k'?'min(11vw,6dvh)':'';if(r.t=='k'){$('kn').textContent='Marca (km)';$('ks').textContent='Intervalo (m)'}}
+function setLabels(r){$('kn').textContent=r.t=='a'?'Média troço':r.t=='h'?'Próximo marco':'Próxima passagem';$('rc').classList.toggle('ab',r.t=='a');$('run').classList.toggle('abs',r.t=='a');$('ks').textContent=r.t=='a'?'Vel. necessária':'Média a fazer';$('us').hidden=r.t=='a'||r.t=='k';$('w3').hidden=!(r.t=='a'||r.t=='k');$('rt').textContent='Regularidade '+(cur+1)+' de '+seq.length+' · '+NM[r.t];$('kl').hidden=r.t!='k';$('rn').style.fontSize=r.t=='k'?'min(9.5vw,5.2dvh)':'';if(r.t=='k'){$('kn').textContent='Marca (km)';$('ks').textContent='Média (km/h)'}}
 function rebuild(r,d0){const el=(Date.now()-t0)/1000;cT=r.t;const b=build(r);ev=b.e;ps=b.p;
 tg=r.t=='f'?r.r.map(x=>x[0]).sort((a,b)=>a-b):[];
 bp=ev.filter(x=>/^\d+$/.test(x.s)).map(x=>x.at).sort((a,b)=>a-b);
