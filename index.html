@@ -111,7 +111,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 #sct{position:absolute;left:0;right:0;top:16px;text-align:center;font-size:19px;font-weight:700;text-shadow:0 0 6px #000}
 #scc{position:absolute;left:16px;right:16px;bottom:24px;width:auto}
 #pex{position:fixed;right:6px;top:6px;z-index:20;width:auto;padding:4px 12px;margin:0;background:#2a3038;color:var(--fg);opacity:.5}
-</style></style></style></style><link rel="manifest" href="manifest.webmanifest">
+</style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0c0e11">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -119,7 +119,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 
 <div id="setup">
 <div id="bk" hidden style="position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:8px"><button onclick="voltar()">Voltar à prova</button><button class="s" id="tb" onclick="endTap()">Terminar prova</button></div>
-<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 50</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
+<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 51</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
 <div id="pm"><div class="card"><h1>Rally</h1>
 <label style="margin-top:0">Nome do rally</label><input id="rn0" placeholder="Ex.: Rally de Fafe" aria-label="Nome do rally" onchange="setRName(this.value)">
 <label>Hora de início do rally (partida)</label><input id="h0" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0n" style="text-align:left;font-size:15px;margin-top:4px"></div>
@@ -545,7 +545,7 @@ function act(kind,newD,delib){const el=(Date.now()-t0)/1000;if(st!='run'||el<0||
 if(fz){fzU.push(fzD);fzD=newD;return}
 const before=dr(el)+dOff,id=++lid;U.push({dOff,id,lcd:lastCorrD});dOff=newD-dr(el);logC(id,kind,delib,before,newD)}
 function adj(n){act('+/− metros',dNow()+n,false)}
-function apl(){act('valor escrito',Math.round(num($('ar').value)*1e6)/1e3,true);$('ar').value=''}
+function apl(){act('valor escrito',Math.round(num($('ar').value)*1e6)/1e3-accOff,true);$('ar').value=''}
 function frz(){const el=(Date.now()-t0)/1000;if(st!='run'||el<0)return;
 if(!fz){fz=true;fzEl=el;fzDr=dr(el);fzD=fzDr+dOff;fz0={dOff,fzD};fzU=[]}
 else{const net=fzD-fz0.fzD;if(Math.abs(net)>=.5){const id=++lid;U.push({dOff:fz0.dOff,id,lcd:lastCorrD});logC(id,'congelada',true,fz0.fzD,fzD)}dOff=fzD-fzDr;fz=false;fzU=[]}}
