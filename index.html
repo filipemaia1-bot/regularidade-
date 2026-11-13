@@ -112,7 +112,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 #sct{position:absolute;left:0;right:0;top:16px;text-align:center;font-size:19px;font-weight:700;text-shadow:0 0 6px #000}
 #scc{position:absolute;left:16px;right:16px;bottom:24px;width:auto}
 #pex{position:fixed;right:6px;top:6px;z-index:20;width:auto;padding:4px 12px;margin:0;background:#2a3038;color:var(--fg);opacity:.5}
-</style></style></style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
+</style></style></style></style></style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0c0e11">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -120,7 +120,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 
 <div id="setup">
 <div id="bk" hidden style="position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:8px"><button onclick="voltar()">Voltar à prova</button><button class="s" id="tb" onclick="endTap()">Terminar prova</button></div>
-<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 56</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
+<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 57</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
 <div id="pm"><div class="card"><h1>Rally</h1>
 <label style="margin-top:0">Nome do rally</label><input id="rn0" placeholder="Ex.: Rally de Fafe" aria-label="Nome do rally" onchange="setRName(this.value)">
 <label>Hora de início do rally (partida)</label><input id="h0" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0n" style="text-align:left;font-size:15px;margin-top:4px"></div>
@@ -595,7 +595,7 @@ function start(testNow,auto){if(!seq[cur])return;accOff=0;lk=null;hk=1;pk=-1;cdN
 if(!testNow){const e=(Date.now()-sched)/1000;if(e>0)dOff=-dr(e)}}
 function pqt(r,sch,n,lim){const late=Math.round((Date.now()-sch)/1000);
 $('pq').textContent=late<0?'A regularidade '+n+' ('+NM[r.t]+') começa às '+r.hi+', daqui a '+(-late)+' s. Dar início?':'Chegou a hora da regularidade '+n+' ('+NM[r.t]+', '+r.hi+'). Dar início?';
-$('pb').hidden=!(late<lim);$('pn').hidden=false;$('pb').textContent=late<0?'Confirmar: arranca às '+r.hi:'Dar início: tempo da hora oficial, km 0 agora (atraso de '+late+' s)'}
+$('pb').hidden=false;$('pn').hidden=true;$('pb').textContent=late<0?'Confirmar: arranca às '+r.hi:'Dar início: tempo da hora oficial, km 0 agora (atraso de '+late+' s)'}
 function ask(r,sch,n,lim){if($('run').hidden&&!$('setup').hidden&&!$('bk').hidden)voltar();pqt(r,sch,n,lim);$('pr').hidden=false;if(sm.includes('v'))say('Dar início à regularidade '+n+'?');beep(1200,.3)}
 function pqtL0(){const late=Math.round((Date.now()-sched0)/1000),h=hAdd(seq[0].hi,-lk0.tempo);
 $('pq').textContent=late<0?'A ligação da partida começa às '+h+', daqui a '+(-late)+' s. Dar início?':'Chegou a hora da ligação da partida ('+h+'). Dar início?';
@@ -936,12 +936,12 @@ function pgBack(){if(pgPushed)history.back();else pgClose()}
 function pgReset(){if(pgCur){pgClose();if(pgPushed){pgPushed=false;ign++;history.back()}}}
 function overlayOpen(){if(!$('scn').hidden)return 'scn';if(!$('afe').hidden)return 'afe';if(!$('afp').hidden)return 'afp';if(!$('cf').hidden)return 'cf';return ''}
 addEventListener('popstate',()=>{if(leaving)return;if(ign>0){ign--;return}
-if(cfKind=='ens'){armed=false;return}
-if(cfKind=='exit'){cfClose();armed=false;return}
+if(cfKind=='ens'){armed=false;arm();return}
+if(cfKind=='exit'){cfClose();armed=false;arm();return}
 const o=overlayOpen();
-if(o){if(o=='scn')scnClose();else if(o=='afe')afeCn();else if(o=='afp')afClose();else cfClose();if(pgPushed&&pgCur){pgPushed=false}else armed=false;return}
+if(o){if(o=='scn')scnClose();else if(o=='afe')afeCn();else if(o=='afp')afClose();else cfClose();if(pgPushed&&pgCur){pgPushed=false}else{armed=false;arm()}return}
 if(pgCur){pgClose();pgPushed=false;return}
-armed=false;askC('Sair da app?',[['Não, ficar',null],['Sim, sair',()=>{leaving=true;history.back();setTimeout(()=>history.back(),120);setTimeout(()=>{try{window.close()}catch(e){}},400)}]],'exit')});
+armed=false;arm();askC('Sair da app?',[['Não, ficar',null],['Sim, sair',()=>{leaving=true;history.back();setTimeout(()=>history.back(),120);setTimeout(()=>{try{window.close()}catch(e){}},400)}]],'exit')});
 /* ---- modo piloto ---- */
 let plPC=null,plCh=null,plRole='',plLast='',plTm=0;
 function plRoleSel(r){$('plN').hidden=r!='n';$('plP').hidden=r!='p';$('plrn').className=r=='n'?'':'s';$('plrp').className=r=='p'?'':'s'}
