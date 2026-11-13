@@ -112,7 +112,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 #sct{position:absolute;left:0;right:0;top:16px;text-align:center;font-size:19px;font-weight:700;text-shadow:0 0 6px #000}
 #scc{position:absolute;left:16px;right:16px;bottom:24px;width:auto}
 #pex{position:fixed;right:6px;top:6px;z-index:20;width:auto;padding:4px 12px;margin:0;background:#2a3038;color:var(--fg);opacity:.5}
-</style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
+</style></style></style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0c0e11">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -120,7 +120,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 
 <div id="setup">
 <div id="bk" hidden style="position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:8px"><button onclick="voltar()">Voltar à prova</button><button class="s" id="tb" onclick="endTap()">Terminar prova</button></div>
-<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 54</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
+<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 56</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
 <div id="pm"><div class="card"><h1>Rally</h1>
 <label style="margin-top:0">Nome do rally</label><input id="rn0" placeholder="Ex.: Rally de Fafe" aria-label="Nome do rally" onchange="setRName(this.value)">
 <label>Hora de início do rally (partida)</label><input id="h0" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0n" style="text-align:left;font-size:15px;margin-top:4px"></div>
@@ -543,7 +543,7 @@ function showLog(){const n=L.filter(e=>e.delib).length;
 $('lc').textContent=L.length+(L.length==1?' correção registada, ':' correções registadas, ')+n+' contam para a análise.';
 $('lg').innerHTML=L.length?L.slice().reverse().slice(0,60).map(e=>`${e.h} · reg ${e.reg} · ${e.kind} · ${e.before}→${e.after} m (${e.delta>0?'+':''}${e.delta})${e.delib?'':' · não conta'}`).join('<br>'):'Ainda sem correções.'}
 function clrLog(){L=[];winC=[];saveL();showLog()}
-function logC(id,kind,delib,before,after){const km=Math.max(0,(before-lastCorrD)/1000),e={id,h:clock(),reg:cur+1,kind,delib,before:Math.round(before),after:Math.round(after),delta:Math.round((after-before)*10)/10,km:Math.round(km*1000)/1000};if(delib)lastCorrD=after;L.push(e);if(delib)winC.push(e);saveL();showLog()}
+function logC(id,kind,delib,before,after){const km=Math.max(0,(before-lastCorrD)/1000),e={id,h:clock(),reg:cur+1,kind,delib,before:Math.round(before),after:Math.round(after),delta:Math.round((after-before)*10)/10,km:Math.round(km*1000)/1000};if(delib)lastCorrD=after;L.push(e);const rh=kind=='marco'||!!lk||lk0w||(seq[cur]&&seq[cur].t=='h');if(delib&&!rh)winC.push(e);saveL();showLog()}
 function act(kind,newD,delib){const el=(Date.now()-t0)/1000;if(st!='run'||isNaN(newD))return;
 if(fz){fzU.push(fzD);fzD=newD;return}
 const before=dr(el)+dOff,id=++lid;U.push({dOff,id,lcd:lastCorrD});dOff=newD-dr(el);logC(id,kind,delib,before,newD)}
@@ -683,7 +683,7 @@ if(!fz&&el>=0&&$('sg').hidden&&$('afp').hidden&&d-lastAn>=2000){const f=afF(),n=
 if(n&&f.s!==null){const s=f.s;if(Math.abs(s)>=1){sugV=s;$('sq').textContent='O equipamento mede '+Math.abs(s).toFixed(1).replace('.',',')+' m a '+(s>0?'menos':'mais')+' por quilómetro (com base em '+n+(n==1?' correção':' correções')+'). Aplicar correção?';$('sg').hidden=false;if(sm.includes('v'))say('Sugestão de correção da aferição');beep(1200,.3)}}}
 if(lk&&lk.fin){const rm2=(lkSched-Date.now())/1000;if(rm2<=0&&!asked){asked=true;if(sm.includes('v'))say('Chegada ao controlo horário');beep(1200,.3)}}
 else if(lk){const rm2=(lkSched-Date.now())/1000;if(rm2<=15&&!asked){asked=true;ask(seq[lk.nx],lkSched,lk.nx+1,1e9)}else if(asked&&!$('pr').hidden)pqt(seq[lk.nx],lkSched,lk.nx+1,1e9)}
-else if(isEng(r,cur)){if(d>=dEnd(r)||el>end+60)autoNext()}
+else if(isEng(r,cur)){if(d>=dEnd(r)||el>=end)autoNext()}
 else if((r.lk?el>end-3:el>end)&&cur<seq.length){if(r.lk)enterLink(r);else{cur++;init()}}}
 
 let kN=0,kL=[],kLn=-1;
