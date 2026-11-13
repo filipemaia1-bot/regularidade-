@@ -112,7 +112,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 #sct{position:absolute;left:0;right:0;top:16px;text-align:center;font-size:19px;font-weight:700;text-shadow:0 0 6px #000}
 #scc{position:absolute;left:16px;right:16px;bottom:24px;width:auto}
 #pex{position:fixed;right:6px;top:6px;z-index:20;width:auto;padding:4px 12px;margin:0;background:#2a3038;color:var(--fg);opacity:.5}
-</style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
+</style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0c0e11">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -120,7 +120,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 
 <div id="setup">
 <div id="bk" hidden style="position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:8px"><button onclick="voltar()">Voltar à prova</button><button class="s" id="tb" onclick="endTap()">Terminar prova</button></div>
-<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 53</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
+<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 54</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
 <div id="pm"><div class="card"><h1>Rally</h1>
 <label style="margin-top:0">Nome do rally</label><input id="rn0" placeholder="Ex.: Rally de Fafe" aria-label="Nome do rally" onchange="setRName(this.value)">
 <label>Hora de início do rally (partida)</label><input id="h0" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0n" style="text-align:left;font-size:15px;margin-top:4px"></div>
@@ -328,7 +328,8 @@ return{lines:T.map(x=>f(x[0])+' '+f(x[2])).concat([f(T[T.length-1][1])]),show:T.
 function hms(s){s=Math.max(0,Math.round(s));const h=Math.floor(s/3600),m=Math.floor(s%3600/60);return(h?h+':':'')+String(m).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
 function durOf(r){if(r.t=='n')return r.du;if(r.t=='k')return 0;if(r.t=='f')return Math.max(...r.r.map(a=>a[1]));if(r.t=='h')return r.du;
 let T=0,q=null;r.r.forEach((x,i)=>{if(q)T+=(x[0]-q[0])/(q[1]/3.6);q=x});return T+(r.dtot-q[0])/(q[1]/3.6)}
-function lkT(a){if(a.t!='n'&&(!a.r||!a.r.length))return null;return a.lk?a.lk.tempo:a.z?durOf(a):null}
+function isEng(x,i){return !!x&&x.t!='k'&&x.t!='n'&&!x.lk&&!x.ask&&(x.z||i===undefined||i<seq.length-1)}
+function lkT(a){if(a.t!='n'&&(!a.r||!a.r.length))return null;return a.lk?a.lk.tempo:(a.z||(a.t!='k'&&a.t!='n'&&!a.ask&&seq.indexOf(a)<seq.length-1))?durOf(a):null}
 function recalc(){for(let i=1;i<seq.length;i++){const a=seq[i-1],dl=lkT(a);if(dl===null||seq[i].man)continue;
 const q=a.hi.split(':').map(Number);let t=q[0]*3600+q[1]*60+(q[2]||0)+Math.round(dl);t=((t%86400)+86400)%86400;
 seq[i].hi=[Math.floor(t/3600),Math.floor(t%3600/60),t%60].map(v=>String(v).padStart(2,'0')).join(':')}}
@@ -375,7 +376,7 @@ r.push(x)}
 let du=600,mi,sen,dtot,qh=null;
 if(t=='h'){qh=r;mi=qh[0][0];sen=qh[0][2]>qh[0][0]?'c':'d';let T=0;r=qh.map(x=>{const a=[T,360/x[1]];T+=Math.abs(x[2]-x[0])*1000/(x[1]/3.6);return a});du=T}
 if(t=='a'){if(endL===null){err('Falta o fim da regularidade: escreva uma última linha só com a distância, sem média. Por exemplo: 5000');return}dtot=endL;if(!(dtot>r[r.length-1][0])){err('O fim da regularidade ('+dtot+' m) tem de ser maior que o início do último troço ('+r[r.length-1][0]+' m).');return}}
-const o={t,hi,r,du:du>0?du:600,mi,sen,dtot};if(qh)o.q=qh;if(ei>=0&&seq[ei].lk)o.lk=seq[ei].lk;if(ei>=0&&seq[ei].z)o.z=true;if(ei>=0&&seq[ei].ac)o.ac=true;if(ei>=0&&seq[ei].man)o.man=true;
+const o={t,hi,r,du:du>0?du:600,mi,sen,dtot};if(qh)o.q=qh;if(ei>=0&&seq[ei].lk)o.lk=seq[ei].lk;if(ei>=0&&seq[ei].z)o.z=true;if(ei>=0&&seq[ei].ask)o.ask=true;if(ei>=0&&seq[ei].ac)o.ac=true;if(ei>=0&&seq[ei].man)o.man=true;
 const ix=ei>=0?ei:seq.length;if(ei>=0)seq[ei]=o;else{if(ix>0&&seq[ix-1].t!='k'&&seq[ix-1].t!='n'&&!seq[ix-1].lk&&!seq[ix-1].z&&hiTouched===false)seq[ix-1].z=true;seq.push(o)}
 if(ix>0&&lkT(seq[ix-1])!==null){const c=hAdd(seq[ix-1].hi,lkT(seq[ix-1]));if(ei<0)o.hi=c;else if(c!=hi)o.man=true}
 cancelEdit();save();show()}
@@ -444,7 +445,7 @@ if(seq[i]&&seq[i].t=='k'){el.value='';err2('Depois de uma regularidade Tabelas n
 const inp=el.parentNode.querySelectorAll('input'),ds=inp[0].value.trim(),ts=inp[1].value.trim();
 if(!ds&&!ts){delete seq[i].lk;err2('');save();show();return}
 const e=dEnd(seq[i]);
-if(ds&&(Math.round(num(ds)*1000)===0||Math.round(num(ds)*1000)===e)){delete seq[i].lk;seq[i].z=true;delete seq[i].ac;err2('');save();show();return}
+if(ds&&(Math.round(num(ds)*1000)===0||Math.round(num(ds)*1000)===e)){delete seq[i].lk;delete seq[i].ask;seq[i].z=true;delete seq[i].ac;err2('');save();show();return}
 if(!ds||!ts)return;
 let d=Math.round(num(ds)*1000),t=tp(ts);
 if(isNaN(d)||isNaN(t)||t<=0){err2('Ligação após a regularidade '+(i+1)+': escreva a distância em quilómetros e o tempo, por exemplo 0,180 e 3:00.');show();return}
@@ -452,15 +453,15 @@ const du_=durOf(seq[i]);let nt='';
 if(d<=e){d+=e;nt='distância'}
 if(t<=du_){t+=du_;nt+=(nt?' e ':'')+'tempo'}
 if(nt)toast('Valores só da ligação: somei a regularidade ('+nt+'). Distância final '+kmf(d)+' km, tempo total '+hms(t)+'.',6000);
-err2('');delete seq[i].z;delete seq[i].ac;seq[i].lk={dist:d,tempo:t};save();show()}
-function setEng(i){const x=seq[i];if(!x)return;if(x.z)delete x.z;else{x.z=true;delete x.lk}delete x.ac;err2('');save();show()}
+err2('');delete seq[i].z;delete seq[i].ask;delete seq[i].ac;seq[i].lk={dist:d,tempo:t};save();show()}
+function setEng(i){const x=seq[i];if(!x)return;if(isEng(x,i)){delete x.z;x.ask=true}else{delete x.lk;delete x.ask;x.z=true}delete x.ac;err2('');save();show()}
 function setAc(i,v){if(seq[i]){if(v)seq[i].ac=true;else delete seq[i].ac;save()}}
 function fimH(x){try{const d=durOf(x);return d>0?hAdd(x.hi,d):''}catch(e){return''}}
 function show(){recalc();try{pmSum()}catch(e){}if(ei<0&&!hiTouched)$('hi').value=hiProp();
 const rn=$('rn0');if(rn)rn.value=(rid&&RL[rid])?RL[rid].name||'':'';if(!$('rlist').hidden)renderRL();
 const hh=$('h0');if(hh){hh.value=seq.length?hAdd(seq[0].hi,-(lk0?lk0.tempo:0)):r0;hh.disabled=false;
 $('h0n').textContent=!seq.length?'As horas das regularidades calculam-se a partir desta hora (por defeito 00:00:00).':lk0?'A regularidade 1 começa às '+seq[0].hi+' (partida + ligação de '+hms(lk0.tempo)+').':'Sem ligação da partida: a regularidade 1 começa a esta hora.'}
-$('ls').innerHTML=seq.length?`<div class="lkr"><div class="lt">↓ Ligação da partida até à regularidade 1</div><div class="ct"><input placeholder="Dist. (km)" inputmode="decimal" value="${lk0?kmf(lk0.dist):''}" onchange="setLk0(this)"><input placeholder="Tempo mm:ss" value="${lk0?hms(lk0.tempo):''}" onchange="setLk0(this)"></div></div>`+seq.map((x,i)=>{const nl=(x.r||[]).length,f=fimH(x);return `<div class="rg"><div class="h"><span class="n">${i+1} · ${NM[x.t]}${x.man?'<span class="tg">hora fixa</span>':''}</span><span class="t">${x.t=='k'?'a cada '+(x.iv>=1000?'1 km':x.iv+' m'):x.t=='n'?hms(x.du):nl+' '+(nl==1?'linha':'linhas')}</span></div><div class="tm">${x.hi}${f?' → '+f:''}</div><div class="ct"><div class="f a"><span>Mover (± min)</span><input class="mn" placeholder="± min" inputmode="decimal" aria-label="Minutos a somar ou subtrair" onchange="shiftMin(${i},this)"></div><div class="f"><span>Hora de início</span><input value="${x.hi}" aria-label="Hora de início" title="${i&&lkT(seq[i-1])!==null?(x.man?'Hora fixa, escrita por si. Apague para voltar ao cálculo pela ligação.':'Calculada pela ligação. Escreva outra hora para a fixar.'):''}" onchange="setHi(${i},this.value)"></div></div><div class="ac">${$('bk').hidden?`<button class="ok" onclick="go(${i})">Iniciar</button>`:''}<button class="ed" onclick="edit(${i})">Editar</button><button class="dg" onclick="rem(${i})">Remover</button></div></div>`+`<div class="lkr"><div class="lt">↓ ${i<seq.length-1?'Ligação até à regularidade '+(i+2):'Ligação final até ao controlo horário'}${fimTxt(x,1)}${x.z?' · ligação 0: a seguinte começa sozinha ao chegar à distância final':''} ${i<seq.length-1&&x.t!='n'&&x.t!='k'?'<button class="eng'+(x.z?' on':'')+'" onclick="setEng('+i+')" aria-pressed="'+(x.z?'true':'false')+'">Engate'+(x.z?' ✓':'')+'</button>':''}</div><div class="ct"><input placeholder="${i<seq.length-1?'Dist. (km)':'Dist. final (km)'}" inputmode="decimal" value="${x.lk?kmf(x.lk.dist):''}" onchange="setLk(${i},this)"><input placeholder="Tempo mm:ss" value="${x.lk?hms(x.lk.tempo):''}" onchange="setLk(${i},this)"></div></div>`}).join(''):'Ainda vazia.'}
+$('ls').innerHTML=seq.length?`<div class="lkr"><div class="lt">↓ Ligação da partida até à regularidade 1</div><div class="ct"><input placeholder="Dist. (km)" inputmode="decimal" value="${lk0?kmf(lk0.dist):''}" onchange="setLk0(this)"><input placeholder="Tempo mm:ss" value="${lk0?hms(lk0.tempo):''}" onchange="setLk0(this)"></div></div>`+seq.map((x,i)=>{const nl=(x.r||[]).length,f=fimH(x);return `<div class="rg"><div class="h"><span class="n">${i+1} · ${NM[x.t]}${x.man?'<span class="tg">hora fixa</span>':''}</span><span class="t">${x.t=='k'?'a cada '+(x.iv>=1000?'1 km':x.iv+' m'):x.t=='n'?hms(x.du):nl+' '+(nl==1?'linha':'linhas')}</span></div><div class="tm">${x.hi}${f?' → '+f:''}</div><div class="ct"><div class="f a"><span>Mover (± min)</span><input class="mn" placeholder="± min" inputmode="decimal" aria-label="Minutos a somar ou subtrair" onchange="shiftMin(${i},this)"></div><div class="f"><span>Hora de início</span><input value="${x.hi}" aria-label="Hora de início" title="${i&&lkT(seq[i-1])!==null?(x.man?'Hora fixa, escrita por si. Apague para voltar ao cálculo pela ligação.':'Calculada pela ligação. Escreva outra hora para a fixar.'):''}" onchange="setHi(${i},this.value)"></div></div><div class="ac">${$('bk').hidden?`<button class="ok" onclick="go(${i})">Iniciar</button>`:''}<button class="ed" onclick="edit(${i})">Editar</button><button class="dg" onclick="rem(${i})">Remover</button></div></div>`+`<div class="lkr"><div class="lt">↓ ${i<seq.length-1?'Ligação até à regularidade '+(i+2):'Ligação final até ao controlo horário'}${fimTxt(x,1)}${x.z?' · ligação 0: a seguinte começa sozinha ao chegar à distância final':''} ${i<seq.length-1&&x.t!='n'&&x.t!='k'?'<button class="eng'+(isEng(x,i)?' on':'')+'" onclick="setEng('+i+')" aria-pressed="'+(isEng(x,i)?'true':'false')+'">Engate'+(isEng(x,i)?' ✓':'')+'</button>':''}</div><div class="ct"><input placeholder="${i<seq.length-1?'Dist. (km)':'Dist. final (km)'}" inputmode="decimal" value="${x.lk?kmf(x.lk.dist):''}" onchange="setLk(${i},this)"><input placeholder="Tempo mm:ss" value="${x.lk?hms(x.lk.tempo):''}" onchange="setLk(${i},this)"></div></div>`}).join(''):'Ainda vazia.'}
 
 function build(r){const e=[],p=[];P=[[0,0]];AB=null;PT=[];HT=[];if(r.t=='k'||r.t=='n')return{e,p};
 if(r.t=='f'){const f=r.r.map(x=>[x[1],x[0]]).sort((a,b)=>a[0]-b[0]);let pv=-99;
@@ -682,7 +683,7 @@ if(!fz&&el>=0&&$('sg').hidden&&$('afp').hidden&&d-lastAn>=2000){const f=afF(),n=
 if(n&&f.s!==null){const s=f.s;if(Math.abs(s)>=1){sugV=s;$('sq').textContent='O equipamento mede '+Math.abs(s).toFixed(1).replace('.',',')+' m a '+(s>0?'menos':'mais')+' por quilómetro (com base em '+n+(n==1?' correção':' correções')+'). Aplicar correção?';$('sg').hidden=false;if(sm.includes('v'))say('Sugestão de correção da aferição');beep(1200,.3)}}}
 if(lk&&lk.fin){const rm2=(lkSched-Date.now())/1000;if(rm2<=0&&!asked){asked=true;if(sm.includes('v'))say('Chegada ao controlo horário');beep(1200,.3)}}
 else if(lk){const rm2=(lkSched-Date.now())/1000;if(rm2<=15&&!asked){asked=true;ask(seq[lk.nx],lkSched,lk.nx+1,1e9)}else if(asked&&!$('pr').hidden)pqt(seq[lk.nx],lkSched,lk.nx+1,1e9)}
-else if(r.z){if(d>=dEnd(r)||el>end+60)autoNext()}
+else if(isEng(r,cur)){if(d>=dEnd(r)||el>end+60)autoNext()}
 else if((r.lk?el>end-3:el>end)&&cur<seq.length){if(r.lk)enterLink(r);else{cur++;init()}}}
 
 let kN=0,kL=[],kLn=-1;
@@ -714,8 +715,8 @@ for(let i=0;i<seq.length;i++){const m=bad(seq[i],i);if(m){err(m);scrollTo(0,0);r
 err('');sm=$('sm').value;try{beep(1,.01)}catch(e){}lead=+$('le').value||10;off=+$('vo').value;if(isNaN(off))off=.6;sv=+$('sv').value||0;af=num($('afv').value)||0;pw=num($('pw').value);if(isNaN(pw)||pw<0)pw=5;cur=k||0;src=$('fo').value;if(src!='s'){if(!gps()&&!(src=='r'&&rbLive())){err(gS);return}clearInterval(gti)}else gOff();rbWas=src=='r'&&rbLive();rbDown=false;if(src=='r'&&!rbWas)toast('Racebox sem sinal: a usar o GPS do telemóvel.',5000);
 $('setup').hidden=true;$('run').hidden=false;try{history.pushState({r:1},'')}catch(e){}
 await keepAwake();if(!wkOk)toast('Atenção: o telemóvel não deixa manter o ecrã ligado. Desligue a poupança de energia ou ponha o ecrã sempre ligado nas definições.',7000);
-init();const run0=()=>{if(lk0&&seq[0]&&cur==0)enterWaitL0();clearInterval(timer);timer=setInterval(tick,67)};
-if(lk0&&seq[0]&&cur==0&&Date.now()>=sched){askC('A hora da regularidade 1 ('+seq[0].hi+') já passou, por isso a ligação da partida já terminou. Começar a ligação agora, como ensaio? As horas de todas as regularidades passam a contar a partir de agora.',[['Sim, começar a ligação agora',()=>{shiftBy(0,Math.ceil((Date.now()+lk0.tempo*1000-sched)/1000)+1);save();init();run0()}],['Não, manter as horas',()=>run0()]],'ens')}
+init();const run0=()=>{if(lk0&&seq[0]&&cur==0&&k===undefined)enterWaitL0();clearInterval(timer);timer=setInterval(tick,67)};
+if(lk0&&seq[0]&&cur==0&&k===undefined&&Date.now()>=sched){askC('A hora da regularidade 1 ('+seq[0].hi+') já passou, por isso a ligação da partida já terminou. Começar a ligação agora, como ensaio? As horas de todas as regularidades passam a contar a partir de agora.',[['Sim, começar a ligação agora',()=>{shiftBy(0,Math.ceil((Date.now()+lk0.tempo*1000-sched)/1000)+1);save();init();run0()}],['Não, manter as horas',()=>run0()]],'ens')}
 else run0()}
 function now(){if(!seq[cur]){cur=0;init()}start(true)}
 function skip(){cur++;init()}
@@ -813,7 +814,7 @@ else if(x.t=='k'){y.iv=fin(x.iv)&&x.iv>=100&&x.iv<=1000?Math.round(x.iv/100)*100
 else if(x.t=='a'){if(!fin(x.dtot)||!(x.dtot>0))return null;y.dtot=x.dtot;y.du=fin(x.du)&&x.du>0?x.du:600}
 else y.du=fin(x.du)&&x.du>0?x.du:600;
 if(x.lk){if(!fin(x.lk.dist)||!fin(x.lk.tempo)||!(x.lk.dist>0)||!(x.lk.tempo>0))return null;y.lk={dist:x.lk.dist,tempo:x.lk.tempo}}
-if(x.z===true&&!y.lk){y.z=true;if(x.ac===true)y.ac=true}if(x.man===true)y.man=true;out.push(y)}
+if(x.z===true&&!y.lk){y.z=true;if(x.ac===true)y.ac=true}if(x.ask===true&&!y.lk)y.ask=true;if(x.man===true)y.man=true;out.push(y)}
 let l0=null;if(o.lk0){if(!fin(o.lk0.dist)||!fin(o.lk0.tempo)||!(o.lk0.dist>0)||!(o.lk0.tempo>0))return null;l0={dist:o.lk0.dist,tempo:o.lk0.tempo}}
 return{name:typeof o.name=='string'&&o.name.trim()?o.name.trim().slice(0,60):'Rally importado',seq:out,lk0:l0}}
 function impRally(inp){const f=inp.files&&inp.files[0];inp.value='';if(!f)return;if(inProva())return;
@@ -999,7 +1000,7 @@ function toast(m,ms){const t=$('toast');t.textContent=m;t.hidden=false;clearTime
 function prova(){return st!='done'&&(!$('run').hidden||!$('bk').hidden)}
 async function keepAwake(){wkT=Date.now();try{if(!navigator.wakeLock)throw 0;if(wl&&!wl.released){wkOk=true;return}
 wl=await navigator.wakeLock.request('screen');wkOk=true;wl.addEventListener('release',()=>{if(document.visibilityState=='visible')setTimeout(keepAwake,300)})}catch(e){wkOk=false}}
-addEventListener('popstate',()=>{if(st=='done'||($('run').hidden&&$('bk').hidden))return;const n=Date.now();if(n-bkT<3000){bkT=0;history.back()}else{bkT=n;try{history.pushState({r:1},'')}catch(e){}toast('Carregue outra vez em retroceder para sair da prova')}});
+addEventListener('popstate',()=>{if(leaving||st=='done'||($('run').hidden&&$('bk').hidden))return;try{history.pushState({r:1},'')}catch(e){}});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState=='visible'){keepAwake();rbKick()}});
 addEventListener('pageshow',e=>{if(e.persisted){keepAwake();rbKick()}});
 addEventListener('pointerdown',()=>{if((!wl||wl.released)&&Date.now()-wkT>2000)keepAwake()},true);
