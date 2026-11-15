@@ -12,6 +12,7 @@ h1{font-size:19px;margin:0 0 10px}
 label{display:block;color:var(--mut);font-size:13px;margin:10px 0 3px}
 input,select,textarea,button{width:100%;font:inherit;padding:11px;border-radius:8px;border:1px solid #333a44;background:#0f1216;color:var(--fg)}
 textarea{min-height:90px}
+.gh,.gl{display:grid;gap:6px;margin-top:6px;align-items:center}.gh div{font-size:13px;color:var(--mut);line-height:1.15}.gl input{min-width:0;margin:0;width:100%;box-sizing:border-box}.gl .gx{width:38px;margin:0;padding:6px 0;background:transparent;color:var(--mut);border:1px solid var(--mut)}.gl input.au{border-style:dashed}
 button{background:var(--ac);color:#000;font-weight:700;border:0;margin-top:10px}
 button.s{background:#2a3038;color:var(--fg)}
 button:disabled{opacity:.4}
@@ -62,7 +63,23 @@ button:disabled{opacity:.4}
 body{padding-bottom:26px}
 
 #setup{font-size:18px;zoom:var(--zs,1)}
-#setup .mut,#setup label,.rg .t,.ct .f span,.lkr .lt,.lr .m2{color:#b9c2ce}
+/* v59: Preparar rally com fundo claro (a prova mantém-se escura) */
+body:has(#setup:not([hidden])){background:#e4e8ee}
+#setup{--bg:#e4e8ee;--fg:#11151b;--mut:#3d4856;--card:#ffffff;color:#11151b}
+#setup .mut,#setup label,#setup .rg .t,#setup .ct .f span,#setup .lkr .lt,#setup .lr .m2,#setup .mc span,#setup details.alt summary{color:#3d4856}
+#setup input,#setup select,#setup textarea{background:#fff;color:#11151b;border:1px solid #7d8795}
+#setup button.s{background:#d3d9e1;color:#11151b;border:1px solid #9aa4b2}
+#setup .card{border:1px solid #b9c1cc;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+#setup .card h1{color:#9a5200}
+#setup .rg{background:#fff;border:1px solid #9aa4b2}
+#setup .tg{background:#ffe3a6;color:#6b3a00}
+#setup .it,#setup .lr{border-bottom:1px solid #cfd5dd}
+#setup .lkr{border-left:3px solid #8a94a3}
+#setup .mc{background:#fff;color:#11151b;border:1px solid #8a94a3}
+#setup .gl .gx{color:#3d4856;border-color:#7d8795}
+#setup #ls .lt .eng{color:#0b4a8f;border-color:#1f6fd0}
+
+#setup .mut,#setup label,.rg .t,.ct .f span,.lkr .lt,.lr .m2{color:#3d4856}
 .rg{color:var(--fg)}.ct .f span{text-align:left}
 #rd{white-space:nowrap;overflow:hidden;font-variant-numeric:tabular-nums;height:1.05em}
 #setup label{font-size:15px}
@@ -112,7 +129,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 #sct{position:absolute;left:0;right:0;top:16px;text-align:center;font-size:19px;font-weight:700;text-shadow:0 0 6px #000}
 #scc{position:absolute;left:16px;right:16px;bottom:24px;width:auto}
 #pex{position:fixed;right:6px;top:6px;z-index:20;width:auto;padding:4px 12px;margin:0;background:#2a3038;color:var(--fg);opacity:.5}
-</style></style></style></style></style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
+</style></style></style></style></style></style></style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0c0e11">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -120,7 +137,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 
 <div id="setup">
 <div id="bk" hidden style="position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:8px"><button onclick="voltar()">Voltar à prova</button><button class="s" id="tb" onclick="endTap()">Terminar prova</button></div>
-<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 57</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
+<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 59</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
 <div id="pm"><div class="card"><h1>Rally</h1>
 <label style="margin-top:0">Nome do rally</label><input id="rn0" placeholder="Ex.: Rally de Fafe" aria-label="Nome do rally" onchange="setRName(this.value)">
 <label>Hora de início do rally (partida)</label><input id="h0" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0n" style="text-align:left;font-size:15px;margin-top:4px"></div>
@@ -130,6 +147,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 <button class="mc" onclick="pgOpen('ck')"><b>Relógio</b><span id="sCk"></span></button>
 <button class="mc" onclick="pgOpen('rg')"><b>Regularidades e ligações</b><span id="sRg"></span></button>
 <button class="mc" onclick="pgOpen('rb')"><b>Racebox e distância</b><span id="sRb"></span></button>
+<button class="mc" onclick="pgOpen('mp')"><b>Mapa (falhas de GPS)</b><span id="sMp">Desligado</span></button>
 <button class="mc" onclick="pgOpen('vz')"><b>Voz e avisos</b><span id="sVz"></span></button>
 <button class="mc" onclick="pgOpen('rl')"><b>Rallies guardados</b><span>Os meus rallies, exportar, importar, novo rally</span></button>
 <button class="mc" onclick="pgOpen('lg')"><b>Registo de correções</b><span id="sLg"></span></button>
@@ -159,7 +177,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 <select id="tp" onchange="lab()"><option value="f">Figura</option><option value="h">Hectométrica</option><option value="a">Absoluta</option><option value="k">Tabelas / Hitos quilómetro</option><option value="n">Neutralização</option></select>
 <label>Hora de início (calculada pela regularidade anterior; pode mudar)</label><input id="hi" value="10:00:00">
 <div id="ao2" hidden style="display:flex;gap:8px"><div style="flex:1"><label>Unidade das distâncias coladas</label><select id="au"><option value="k">quilómetros</option><option value="m">metros</option></select></div><div id="aow" style="flex:1"><label>Ordem das colunas</label><select id="aoo"><option value="d">distância, média</option><option value="m">média, distância</option></select></div></div>
-<label id="lb"></label><div class="mut" id="lbh" style="text-align:left;font-size:15px">Tempos: 2 dígitos = segundos (31); 3 ou 4 = minutos e segundos (131 = 1:31, 2031 = 20:31); 5 ou 6 = horas, minutos e segundos. Também aceita 1:31.</div><textarea id="dt"></textarea>
+<label id="lb"></label><div class="mut" id="lbh" style="text-align:left;font-size:15px">Tempos: 2 dígitos = segundos (31); 3 ou 4 = minutos e segundos (131 = 1:31, 2031 = 20:31); 5 ou 6 = horas, minutos e segundos. Também aceita 1:31.</div><textarea id="dt" hidden></textarea><div id="gr"></div>
 <div id="dtx" hidden class="mut" style="text-align:left;font-size:15px"></div>
 <div id="kw" hidden><label>Intervalo da previsão e das passagens</label><select id="iv"><option value="100">100 m</option><option value="200">200 m</option><option value="300">300 m</option><option value="400">400 m</option><option value="500">500 m</option><option value="600">600 m</option><option value="700">700 m</option><option value="800">800 m</option><option value="900">900 m</option><option value="1000">1 km</option></select></div>
 <label id="ld">Duração total (ex.: 1000 = 10 min)</label><input id="du" inputmode="numeric" value="1000">
@@ -201,6 +219,18 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 <div class="mut" id="lc" style="text-align:left;font-size:15px"></div>
 <div id="lg" style="font-size:15px;color:var(--mut);max-height:150px;overflow:auto;margin-top:6px"></div>
 <button class="s" onclick="clrLog()">Limpar registo</button></div></div>
+<div class="pg" id="pg_mp" hidden><div class="pgh"><button class="s" onclick="pgBack()">← Preparar rally</button></div><div class="card">
+<h1>Mapa em segundo plano</h1>
+<div class="mut" style="text-align:left;font-size:15px">Trabalha em segundo plano, sem desenhar nenhum mapa. Quando o GPS falha (túneis, árvores), a app mede no mapa a distância percorrida e, quando o sinal volta, sugere a correção. Durante a prova também compara o odómetro com o mapa e avisa se a diferença ficar estável. Nunca corrige sozinha: tu decides.</div>
+<label>Usar o mapa nas provas</label><select id="mpOn" onchange="mpSetOn()"><option value="0">Desligado</option><option value="1">Ligado</option></select>
+<label>Zona do rali: centro (latitude, longitude)</label><div class="r2"><input id="mpLat" inputmode="decimal" placeholder="latitude" style="flex:1;min-width:0"><input id="mpLon" inputmode="decimal" placeholder="longitude" style="flex:1;min-width:0"></div>
+<button class="s" onclick="mpHere()">Usar a minha posição</button>
+<label>Raio da zona (km, máximo 25)</label><input id="mpR" inputmode="decimal" value="15">
+<button onclick="mpDown()">Descarregar a zona (precisa de internet)</button>
+<label>Diferença mínima para sugerir correção (m)</label><input id="mpLim" inputmode="decimal" value="4" oninput="mpLimSet()"><div class="mut" style="text-align:left;font-size:14px">Só avisa quando a diferença entre o odómetro e o mapa fica estável durante 10 segundos. Enquanto varia depressa, não diz nada.</div>
+<div id="mpFa" class="mut" style="text-align:left;font-size:15px;margin-top:6px"></div><button class="s" onclick="mpFmReset()">Repor o fator do mapa</button>
+<button class="s dg2" onclick="mpDel()">Apagar o mapa guardado</button>
+<div id="mpS" class="mut" style="text-align:left;font-size:15px;margin-top:8px"></div></div></div>
 <div class="pg" id="pg_pl" hidden><div class="pgh"><button class="s" onclick="pgBack()">← Preparar rally</button></div>
 <div class="card"><h1>Modo piloto</h1>
 <div class="mut" style="text-align:left;font-size:15px">Dois telemóveis com a app aberta, ligados à mesma rede (por exemplo o ponto de acesso do navegador). Não precisa de internet. O ecrã do piloto mostra o essencial e não tem botões de correção. A ligação faz-se lendo um QR de cada telemóvel.</div>
@@ -307,9 +337,9 @@ const LIVE_N=10,NUS='6e400001-b5a3-f393-e0a9-e50e24dcca9e',NTX='6e400003-b5a3-f3
 let rb={dev:null,ch:null,on:false,want:false,busy:false,t:0,v:0,pv:null,it:0,fix:0,sv:0,acc:0,good:0,n:0,buf:null,msg:'',rt:null,fails:0,bat:null,chg:false,model:''};
 
 function lab(){const t=$('tp').value;
-$('lb').textContent=t=='f'?'Figuras, uma por linha: distância (km) e tempo de passagem. Ex.: 0,520 1:31. Pode colar de um PDF ou de uma folha.':t=='h'?'Uma linha por média: marco onde começa, média (km/h) e marco onde acaba. A linha seguinte começa onde a anterior acabou. Ex.: 12,3 36 13,0 e depois 13,0 45 14,2':'Troços, um por linha: início (km), fim (km) e média (km/h). O primeiro começa em 0. Ex.: 0,000 1,000 36. Pode colar de um PDF ou de uma folha.';
-if(t=='k')$('lb').textContent='Esta regularidade corre sozinha e não precisa de quadro. Indique só a hora de início e de quantos em quantos metros quer a previsão.';$('kw').hidden=t!='k';$('dt').hidden=t=='k';$('lbh').hidden=t=='k';$('ao2').hidden=true;$('dtx').hidden=true;$('ld').hidden=$('du').hidden=true;$('lt').hidden=$('dtot').hidden=true;$('hm').hidden=true;
-if(t=='n'){$('lb').textContent='Neutralização: só tem duração, os quilómetros não contam. No fim, a app pergunta se quer dar início à ligação seguinte (km a zero).';$('dt').hidden=true;$('lbh').hidden=true;$('ld').hidden=$('du').hidden=false;$('ld').textContent='Duração da neutralização (mm:ss, ex.: 1000 = 10 min)'}}
+$('lb').textContent=t=='f'?'Figuras, uma por linha: distância (km) e tempo de passagem. Ex.: 0,520 1:31. Pode colar de um PDF ou de uma folha.':t=='h'?'Uma linha por média: marco onde começa, média (km/h) e marco onde acaba. O marco onde a linha seguinte começa vem preenchido com o final da anterior. Pode colar de uma folha.':'Troços, um por linha: início (km), fim (km) e média (km/h). O primeiro começa em 0. O início da linha seguinte vem preenchido com o fim da anterior. Pode colar de uma folha.';
+if(t=='k')$('lb').textContent='Esta regularidade corre sozinha e não precisa de quadro. Indique só a hora de início e de quantos em quantos metros quer a previsão.';$('kw').hidden=t!='k';$('dt').hidden=true;$('lbh').hidden=t=='k';$('ao2').hidden=true;$('dtx').hidden=true;$('ld').hidden=$('du').hidden=true;$('lt').hidden=$('dtot').hidden=true;$('hm').hidden=true;
+if(t=='n'){$('lb').textContent='Neutralização: só tem duração, os quilómetros não contam. No fim, a app pergunta se quer dar início à ligação seguinte (km a zero).';$('dt').hidden=true;$('lbh').hidden=true;$('ld').hidden=$('du').hidden=false;$('ld').textContent='Duração da neutralização (mm:ss, ex.: 1000 = 10 min)'}try{gBuild()}catch(e){}}
 function kmf(m){return(m/1000).toFixed(3).replace('.',',')}
 
 function figPairs(raw){const tk=String(raw).split(/[\s;]+/).filter(Boolean);if(tk.some(x=>x.includes(':'))){const o=[];tk.forEach((x,i)=>{if(x.includes(':')&&i>0&&!tk[i-1].includes(':'))o.push(tk[i-1]+' '+x)});return o.length?o:null}
@@ -386,15 +416,53 @@ function dtShow(){const b=$('dtx');if(!dtR){b.hidden=true;return}b.hidden=false;
 let dtSide='esquerda';
 function dtSwap(){const a=$('dt').value;$('dt').value=dtR;dtR=a;dtSide=dtSide=='esquerda'?'direita':'esquerda';dtShow()}
 $('dt').addEventListener('input',()=>{if(dtR&&!$('dt').value.trim()){dtR=null;dtShow()}});
-$('dt').addEventListener('paste',e=>{const c=e.clipboardData;if(!c)return;e.preventDefault();
-let tx=c.getData('text').replace(/[\u00a0\t]+/g,' ').split(/\r\n|\r|\n|\u2028|\u2029/).map(x=>x.trim()).filter(Boolean);
+function dtPasteText(raw){
+let tx=String(raw).replace(/[\u00a0\t]+/g,' ').split(/\r\n|\r|\n|\u2028|\u2029/).map(x=>x.trim()).filter(Boolean);
 const tk=tx.map(l=>l.split(/[\s;]+/));
 if(($('tp').value=='f')&&tk.length>1&&tk.some(a=>a.length==4)&&tk.every(a=>a.length==4||a.length==2)){
 dtL=tk.map(a=>a[0]+' '+a[1]).join('\n');dtR=tk.filter(a=>a.length==4).map(a=>a[2]+' '+a[3]).join('\n');dtSide='esquerda';
 $('dt').value=dtL;[dtL,dtR]=[dtL,dtR];dtR=dtR;dtShow();return}
 dtR=null;dtShow();const d=$('dt'),a=d.selectionStart,b=d.selectionEnd;let t=tx.join('\n');const ty=$('tp').value;
 if(ty=='f'){const P=figPairs(t);if(P)t=P.join('\n')}else if(ty=='a'){const A=absTri(t);if(A&&A.show)t=A.show}
-d.setRangeText(t,a,b,'end')});
+d.setRangeText(t,a,b,'end')}
+$('dt').addEventListener('paste',e=>{const c=e.clipboardData;if(!c)return;e.preventDefault();dtPasteText(c.getData('text'))});
+/* ---- grelha de dados (v59): a caixa de texto continua a ser a fonte, a grelha é só o ecrã ---- */
+let G=[],gBusy=false;
+const GC={f:['Distância (km)','Tempo'],h:['Marco início (km)','Média (km/h)','Marco fim (km)'],a:['Início (km)','Fim (km)','Média (km/h)']};
+function gEnd(t){return t=='h'?2:t=='a'?1:-1}
+function gHas(r){return r.c.some((v,j)=>v.trim()&&!(j==0&&r.a))}
+function gSync(){gBusy=true;try{$('dt').value=G.filter(gHas).map(r=>r.c.map(v=>v.trim()).join(' ').trim()).join('\n')}finally{gBusy=false}}
+function gTrail(){const t=$('tp').value,n=(GC[t]||[]).length;if(!n)return;
+if(!G.length||gHas(G[G.length-1])){const r={c:Array(n).fill(''),a:false};
+if(t!='f'&&G.length){const e=G[G.length-1].c[gEnd(t)].trim();if(e){r.c[0]=e;r.a=true}}G.push(r)}}
+function gBuild(){const t=$('tp').value,box=$('gr'),cols=GC[t];if(!cols){box.hidden=true;box.innerHTML='';return}
+box.hidden=false;const n=cols.length;G=[];
+String($('dt').value).split(/\r\n|\r|\n|\u2028|\u2029/).map(x=>x.trim()).filter(Boolean).forEach(l=>{let k=l.split(/[\s;]+/).filter(Boolean);
+if(t=='f'&&k.length==2&&false)return;while(k.length){const c=k.splice(0,n);while(c.length<n)c.push('');G.push({c,a:false})}});
+gTrail();gDraw()}
+function gDraw(){const t=$('tp').value,cols=GC[t],box=$('gr');if(!cols)return;
+let h='<div class="gh" style="grid-template-columns:repeat('+cols.length+',1fr) 38px">'+cols.map(x=>'<div>'+x+'</div>').join('')+'<div></div></div>';
+G.forEach((r,i)=>{h+='<div class="gl" style="grid-template-columns:repeat('+cols.length+',1fr) 38px">'+r.c.map((v,j)=>'<input data-i="'+i+'" data-j="'+j+'" value="'+v.replace(/"/g,'&quot;')+'" inputmode="'+(t=='f'&&j==1?'text':'decimal')+'" autocomplete="off" enterkeyhint="next"'+(j==0&&r.a?' class="au"':'')+'>').join('')+'<button type="button" class="gx" data-x="'+i+'" tabindex="-1">×</button></div>'});
+box.innerHTML=h}
+function gInp(e){const el=e.target;if(!el.dataset||el.dataset.i===undefined)return;const t=$('tp').value,i=+el.dataset.i,j=+el.dataset.j,r=G[i];if(!r)return;
+r.c[j]=el.value;if(j==0&&t!='f'){r.a=false;el.classList.remove('au')}
+if(t!='f'&&j==gEnd(t)){const nx=G[i+1],v=el.value.trim();
+if(nx&&(nx.a||!nx.c[0].trim())){nx.c[0]=v;nx.a=!!v;const q=$('gr').querySelector('input[data-i="'+(i+1)+'"][data-j="0"]');if(q){q.value=v;q.classList.toggle('au',!!v)}}}
+const before=G.length;gTrail();gSync();
+if(G.length>before){const t2=$('tp').value,n=GC[t2].length,idx=G.length-1,rr=G[idx];const d=document.createElement('div');d.className='gl';d.style.gridTemplateColumns='repeat('+n+',1fr) 38px';
+d.innerHTML=rr.c.map((v,k)=>'<input data-i="'+idx+'" data-j="'+k+'" value="'+v+'" inputmode="'+(t2=='f'&&k==1?'text':'decimal')+'" autocomplete="off" enterkeyhint="next"'+(k==0&&rr.a?' class="au"':'')+'>').join('')+'<button type="button" class="gx" data-x="'+idx+'" tabindex="-1">×</button>';$('gr').appendChild(d)}}
+$('gr').addEventListener('input',gInp);
+$('gr').addEventListener('keydown',e=>{if(e.key!='Enter'||!e.target.dataset||e.target.dataset.i===undefined)return;e.preventDefault();
+const all=[...$('gr').querySelectorAll('input')],k=all.indexOf(e.target);if(all[k+1])all[k+1].focus()});
+$('gr').addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('.gx');if(!b)return;const i=+b.dataset.x;G.splice(i,1);
+const t=$('tp').value;if(t!='f'&&G[i]&&G[i-1]&&G[i].a){G[i].c[0]=G[i-1].c[gEnd(t)]}
+gTrail();gSync();gDraw()});
+$('gr').addEventListener('paste',e=>{const c=e.clipboardData;if(!c)return;const raw=c.getData('text');
+if(!/[\n\t]|\s\S+\s/.test(raw.trim()))return;e.preventDefault();
+gBusy=true;$('dt').value='';gBusy=false;dtR=null;dtPasteText(raw);gBuild()});
+(function(){const d=$('dt'),ds=Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value');
+Object.defineProperty(d,'value',{get(){return ds.get.call(d)},set(v){ds.set.call(d,v);if(!gBusy)gBuild()}})})();
+try{gBuild()}catch(e){}
 function addN(hi){const du=tp($('du').value);if(isNaN(du)||!(du>0)){err('Duração inválida. Use mm:ss, por exemplo 10:00.');return}
 const o={t:'n',hi,r:[],du};if(ei>=0&&seq[ei].man)o.man=true;if(ei>=0&&seq[ei].lk)o.lk=seq[ei].lk;
 const ix=ei>=0?ei:seq.length;if(ei>=0)seq[ei]=o;else seq.push(o);
@@ -521,6 +589,7 @@ function hav(a,b){const R=6371000,t=Math.PI/180,x=(b.latitude-a.latitude)*t,y=(b
 function gErr(e){gS=e.code==1?'GPS sem permissão':e.code==2?'GPS sem sinal':'GPS sem resposta';gV=0;gT=0}
 function gFix(p){const c=p.coords,ac=c.accuracy||99;if(p.timestamp>1.6e12)clkIn('g',p.timestamp);gAc=ac;gT=Date.now();gV=c.speed>0?c.speed:0;gS='GPS ±'+Math.round(ac)+' m · '+Math.round(gV*3.6)+' km/h';
 if(ac>30){gP=null;return}
+try{mpFix(c.latitude,c.longitude,ac)}catch(e){}
 if(gP){const s=hav(gP,c),mv=(c.speed==null||isNaN(c.speed))?s>=3:c.speed>=.5;if(mv&&s<200&&useG())addD(s)}
 gP={latitude:c.latitude,longitude:c.longitude}}
 function gps(){if(gW!==null)return true;if(!('geolocation' in navigator)){gS='GPS indisponível neste navegador';return false}
@@ -543,7 +612,7 @@ function showLog(){const n=L.filter(e=>e.delib).length;
 $('lc').textContent=L.length+(L.length==1?' correção registada, ':' correções registadas, ')+n+' contam para a análise.';
 $('lg').innerHTML=L.length?L.slice().reverse().slice(0,60).map(e=>`${e.h} · reg ${e.reg} · ${e.kind} · ${e.before}→${e.after} m (${e.delta>0?'+':''}${e.delta})${e.delib?'':' · não conta'}`).join('<br>'):'Ainda sem correções.'}
 function clrLog(){L=[];winC=[];saveL();showLog()}
-function logC(id,kind,delib,before,after){const km=Math.max(0,(before-lastCorrD)/1000),e={id,h:clock(),reg:cur+1,kind,delib,before:Math.round(before),after:Math.round(after),delta:Math.round((after-before)*10)/10,km:Math.round(km*1000)/1000};if(delib)lastCorrD=after;L.push(e);const rh=kind=='marco'||!!lk||lk0w||(seq[cur]&&seq[cur].t=='h');if(delib&&!rh)winC.push(e);saveL();showLog()}
+function logC(id,kind,delib,before,after){const km=Math.max(0,(before-lastCorrD)/1000),e={id,h:clock(),reg:cur+1,kind,delib,before:Math.round(before),after:Math.round(after),delta:Math.round((after-before)*10)/10,km:Math.round(km*1000)/1000};if(delib)lastCorrD=after;L.push(e);const rh=kind=='marco'||!!lk||lk0w||(seq[cur]&&seq[cur].t=='h');try{mpCorr(delib,!rh,after)}catch(x){}if(delib&&!rh)winC.push(e);saveL();showLog()}
 function act(kind,newD,delib){const el=(Date.now()-t0)/1000;if(st!='run'||isNaN(newD))return;
 if(fz){fzU.push(fzD);fzD=newD;return}
 const before=dr(el)+dOff,id=++lid;U.push({dOff,id,lcd:lastCorrD});dOff=newD-dr(el);logC(id,kind,delib,before,newD)}
@@ -591,7 +660,7 @@ const h='<i style="background:'+c+'"></i>'+t+(wkOk?'':' <b style="color:#ff453a"
 function recSug(){$('sg').hidden=true}
 
 let accOff=0,curD=0;
-function start(testNow,auto){if(!seq[cur])return;accOff=0;lk=null;hk=1;pk=-1;cdN=99;aw={};gM=0;fz=false;idx=0;bi=0;dOff=0;U=[];fzU=[];lastAn=0;lastCorrD=0;winC=[];lastSeg=-1;kN=0;kL=[];t0=testNow?Date.now():sched;dStart=auto?Date.now():t0;st='run';$('pr').hidden=true;$('sg').hidden=true;blank();
+function start(testNow,auto){if(!seq[cur])return;try{mpStart()}catch(x){}accOff=0;lk=null;hk=1;pk=-1;cdN=99;aw={};gM=0;fz=false;idx=0;bi=0;dOff=0;U=[];fzU=[];lastAn=0;lastCorrD=0;winC=[];lastSeg=-1;kN=0;kL=[];t0=testNow?Date.now():sched;dStart=auto?Date.now():t0;st='run';$('pr').hidden=true;$('sg').hidden=true;blank();
 if(!testNow){const e=(Date.now()-sched)/1000;if(e>0)dOff=-dr(e)}}
 function pqt(r,sch,n,lim){const late=Math.round((Date.now()-sch)/1000);
 $('pq').textContent=late<0?'A regularidade '+n+' ('+NM[r.t]+') começa às '+r.hi+', daqui a '+(-late)+' s. Dar início?':'Chegou a hora da regularidade '+n+' ('+NM[r.t]+', '+r.hi+'). Dar início?';
@@ -859,7 +928,7 @@ rb.buf=i<b.length?b.slice(i):null;if(rb.buf&&rb.buf.length>1100)rb.buf=null}
 function rbMsg(dv){const it=dv.getUint32(0,true),fix=dv.getUint8(20),fl=dv.getUint8(21),ok=fix==3&&(fl&1)==1,v=Math.max(0,dv.getInt32(48,true)/1000),dt=rb.it?((it-rb.it+604800000)%604800000)/1000:0,bt=dv.getUint8(67);
 {const vf=dv.getUint8(11),yy=dv.getUint16(4,true);if((vf&3)==3&&yy>=2020&&yy<2100)clkIn('r',Date.UTC(yy,dv.getUint8(6)-1,dv.getUint8(7),dv.getUint8(8),dv.getUint8(9),dv.getUint8(10))+dv.getInt32(16,true)/1e6)}
 rb.it=it;rb.t=Date.now();rb.n++;rb.fix=fix;rb.sv=dv.getUint8(23);rb.acc=dv.getUint32(40,true)/1000;rb.bat=bt&127;rb.chg=!!(bt&128);
-if(ok){rb.good++;if(rb.pv!==null&&dt>0&&dt<=.5&&src=='r'&&rb.good>=LIVE_N)addD((rb.pv+v)/2*dt);rb.pv=v;rb.v=v}else{rb.good=0;rb.pv=null;rb.v=0}}
+if(ok){try{mpFix(dv.getInt32(28,true)/1e7,dv.getInt32(24,true)/1e7,rb.acc)}catch(e){}rb.good++;if(rb.pv!==null&&dt>0&&dt<=.5&&src=='r'&&rb.good>=LIVE_N)addD((rb.pv+v)/2*dt);rb.pv=v;rb.v=v}else{rb.good=0;rb.pv=null;rb.v=0}}
 function say2(m){toast(m,5000);if(sm.includes('v'))say(m)}
 function rbWatch(){if(src!='r')return;const lv=rbLive();if(lv===rbWas)return;rbWas=lv;
 if(!lv){rbDown=true;if(st=='run'&&Date.now()>=dStart)gM+=rb.v*Math.min((Date.now()-rb.t)/1000,1.5);gP=null;say2('Racebox perdida. A usar o GPS do telemóvel.')}
@@ -927,8 +996,10 @@ function pmSum(){const g=i=>$(i),n=seq.length;g('sRg').textContent=n?n+(n==1?' r
 g('sAf').textContent='Fator atual: '+f1(af)+' m/km';g('sCk').textContent=$('ck1')?$('ck1').textContent:'';
 g('sRb').textContent=($('rbs').textContent||'').slice(0,70);g('sVz').textContent='';g('sLg').textContent=$('lc')?$('lc').textContent.slice(0,70):''}
 setInterval(()=>{if(!$('setup').hidden&&!pgCur)try{pmSum()}catch(e){}},1000);
-function arm(){if(armed||leaving)return;armed=true;try{history.pushState({m:1},'')}catch(e){}}
-['pointerdown','touchstart','keydown'].forEach(ev=>addEventListener(ev,arm,{capture:true,passive:true}));
+let hd=0;{const ps=history.pushState.bind(history);history.pushState=function(){hd++;return ps.apply(null,arguments)}}
+addEventListener('popstate',()=>{hd=Math.max(0,hd-1)});
+function arm(){if(leaving)return;armed=true;for(let n=0;hd<30&&n<30;n++){try{history.pushState({m:1},'')}catch(e){break}}}
+['pointerdown','pointerup','click','touchend','touchstart','keydown'].forEach(ev=>addEventListener(ev,arm,{capture:true,passive:true}));
 function pgShow(id){document.querySelectorAll('.pg').forEach(e=>e.hidden=true);$('pm').hidden=!!id;if(id)$('pg_'+id).hidden=false;pgCur=id;scrollTo(0,0)}
 function pgOpen(id){arm();pgShow(id);try{history.pushState({m:2},'');pgPushed=true}catch(e){}if(id=='pl')plPaint()}
 function pgClose(){pgShow('');try{pmSum()}catch(e){}}
@@ -941,7 +1012,100 @@ if(cfKind=='exit'){cfClose();armed=false;arm();return}
 const o=overlayOpen();
 if(o){if(o=='scn')scnClose();else if(o=='afe')afeCn();else if(o=='afp')afClose();else cfClose();if(pgPushed&&pgCur){pgPushed=false}else{armed=false;arm()}return}
 if(pgCur){pgClose();pgPushed=false;return}
-armed=false;arm();askC('Sair da app?',[['Não, ficar',null],['Sim, sair',()=>{leaving=true;history.back();setTimeout(()=>history.back(),120);setTimeout(()=>{try{window.close()}catch(e){}},400)}]],'exit')});
+armed=false;arm();askC('Sair da app?',[['Não, ficar',null],['Sim, sair',()=>{leaving=true;const n=hd;hd=0;if(n>0)history.go(-n);setTimeout(()=>history.back(),250);setTimeout(()=>history.back(),500);setTimeout(()=>{try{window.close()}catch(e){}},800)}]],'exit')});
+/* ---- mapa em segundo plano (v59): só mede falhas de GPS, não desenha nada ---- */
+let MP=null,mpOn=false,mpLast=null,mpGap=null,mpBusy=false;
+try{mpOn=localStorage.getItem('mapOn')=='1'}catch(e){}
+function mpIdb(){return new Promise((ok,ko)=>{const q=indexedDB.open('rp_map',1);q.onupgradeneeded=()=>q.result.createObjectStore('z');q.onsuccess=()=>ok(q.result);q.onerror=()=>ko(q.error)})}
+async function mpGet(){const d=await mpIdb();return new Promise((ok,ko)=>{const r=d.transaction('z').objectStore('z').get('zona');r.onsuccess=()=>ok(r.result||null);r.onerror=()=>ko(r.error)})}
+async function mpPut(v){const d=await mpIdb();return new Promise((ok,ko)=>{const t=d.transaction('z','readwrite');if(v)t.objectStore('z').put(v,'zona');else t.objectStore('z').delete('zona');t.oncomplete=ok;t.onerror=()=>ko(t.error)})}
+const mpC=0.002;
+function mpBuild(z){const n=z.lat.length,m=z.ea.length,deg=new Int32Array(n+1);
+for(let i=0;i<m;i++){deg[z.ea[i]]++;deg[z.eb[i]]++}
+const st=new Int32Array(n+1);for(let i=0;i<n;i++)st[i+1]=st[i]+deg[i];const fill=st.slice(0,n),adj=new Int32Array(2*m),ln=new Float32Array(m),g=new Map();
+const k0=Math.cos(z.lat[0]*Math.PI/180);
+for(let i=0;i<m;i++){const a=z.ea[i],b=z.eb[i];adj[fill[a]++]=i;adj[fill[b]++]=i;
+const dy=(z.lat[b]-z.lat[a])*111195,dx=(z.lon[b]-z.lon[a])*111195*k0;ln[i]=Math.hypot(dx,dy);
+const x0=Math.floor(Math.min(z.lat[a],z.lat[b])/mpC),x1=Math.floor(Math.max(z.lat[a],z.lat[b])/mpC),y0=Math.floor(Math.min(z.lon[a],z.lon[b])/mpC),y1=Math.floor(Math.max(z.lon[a],z.lon[b])/mpC);
+for(let x=x0;x<=x1;x++)for(let y=y0;y<=y1;y++){const key=x+'_'+y;let q=g.get(key);if(!q)g.set(key,q=[]);q.push(i)}}
+return{z,st,adj,ln,g,k0}}
+function mpSnap(la,lo){if(!MP)return null;const z=MP.z,k0=MP.k0;let best=null;
+for(let r=0;r<=2&&!best;r++){const cx=Math.floor(la/mpC),cy=Math.floor(lo/mpC);
+for(let x=cx-1-r;x<=cx+1+r;x++)for(let y=cy-1-r;y<=cy+1+r;y++){const q=MP.g.get(x+'_'+y);if(!q)continue;
+for(const i of q){const a=z.ea[i],b=z.eb[i],ay=z.lat[a],ax=z.lon[a],by=z.lat[b],bx=z.lon[b];
+const vx=(bx-ax)*111195*k0,vy=(by-ay)*111195,wx=(lo-ax)*111195*k0,wy=(la-ay)*111195,L2=vx*vx+vy*vy;let t=L2>0?(wx*vx+wy*vy)/L2:0;t=Math.max(0,Math.min(1,t));
+const d=Math.hypot(wx-t*vx,wy-t*vy);if(d<=50&&(!best||d<best.d))best={e:i,t,d,a,b}}}}
+return best}
+function mpPath(s,e,maxC){const z=MP.z,L=MP.ln;if(s.e==e.e)return Math.abs(e.t-s.t)*L[s.e];
+const n=z.lat.length,D=new Float64Array(n).fill(Infinity),h=[];
+function push(c,v){h.push([c,v]);let i=h.length-1;while(i>0){const p=(i-1)>>1;if(h[p][0]<=h[i][0])break;[h[p],h[i]]=[h[i],h[p]];i=p}}
+function pop(){const t=h[0],l=h.pop();if(h.length){h[0]=l;let i=0;for(;;){let a=2*i+1,b=a+1,m=i;if(a<h.length&&h[a][0]<h[m][0])m=a;if(b<h.length&&h[b][0]<h[m][0])m=b;if(m==i)break;[h[m],h[i]]=[h[i],h[m]];i=m}}return t}
+D[s.a]=s.t*L[s.e];push(D[s.a],s.a);{const c=(1-s.t)*L[s.e];if(c<D[s.b]){D[s.b]=c;push(c,s.b)}}
+let best=Infinity;const ca=e.t*L[e.e],cb=(1-e.t)*L[e.e];
+while(h.length){const[c,u]=pop();if(c>D[u])continue;if(c>maxC||c>=best)break;
+if(u==e.a)best=Math.min(best,c+ca);if(u==e.b)best=Math.min(best,c+cb);
+for(let k=MP.st[u];k<MP.st[u+1];k++){const i=MP.adj[k],v=z.ea[i]==u?z.eb[i]:z.ea[i],nc=c+L[i];if(nc<D[v]){D[v]=nc;push(nc,v)}}}
+return best==Infinity?null:best}
+function mpFix(la,lo,ac){if(!mpOn||!MP||st!='run')return;const now=Date.now();
+if(mpGap){const g=mpGap;mpGap=null;mpP=null;const dur=(now-g.t)/1000;if(dur>=4&&dur<=900)mpEnd(g,la,lo,now)}
+mpLast={la,lo,t:now};mpStep(la,lo,now)}
+function mpEnd(g,la,lo,now){const s=mpSnap(g.la,g.lo),e=mpSnap(la,lo);if(!s||!e)return;
+const dur=(now-g.t)/1000,fl=Math.hypot((la-g.la)*111195,(lo-g.lo)*111195*Math.cos(la*Math.PI/180)),dm=mpPath(s,e,Math.max(3*fl+1500,3000));if(dm===null)return;
+if(dm/dur*3.6>260)return;mpMdV+=dm;const meas=dNow()-g.d,corr=Math.round(dm-meas);if(Math.abs(corr)<4)return;
+const msg='O GPS esteve '+Math.round(dur)+' s sem sinal. No mapa fizeste cerca de '+Math.round(dm)+' m nesse troço e o odómetro contou '+Math.round(meas)+' m. Corrigir '+(corr>0?'+':'−')+Math.abs(corr)+' m?';
+askC(msg,[['Corrigir '+(corr>0?'+':'−')+Math.abs(corr)+' m',()=>act('mapa (falha de GPS)',dNow()+corr,false)],['Ignorar',null]],'mapa');if(sm.includes('v'))say('Falha de GPS. Sugestão de correção no ecrã.')}
+setInterval(()=>{if(!mpOn||!MP||st!='run'||mpGap||!mpLast)return;if(Date.now()-mpLast.t>3000)mpGap={la:mpLast.la,lo:mpLast.lo,t:mpLast.t,d:dNow()}},500);
+
+/* fator do mapa e alerta de diferença */
+let mpRefPend=true,mpTaint=false,mpP=null,mpMd=0,mpOd0=0,mpSm=[],mpMdV=0,mpRef=0,mpCool=0,mpFm=1,mpKm=0,mpN=0,mpSeg=[],mpLim=4;
+try{mpSeg=JSON.parse(localStorage.getItem('mapSeg')||'[]')||[];const l=parseFloat(localStorage.getItem('mapLim'));if(l>0)mpLim=l}catch(e){}
+function mpFmCalc(){let a=mpSeg.filter(x=>x.m>=150&&x.o>=150);mpFm=1;mpKm=0;mpN=0;if(!a.length)return;
+if(a.length>=3){const r=a.map(x=>x.o/x.m).sort((x,y)=>x-y),n=r.length,md=n%2?r[(n-1)/2]:(r[n/2-1]+r[n/2])/2;a=a.filter(x=>Math.abs(x.o/x.m-md)<=Math.max(.01,.5*Math.abs(md-1)))}
+const o=a.reduce((x,y)=>x+y.o,0),m=a.reduce((x,y)=>x+y.m,0);if(m>0){mpFm=o/m;mpKm=m/1000;mpN=a.length}}
+function mpSaveSeg(){try{localStorage.setItem('mapSeg',JSON.stringify(mpSeg))}catch(e){}}
+function mpReset(){mpMd=0;mpOd0=dNow();mpSm=[]}
+function mpStart(){mpP=null;mpMdV=0;mpRef=0;mpRefPend=true;mpTaint=false;mpCool=0;mpReset()}
+function mpCorr(delib,valid,after){if(delib)mpFlush();if(delib){const org=after-mpRef;if(valid&&!mpTaint&&!mpRefPend&&mpMdV>=150&&org>=150){mpSeg.push({o:Math.round(org),m:Math.round(mpMdV)});if(mpSeg.length>40)mpSeg.shift();mpSaveSeg();mpFmCalc();mpFa()}mpMdV=0;mpTaint=false;mpRef=after;mpRefPend=!mpP}mpReset()}
+function mpFlush(){if(mpOn&&MP&&mpLast&&mpP&&st=='run'&&Date.now()-mpLast.t<1500)mpStep(mpLast.la,mpLast.lo,mpLast.t,true)}
+function mpStep(la,lo,now,force){if(fz||(seq[cur]&&seq[cur].t=='n')||now<t0){mpP=null;return}
+if(mpP&&!force&&now-mpP.t<900)return;const s=mpSnap(la,lo);if(!s){mpP=null;mpTaint=true;mpReset();return}
+if(!mpP){mpP={la,lo,s,t:now};if(mpRefPend){mpRef=dNow();mpRefPend=false}mpReset();return}
+const fl=Math.hypot((la-mpP.la)*111195,(lo-mpP.lo)*111195*Math.cos(la*Math.PI/180));if(fl<(force?.5:10))return;
+const dm=mpPath(mpP.s,s,3*fl+200);mpP={la,lo,s,t:now};
+if(dm===null||dm>2*fl+60||dm<.5*fl-20){mpTaint=true;mpReset();return}
+mpMd+=dm;mpMdV+=dm;const diff=mpMd*mpFm-(dNow()-mpOd0);mpSm.push([now,diff]);while(mpSm.length&&now-mpSm[0][0]>12000)mpSm.shift();mpAlert(now)}
+function mpAlert(now){if(mpKm<.5||now<mpCool||mpSm.length<6||now-mpSm[0][0]<10000)return;
+let mn=1e9,mx=-1e9;for(const x of mpSm){if(x[1]<mn)mn=x[1];if(x[1]>mx)mx=x[1]}
+if(mx-mn>3)return;const m=(mn+mx)/2;if(Math.abs(m)<mpLim)return;
+if(!$('cf').hidden||!$('sg').hidden||!$('pr').hidden||!$('afp').hidden)return;
+const c=Math.round(m);mpCool=now+60000;const sg=(c>0?'+':'−')+Math.abs(c)+' m';
+askC('Pelo mapa, o odómetro está '+Math.abs(c)+' m a '+(c>0?'menos':'mais')+'. Corrigir '+sg+'?',[['Corrigir '+sg,()=>act('mapa (diferença)',dNow()+c,false)],['Ignorar',()=>mpReset()]],'mapa');if(sm.includes('v'))say('Diferença para o mapa. Sugestão de correção no ecrã.')}
+function mpFa(){const e=$('mpFa');if(!e)return;e.textContent=mpN?'Fator do mapa: '+(mpFm>=1?'+':'−')+Math.abs((mpFm-1)*100).toFixed(2).replace('.',',')+' % ('+mpN+(mpN==1?' troço':' troços')+', '+mpKm.toFixed(1).replace('.',',')+' km). O alerta só começa com pelo menos 0,5 km medidos.':'Fator do mapa: ainda por medir. Aprende com as correções válidas na prova (as mesmas da aferição).'}
+function mpLimSet(){const v=num($('mpLim').value);if(v>0){mpLim=v;try{localStorage.setItem('mapLim',String(v))}catch(e){}}}
+function mpFmReset(){mpSeg=[];mpSaveSeg();mpFmCalc();mpFa()}
+mpFmCalc();
+function mpTxt(m){$('mpS').textContent=m}
+async function mpInit(){try{$('mpLim').value=String(mpLim).replace('.',',');mpFa();const z=await mpGet();MP=z?mpBuild(z):null;$('mpOn').value=mpOn?'1':'0';if(z){$('mpLat').value=String(z.c[0]).replace('.',',');$('mpLon').value=String(z.c[1]).replace('.',',');mpTxt('Zona guardada: '+z.lat.length+' pontos, '+z.ea.length+' troços de estrada ('+z.date+').')}else mpTxt('Ainda sem mapa guardado.');mpSum()}catch(e){mpTxt('O telemóvel não deixou guardar o mapa.')}}
+function mpSum(){const e=$('sMp');if(e)e.textContent=!mpOn?'Desligado':MP?'Ligado, zona guardada':'Ligado, falta descarregar a zona'}
+function mpSetOn(){mpOn=$('mpOn').value=='1';try{localStorage.setItem('mapOn',mpOn?'1':'0')}catch(e){}mpSum()}
+function mpHere(){if(!navigator.geolocation){mpTxt('GPS indisponível.');return}mpTxt('A procurar a tua posição…');navigator.geolocation.getCurrentPosition(p=>{$('mpLat').value=p.coords.latitude.toFixed(5).replace('.',',');$('mpLon').value=p.coords.longitude.toFixed(5).replace('.',',');mpTxt('Posição preenchida.')},()=>mpTxt('Não consegui a posição. Escreve a latitude e a longitude.'),{enableHighAccuracy:true,timeout:15000})}
+async function mpDown(){if(mpBusy)return;const la=num($('mpLat').value),lo=num($('mpLon').value),R=Math.min(25,num($('mpR').value));
+if(isNaN(la)||isNaN(lo)||!(R>0)||Math.abs(la)>90||Math.abs(lo)>180){mpTxt('Preenche a latitude, a longitude e o raio.');return}
+mpBusy=true;mpTxt('A descarregar a zona… pode demorar um ou dois minutos.');
+try{const dl=R/111.195,dn=R/(111.195*Math.cos(la*Math.PI/180)),bb=[la-dl,lo-dn,la+dl,lo+dn].map(v=>v.toFixed(5)).join(',');
+const q='[out:json][timeout:120];way["highway"]["highway"!~"^(footway|path|steps|cycleway|pedestrian|bridleway|corridor|elevator|platform|proposed|construction|raceway)$"]["access"!~"^(no|private)$"]('+bb+');out geom;';
+const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),170000);
+const r=await fetch('https://overpass-api.de/api/interpreter',{method:'POST',body:'data='+encodeURIComponent(q),headers:{'Content-Type':'application/x-www-form-urlencoded'},signal:ac.signal});clearTimeout(tm);
+if(!r.ok)throw new Error('servidor '+r.status);const j=await r.json();const z=mpPack(j,[la,lo]);if(!z.ea.length)throw new Error('sem estradas');
+await mpPut(z);MP=mpBuild(z);mpTxt('Zona guardada: '+z.lat.length+' pontos, '+z.ea.length+' troços de estrada.');mpSum()}
+catch(e){mpTxt('Não consegui descarregar ('+(e&&e.message||e)+'). Precisa de internet. Tenta com um raio menor.')}
+mpBusy=false}
+function mpPack(j,c){const id=new Map(),la=[],lo=[],ea=[],eb=[];
+(j.elements||[]).forEach(w=>{if(!w.geometry||!w.nodes||w.nodes.length!=w.geometry.length)return;let p=-1;
+w.nodes.forEach((nid,i)=>{let k=id.get(nid);if(k===undefined){k=la.length;id.set(nid,k);la.push(w.geometry[i].lat);lo.push(w.geometry[i].lon)}if(p>=0&&p!=k){ea.push(p);eb.push(k)}p=k})});
+return{lat:Float64Array.from(la),lon:Float64Array.from(lo),ea:Int32Array.from(ea),eb:Int32Array.from(eb),c,date:new Date().toISOString().slice(0,10)}}
+async function mpDel(){try{await mpPut(null);MP=null;mpTxt('Mapa apagado.');mpSum()}catch(e){mpTxt('Não consegui apagar.')}}
+mpInit();
 /* ---- modo piloto ---- */
 let plPC=null,plCh=null,plRole='',plLast='',plTm=0;
 function plRoleSel(r){$('plN').hidden=r!='n';$('plP').hidden=r!='p';$('plrn').className=r=='n'?'':'s';$('plrp').className=r=='p'?'':'s'}
