@@ -129,7 +129,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 #sct{position:absolute;left:0;right:0;top:16px;text-align:center;font-size:19px;font-weight:700;text-shadow:0 0 6px #000}
 #scc{position:absolute;left:16px;right:16px;bottom:24px;width:auto}
 #pex{position:fixed;right:6px;top:6px;z-index:20;width:auto;padding:4px 12px;margin:0;background:#2a3038;color:var(--fg);opacity:.5}
-</style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
+</style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0c0e11">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -137,7 +137,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 
 <div id="setup">
 <div id="bk" hidden style="position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:8px"><button onclick="voltar()">Voltar à prova</button><button class="s" id="tb" onclick="endTap()">Terminar prova</button></div>
-<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 61</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
+<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 62</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
 <div id="pm"><div class="card"><h1>Rally</h1>
 <label style="margin-top:0">Nome do rally</label><input id="rn0" placeholder="Ex.: Rally de Fafe" aria-label="Nome do rally" onchange="setRName(this.value)">
 <label>Hora de início do rally (partida)</label><input id="h0" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0n" style="text-align:left;font-size:15px;margin-top:4px"></div>
@@ -223,13 +223,19 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 <h1>Mapa em segundo plano</h1>
 <div class="mut" style="text-align:left;font-size:15px">Trabalha em segundo plano, sem desenhar nenhum mapa. Quando o GPS falha (túneis, árvores), a app mede no mapa a distância percorrida e, quando o sinal volta, sugere a correção. Durante a prova também compara o odómetro com o mapa e avisa se a diferença ficar estável. Nunca corrige sozinha: tu decides.</div>
 <label>Usar o mapa nas provas</label><select id="mpOn" onchange="mpSetOn()"><option value="0">Desligado</option><option value="1">Ligado</option></select>
-<label>Zona do rali: centro (latitude, longitude)</label><div class="r2"><input id="mpLat" inputmode="decimal" placeholder="latitude" style="flex:1;min-width:0"><input id="mpLon" inputmode="decimal" placeholder="longitude" style="flex:1;min-width:0"></div>
+<label>Região inteira</label><div class="r2"><select id="mpReg" style="flex:1;min-width:0"><option>Viana do Castelo</option><option>Braga</option><option>Porto</option><option>Vila Real</option><option>Bragança</option><option>Aveiro</option><option>Viseu</option><option>Guarda</option><option>Coimbra</option><option>Castelo Branco</option><option>Leiria</option><option>Santarém</option><option>Portalegre</option><option>Lisboa</option><option>Setúbal</option><option>Évora</option><option>Beja</option><option>Faro</option><option>Madeira</option></select></div>
+<button onclick="mpDownReg()">Descarregar a região (precisa de internet)</button>
+<label>Percurso GPX ou KML (descarrega só uma faixa à volta)</label><input type="file" id="mpF" accept=".gpx,.kml,application/gpx+xml,application/vnd.google-earth.kml+xml" onchange="mpImport(this)">
+<label>Ou: centro e raio (latitude, longitude)</label><div class="r2"><input id="mpLat" inputmode="decimal" placeholder="latitude" style="flex:1;min-width:0"><input id="mpLon" inputmode="decimal" placeholder="longitude" style="flex:1;min-width:0"></div>
 <button class="s" onclick="mpHere()">Usar a minha posição</button>
-<label>Raio da zona (km, máximo 25)</label><input id="mpR" inputmode="decimal" value="15">
-<button onclick="mpDown()">Descarregar a zona (precisa de internet)</button>
+<label>Raio (km, até 200)</label><input id="mpR" inputmode="decimal" value="15">
+<button onclick="mpDown()">Descarregar o raio (precisa de internet)</button>
+<button class="s" onclick="mpStopB()">Parar a descarga</button>
+<label>Zonas guardadas</label><div id="mpZl"></div>
 <label>Diferença mínima para sugerir correção (m)</label><input id="mpLim" inputmode="decimal" value="4" oninput="mpLimSet()"><div class="mut" style="text-align:left;font-size:14px">Só avisa quando a diferença entre o odómetro e o mapa fica estável durante 10 segundos. Enquanto varia depressa, não diz nada.</div>
 <div id="mpFa" class="mut" style="text-align:left;font-size:15px;margin-top:6px"></div><button class="s" onclick="mpFmReset()">Repor o fator do mapa</button>
-<button class="s dg2" onclick="mpDel()">Apagar o mapa guardado</button>
+<button class="s dg2" onclick="mpDel()">Apagar todo o mapa</button>
+<div id="mpPf" class="mut" style="text-align:left;font-size:13px;margin-top:6px"></div>
 <div id="mpS" class="mut" style="text-align:left;font-size:15px;margin-top:8px"></div></div></div>
 <div class="pg" id="pg_pl" hidden><div class="pgh"><button class="s" onclick="pgBack()">← Preparar rally</button></div>
 <div class="card"><h1>Modo piloto</h1>
@@ -1019,7 +1025,7 @@ askC('Sair da app?',[['Não, ficar',null],['Sim, sair',()=>{leaving=true;const n
 /* ---- mapa em segundo plano (v59): só mede falhas de GPS, não desenha nada ---- */
 let MP=null,mpOn=false,mpLast=null,mpGap=null,mpBusy=false;
 try{mpOn=localStorage.getItem('mapOn')=='1'}catch(e){}
-function mpIdb(){return new Promise((ok,ko)=>{const q=indexedDB.open('rp_map',1);q.onupgradeneeded=()=>q.result.createObjectStore('z');q.onsuccess=()=>ok(q.result);q.onerror=()=>ko(q.error)})}
+function mpIdb(){return new Promise((ok,ko)=>{const q=indexedDB.open('rp_map',2);q.onupgradeneeded=()=>{const d=q.result;if(!d.objectStoreNames.contains('z'))d.createObjectStore('z');if(!d.objectStoreNames.contains('m'))d.createObjectStore('m')};q.onsuccess=()=>ok(q.result);q.onerror=()=>ko(q.error)})}
 async function mpGet(){const d=await mpIdb();return new Promise((ok,ko)=>{const r=d.transaction('z').objectStore('z').get('zona');r.onsuccess=()=>ok(r.result||null);r.onerror=()=>ko(r.error)})}
 async function mpPut(v){const d=await mpIdb();return new Promise((ok,ko)=>{const t=d.transaction('z','readwrite');if(v)t.objectStore('z').put(v,'zona');else t.objectStore('z').delete('zona');t.oncomplete=ok;t.onerror=()=>ko(t.error)})}
 const mpC=0.002;
@@ -1049,7 +1055,7 @@ while(h.length){const[c,u]=pop();if(c>D[u])continue;if(c>maxC||c>=best)break;
 if(u==e.a)best=Math.min(best,c+ca);if(u==e.b)best=Math.min(best,c+cb);
 for(let k=MP.st[u];k<MP.st[u+1];k++){const i=MP.adj[k],v=z.ea[i]==u?z.eb[i]:z.ea[i],nc=c+L[i];if(nc<D[v]){D[v]=nc;push(nc,v)}}}
 return best==Infinity?null:best}
-function mpFix(la,lo,ac){if(!mpOn||!MP||st!='run')return;const now=Date.now();
+function mpFix(la,lo,ac){if(!mpOn)return;const now=Date.now();mpPos={la,lo,t:now};if(mpTk(la,lo)!=mpActK)mpAround(la,lo);if(now-mpSv>30000){mpSv=now;try{localStorage.setItem('mapLastPos',JSON.stringify([la,lo]))}catch(e){}}if(!MP||st!='run')return;
 if(mpGap){const g=mpGap;mpGap=null;mpP=null;const dur=(now-g.t)/1000;if(dur>=4&&dur<=900)mpEnd(g,la,lo,now)}
 mpLast={la,lo,t:now};mpStep(la,lo,now)}
 function mpEnd(g,la,lo,now){const s=mpSnap(g.la,g.lo),e=mpSnap(la,lo);if(!s||!e)return;
@@ -1071,10 +1077,10 @@ function mpStart(){mpP=null;mpMdV=0;mpRef=0;mpRefPend=true;mpTaint=false;mpCool=
 function mpCorr(delib,valid,after){if(delib)mpFlush();if(delib){const org=after-mpRef;if(valid&&!mpTaint&&!mpRefPend&&mpMdV>=150&&org>=150){mpSeg.push({o:Math.round(org),m:Math.round(mpMdV)});if(mpSeg.length>40)mpSeg.shift();mpSaveSeg();mpFmCalc();mpFa()}mpMdV=0;mpTaint=false;mpRef=after;mpRefPend=!mpP}mpReset()}
 function mpFlush(){if(mpOn&&MP&&mpLast&&mpP&&st=='run'&&Date.now()-mpLast.t<1500)mpStep(mpLast.la,mpLast.lo,mpLast.t,true)}
 function mpStep(la,lo,now,force){if(fz||(seq[cur]&&seq[cur].t=='n')||now<t0){mpP=null;return}
-if(mpP&&!force&&now-mpP.t<900)return;const s=mpSnap(la,lo);if(!s){mpP=null;mpTaint=true;mpReset();return}
+if(mpP&&!force&&now-mpP.t<900)return;const sn0=performance.now();const s=mpSnap(la,lo);mpSnapMs=performance.now()-sn0;if(!s){mpP=null;mpTaint=true;mpReset();return}
 if(!mpP){mpP={la,lo,s,t:now};if(mpRefPend){mpRef=dNow();mpRefPend=false}mpReset();return}
 const fl=Math.hypot((la-mpP.la)*111195,(lo-mpP.lo)*111195*Math.cos(la*Math.PI/180));if(fl<(force?.5:10))return;
-const dm=mpPath(mpP.s,s,3*fl+200);mpP={la,lo,s,t:now};
+const pf0=performance.now();const dm=mpPath(mpP.s,s,3*fl+200);mpPerf(performance.now()-pf0+mpSnapMs);mpP={la,lo,s,t:now};
 if(dm===null||dm>2*fl+60||dm<.5*fl-20){mpTaint=true;mpReset();return}
 mpMd+=dm;mpMdV+=dm;const diff=mpMd*mpFm-(dNow()-mpOd0);mpSm.push([now,diff]);while(mpSm.length&&now-mpSm[0][0]>12000)mpSm.shift();mpAlert(now)}
 function mpAlert(now){if(mpKm<.5||now<mpCool||mpSm.length<6||now-mpSm[0][0]<10000)return;
@@ -1087,27 +1093,99 @@ function mpFa(){const e=$('mpFa');if(!e)return;e.textContent=mpN?'Fator do mapa:
 function mpLimSet(){const v=num($('mpLim').value);if(v>0){mpLim=v;try{localStorage.setItem('mapLim',String(v))}catch(e){}}}
 function mpFmReset(){mpSeg=[];mpSaveSeg();mpFmCalc();mpFa()}
 mpFmCalc();
-function mpTxt(m){$('mpS').textContent=m}
-async function mpInit(){try{$('mpLim').value=String(mpLim).replace('.',',');mpFa();const z=await mpGet();MP=z?mpBuild(z):null;$('mpOn').value=mpOn?'1':'0';if(z){$('mpLat').value=String(z.c[0]).replace('.',',');$('mpLon').value=String(z.c[1]).replace('.',',');mpTxt('Zona guardada: '+z.lat.length+' pontos, '+z.ea.length+' troços de estrada ('+z.date+').')}else mpTxt('Ainda sem mapa guardado.');mpSum()}catch(e){mpTxt('O telemóvel não deixou guardar o mapa.')}}
-function mpSum(){const e=$('sMp');if(e)e.textContent=!mpOn?'Desligado':MP?'Ligado, zona guardada':'Ligado, falta descarregar a zona'}
-function mpSetOn(){mpOn=$('mpOn').value=='1';try{localStorage.setItem('mapOn',mpOn?'1':'0')}catch(e){}mpSum()}
-function mpHere(){if(!navigator.geolocation){mpTxt('GPS indisponível.');return}mpTxt('A procurar a tua posição…');navigator.geolocation.getCurrentPosition(p=>{$('mpLat').value=p.coords.latitude.toFixed(5).replace('.',',');$('mpLon').value=p.coords.longitude.toFixed(5).replace('.',',');mpTxt('Posição preenchida.')},()=>mpTxt('Não consegui a posição. Escreve a latitude e a longitude.'),{enableHighAccuracy:true,timeout:15000})}
-async function mpDown(){if(mpBusy)return;const la=num($('mpLat').value),lo=num($('mpLon').value),R=Math.min(25,num($('mpR').value));
+function mpTxt(m){const e=$('mpS');if(e)e.textContent=m}
+/* blocos de mapa (v62): grelha fixa, um registo por bloco, o grosso do trabalho num worker */
+const MPG=[0.2,0.25];let mpMeta={},mpPos=null,mpActK='',mpLoading=false,mpQ=[],mpQd=0,mpQn=0,mpStopQ=false,mpAskT=0,mpSnapMs=0,mpTm=[],mpSlow=0,mpPfT=0,mpWk=null,mpBuildMs=0;
+function mpTk(la,lo){return Math.floor(la/MPG[0])+'_'+Math.floor(lo/MPG[1])}
+function mpTidx(k){const p=k.split('_');return[+p[0],+p[1]]}
+function mpTb(k){const[iy,ix]=mpTidx(k);return[iy*MPG[0],ix*MPG[1],(iy+1)*MPG[0],(ix+1)*MPG[1]]}
+function mpKeysBox(s0,w,n,e){const o=[];for(let y=Math.floor(s0/MPG[0]);y<=Math.floor(n/MPG[0]);y++)for(let x=Math.floor(w/MPG[1]);x<=Math.floor(e/MPG[1]);x++)o.push(y+'_'+x);return o}
+function mpDistTile(k,la,lo){const b=mpTb(k),cy=Math.max(b[0],Math.min(b[2],la)),cx=Math.max(b[1],Math.min(b[3],lo));return Math.hypot((cy-la)*111195,(cx-lo)*111195*Math.cos(la*Math.PI/180))}
+const MPREG={'Viana do Castelo':[41.60,-8.95,42.16,-8.00],'Braga':[41.35,-8.85,41.90,-7.85],'Porto':[40.95,-8.80,41.50,-7.85],'Vila Real':[41.00,-8.10,42.00,-7.10],'Bragança':[41.00,-7.35,41.99,-6.18],'Aveiro':[40.30,-8.85,41.05,-7.85],'Viseu':[40.40,-8.40,41.30,-7.35],'Guarda':[40.15,-7.75,41.30,-6.80],'Coimbra':[39.85,-8.95,40.50,-7.60],'Castelo Branco':[39.35,-8.20,40.35,-6.85],'Leiria':[39.35,-9.50,40.00,-8.10],'Santarém':[38.85,-9.05,39.80,-7.80],'Portalegre':[38.85,-8.15,39.75,-7.05],'Lisboa':[38.40,-9.55,39.30,-8.85],'Setúbal':[37.95,-9.25,38.85,-8.00],'Évora':[38.20,-8.60,39.05,-7.15],'Beja':[37.15,-8.45,38.45,-7.10],'Faro':[36.95,-8.95,37.60,-7.40],'Madeira':[32.55,-17.30,33.15,-16.25]};
+const MPW="const mpPack="+mpPack.toString()+";\nfunction idb(){return new Promise((ok,ko)=>{const q=indexedDB.open('rp_map',2);q.onupgradeneeded=()=>{const d=q.result;if(!d.objectStoreNames.contains('z'))d.createObjectStore('z');if(!d.objectStoreNames.contains('m'))d.createObjectStore('m')};q.onsuccess=()=>ok(q.result);q.onerror=()=>ko(q.error)})}\nonmessage=async e=>{const m=e.data;try{const q='[out:json][timeout:90];way[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|unclassified|residential|living_street)(_link)?$\"][\"access\"!~\"^(no|private)$\"]('+m.bb+');out skel geom qt;';\nconst r=await fetch(m.url,{method:'POST',body:'data='+encodeURIComponent(q),headers:{'Content-Type':'application/x-www-form-urlencoded'}});if(!r.ok)throw new Error('servidor '+r.status);const j=await r.json();const z=mpPack(j,m.c);z.k=m.k;\nconst bytes=z.lat.byteLength+z.lon.byteLength+z.ea.byteLength+z.eb.byteLength+z.id.byteLength;const meta={k:m.k,g:m.g,date:z.date,bytes,pts:z.lat.length,ed:z.ea.length,t:Date.now()};\nconst d=await idb();await new Promise((ok,ko)=>{const t=d.transaction(['z','m'],'readwrite');t.objectStore('z').put(z,'b:'+m.k);t.objectStore('m').put(meta,m.k);t.oncomplete=ok;t.onerror=()=>ko(t.error)});d.close();postMessage({id:m.id,meta})}catch(err){postMessage({id:m.id,err:String(err&&err.message||err)})}};";
+function mpWorker(){if(!mpWk){mpWk=new Worker(URL.createObjectURL(new Blob([MPW],{type:'text/javascript'})))}return mpWk}
+let mpWid=0,mpSv=0;
+function mpWork(it){return new Promise((ok,ko)=>{const w=mpWorker(),id=++mpWid,b=mpTb(it.k),bb=b.map(v=>v.toFixed(4)).join(',');const tm=setTimeout(()=>{w.removeEventListener('message',h);try{w.terminate()}catch(e){}mpWk=null;ko(new Error('demorou demasiado'))},150000);
+function h(e){if(e.data.id!=id)return;clearTimeout(tm);w.removeEventListener('message',h);e.data.err?ko(new Error(e.data.err)):ok(e.data.meta)}
+w.addEventListener('message',h);w.postMessage({id,k:it.k,g:it.g,bb,c:[(b[0]+b[2])/2,(b[1]+b[3])/2],url:window.MPURL||'https://overpass-api.de/api/interpreter'})})}
+const mpSleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function mpMetaLoad(){const d=await mpIdb();const all=await new Promise((ok,ko)=>{const r=d.transaction('m').objectStore('m').getAll();r.onsuccess=()=>ok(r.result||[]);r.onerror=()=>ko(r.error)});mpMeta={};all.forEach(m=>mpMeta[m.k]=m);
+const lk2=await new Promise(ok=>{const r=d.transaction('z').objectStore('z').getKey('zona');r.onsuccess=()=>ok(r.result);r.onerror=()=>ok(null)});if(lk2){const lz=mpOn||!1?await mpGet():null;mpMeta['legacy']={k:'legacy',g:'Zona antiga (versão 59)',bytes:lz?lz.lat.byteLength+lz.lon.byteLength+lz.ea.byteLength+lz.eb.byteLength:0,pts:lz?lz.lat.length:0,ed:0,date:'',t:0}}}
+function mpEnq(keys,g,auto){let n=0;keys.forEach(k=>{if(mpMeta[k]||mpQ.some(x=>x.k==k))return;mpQ.push({k,g,auto,tries:0});n++;mpQn++});if(n)mpRunQ();return n}
+async function mpRunQ(){if(mpBusy||!mpQ.length)return;mpBusy=true;mpStopQ=false;
+while(mpQ.length&&!mpStopQ){const it=mpQ[0];mpTxt('A descarregar o bloco '+(mpQd+1)+' de '+mpQn+'…');
+try{const m=await mpWork(it);mpMeta[it.k]=m;mpQ.shift();mpQd++;mpList();if(it.auto)mpPrune();if(mpPos){const a=mpTidx(mpTk(mpPos.la,mpPos.lo)),b=mpTidx(it.k);if(Math.abs(a[0]-b[0])<=1&&Math.abs(a[1]-b[1])<=1)mpActK=''}}
+catch(e){it.tries++;if(it.tries>=3){mpQ.shift();mpQn=Math.max(0,mpQn-1);mpTxt('Não consegui o bloco '+it.k+' ('+(e&&e.message||e)+'). Precisa de internet.')}else await mpSleep(4000)}
+await mpSleep(1200)}
+mpBusy=false;if(mpStopQ){mpQ=[];mpQn=mpQd=0;mpTxt('Descarga parada.')}else if(!mpQ.length){mpTxt('Descarga concluída: '+mpQd+(mpQd==1?' bloco':' blocos')+'.');mpQn=mpQd=0}
+mpActK='';if(mpPos)mpAround(mpPos.la,mpPos.lo);mpSum();mpList()}
+function mpStopB(){mpStopQ=true}
+async function mpMerge(recs){const id=new Map(),la=[],lo=[],ea=[],eb=[],es=new Set();
+for(const z of recs){const n=z.lat.length,map=new Int32Array(n);
+for(let i=0;i<n;i++){let k;if(z.id){k=id.get(z.id[i]);if(k===undefined){k=la.length;id.set(z.id[i],k);la.push(z.lat[i]);lo.push(z.lon[i])}}else{k=la.length;la.push(z.lat[i]);lo.push(z.lon[i])}map[i]=k}
+for(let i=0;i<z.ea.length;i++){const a=map[z.ea[i]],b=map[z.eb[i]];if(a==b)continue;const kk=a<b?a*1e8+b:b*1e8+a;if(es.has(kk))continue;es.add(kk);ea.push(a);eb.push(b)}
+await mpSleep(0)}
+return{lat:Float64Array.from(la),lon:Float64Array.from(lo),ea:Int32Array.from(ea),eb:Int32Array.from(eb),c:[la[0],lo[0]],date:''}}
+async function mpBuildA(z){const n=z.lat.length,m=z.ea.length,deg=new Int32Array(n+1);
+for(let i=0;i<m;i++){deg[z.ea[i]]++;deg[z.eb[i]]++}
+const st2=new Int32Array(n+1);for(let i=0;i<n;i++)st2[i+1]=st2[i]+deg[i];const fill=st2.slice(0,n),adj=new Int32Array(2*m),ln=new Float32Array(m),g=new Map(),k0=Math.cos(z.lat[0]*Math.PI/180);
+for(let i=0;i<m;i++){const a=z.ea[i],b=z.eb[i];adj[fill[a]++]=i;adj[fill[b]++]=i;
+const dy=(z.lat[b]-z.lat[a])*111195,dx=(z.lon[b]-z.lon[a])*111195*k0;ln[i]=Math.hypot(dx,dy);
+const x0=Math.floor(Math.min(z.lat[a],z.lat[b])/mpC),x1=Math.floor(Math.max(z.lat[a],z.lat[b])/mpC),y0=Math.floor(Math.min(z.lon[a],z.lon[b])/mpC),y1=Math.floor(Math.max(z.lon[a],z.lon[b])/mpC);
+for(let x=x0;x<=x1;x++)for(let y=y0;y<=y1;y++){const key=x+'_'+y;let q=g.get(key);if(!q)g.set(key,q=[]);q.push(i)}
+if(i%20000==19999)await mpSleep(0)}
+return{z,st:st2,adj,ln,g,k0}}
+async function mpAround(la,lo){const k=mpTk(la,lo);if(mpLoading||(k==mpActK&&mpActK!='x'))return;mpLoading=true;
+try{const t0=performance.now(),[iy,ix]=mpTidx(k),keys=[];for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const q=(iy+dy)+'_'+(ix+dx);if(mpMeta[q])keys.push(q)}
+if(mpMeta['legacy'])keys.push('legacy');
+if(!keys.length){MP=null;mpActK=k;mpSum();return}
+const d=await mpIdb(),recs=[];for(const q of keys){recs.push(await new Promise((ok,ko)=>{const r=d.transaction('z').objectStore('z').get(q=='legacy'?'zona':'b:'+q);r.onsuccess=()=>ok(r.result);r.onerror=()=>ko(r.error)}));await mpSleep(0)}
+d.close&&d.close();const z=await mpMerge(recs.filter(Boolean));if(!z.lat.length){MP=null;mpActK=k;mpSum();return}
+MP=await mpBuildA(z);mpActK=k;mpBuildMs=performance.now()-t0;mpSum();mpPf(0,true)}
+catch(e){mpActK=k}
+mpLoading=false}
+async function mpPrune(){const au=Object.values(mpMeta).filter(m=>m.g=='automático').sort((a,b)=>a.t-b.t);let extra=au.length-24;if(extra<=0)return;const keep=new Set();if(mpPos){const[iy,ix]=mpTidx(mpTk(mpPos.la,mpPos.lo));for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)keep.add((iy+dy)+'_'+(ix+dx))}
+const del=[];for(const m of au){if(extra<=0)break;if(keep.has(m.k))continue;del.push(m.k);extra--}if(del.length)await mpDelKeys(del)}
+async function mpDelKeys(keys){const d=await mpIdb();await new Promise((ok,ko)=>{const t=d.transaction(['z','m'],'readwrite');keys.forEach(k=>{if(k=='legacy'){t.objectStore('z').delete('zona')}else{t.objectStore('z').delete('b:'+k);t.objectStore('m').delete(k)}});t.oncomplete=ok;t.onerror=()=>ko(t.error)});d.close&&d.close();keys.forEach(k=>delete mpMeta[k]);mpActK='';if(mpPos)mpAround(mpPos.la,mpPos.lo);else MP=null;mpSum();mpList()}
+function mpMB(b){return(b/1048576).toFixed(1).replace('.',',')+' MB'}
+function mpList(){const e=$('mpZl');if(!e)return;const gs={};Object.values(mpMeta).forEach(m=>{const g=gs[m.g]||(gs[m.g]={n:0,b:0});g.n++;g.b+=m.bytes||0});const names=Object.keys(gs);
+let tot=0;names.forEach(n=>tot+=gs[n].b);
+e.innerHTML=names.length?names.map(n=>'<div class="r2" style="align-items:center;margin-top:6px"><div style="flex:1;text-align:left;font-size:15px">'+n.replace(/[<>&]/g,'')+'<br><span class="mut" style="font-size:13px">'+gs[n].n+(gs[n].n==1?' bloco, ':' blocos, ')+mpMB(gs[n].b)+'</span></div><button class="s dg2" style="width:auto;margin:0;padding:8px 12px" data-g="'+encodeURIComponent(n)+'" onclick="mpDelG(decodeURIComponent(this.dataset.g))">Apagar</button></div>').join('')+'<div class="mut" style="text-align:left;font-size:14px;margin-top:6px">Total guardado: '+mpMB(tot)+'</div>':'<div class="mut" style="text-align:left;font-size:14px">Ainda sem mapa guardado.</div>'}
+function mpDelG(g){mpDelKeys(Object.values(mpMeta).filter(m=>m.g==g).map(m=>m.k))}
+async function mpDel(){await mpDelKeys(Object.keys(mpMeta));mpTxt('Mapa apagado.')}
+function mpAsk(keys,g){const n=keys.filter(k=>!mpMeta[k]).length;if(!n){mpTxt('Essa zona já está guardada.');return}
+if(n>60){askC('Vai descarregar '+n+' blocos. Convém ter Wi-Fi e deixar o telemóvel ligado ao carregador. Continuar?',[['Descarregar',()=>mpEnq(keys,g,false)],['Cancelar',null]],'mapa')}else mpEnq(keys,g,false)}
+function mpDownReg(){const nm=$('mpReg').value;const b=MPREG[nm];if(!b){mpTxt('Escolhe uma região.');return}mpAsk(mpKeysBox(b[0],b[1],b[2],b[3]),nm)}
+function mpDown(){const la=num($('mpLat').value),lo=num($('mpLon').value),R=Math.min(200,num($('mpR').value));
 if(isNaN(la)||isNaN(lo)||!(R>0)||Math.abs(la)>90||Math.abs(lo)>180){mpTxt('Preenche a latitude, a longitude e o raio.');return}
-mpBusy=true;mpTxt('A descarregar a zona… pode demorar um ou dois minutos.');
-try{const dl=R/111.195,dn=R/(111.195*Math.cos(la*Math.PI/180)),bb=[la-dl,lo-dn,la+dl,lo+dn].map(v=>v.toFixed(5)).join(',');
-const q='[out:json][timeout:120];way["highway"]["highway"!~"^(footway|path|steps|cycleway|pedestrian|bridleway|corridor|elevator|platform|proposed|construction|raceway)$"]["access"!~"^(no|private)$"]('+bb+');out geom;';
-const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),170000);
-const r=await fetch('https://overpass-api.de/api/interpreter',{method:'POST',body:'data='+encodeURIComponent(q),headers:{'Content-Type':'application/x-www-form-urlencoded'},signal:ac.signal});clearTimeout(tm);
-if(!r.ok)throw new Error('servidor '+r.status);const j=await r.json();const z=mpPack(j,[la,lo]);if(!z.ea.length)throw new Error('sem estradas');
-await mpPut(z);MP=mpBuild(z);mpTxt('Zona guardada: '+z.lat.length+' pontos, '+z.ea.length+' troços de estrada.');mpSum()}
-catch(e){mpTxt('Não consegui descarregar ('+(e&&e.message||e)+'). Precisa de internet. Tenta com um raio menor.')}
-mpBusy=false}
-function mpPack(j,c){const id=new Map(),la=[],lo=[],ea=[],eb=[];
+const dl=R/111.195,dn=R/(111.195*Math.cos(la*Math.PI/180));mpAsk(mpKeysBox(la-dl,lo-dn,la+dl,lo+dn),'Raio '+Math.round(R)+' km em '+la.toFixed(2).replace('.',',')+' / '+lo.toFixed(2).replace('.',','))}
+function mpTrack(txt){const d=new DOMParser().parseFromString(txt,'text/xml'),pts=[];
+d.querySelectorAll('trkpt,rtept,wpt').forEach(e=>{const a=parseFloat(e.getAttribute('lat')),b=parseFloat(e.getAttribute('lon'));if(!isNaN(a)&&!isNaN(b))pts.push([a,b])});
+if(!pts.length)d.querySelectorAll('coordinates').forEach(e=>{e.textContent.trim().split(/\s+/).forEach(t=>{const q=t.split(',');const b=parseFloat(q[0]),a=parseFloat(q[1]);if(!isNaN(a)&&!isNaN(b))pts.push([a,b])})});return pts}
+function mpCorridor(pts,w){const ks=new Set();const add=(la,lo)=>{const dl=w/111.195,dn=w/(111.195*Math.cos(la*Math.PI/180));[-1,0,1].forEach(a=>[-1,0,1].forEach(b=>ks.add(mpTk(la+a*dl,lo+b*dn))))};
+for(let i=0;i<pts.length;i++){const p=pts[i];add(p[0],p[1]);if(i){const q=pts[i-1],dk=Math.hypot((p[0]-q[0])*111.195,(p[1]-q[1])*111.195*Math.cos(p[0]*Math.PI/180)),n=Math.ceil(dk/1.5);for(let j=1;j<n;j++)add(q[0]+(p[0]-q[0])*j/n,q[1]+(p[1]-q[1])*j/n)}}return[...ks]}
+async function mpImport(inp){const f=inp.files&&inp.files[0];inp.value='';if(!f)return;try{const pts=mpTrack(await f.text());if(pts.length<2){mpTxt('Não encontrei um percurso neste ficheiro (GPX ou KML).');return}
+const ks=mpCorridor(pts,3);if(ks.length>400){mpTxt('Percurso demasiado grande ('+ks.length+' blocos).');return}mpAsk(ks,'Percurso: '+f.name.replace(/\.(gpx|kml)$/i,''))}catch(e){mpTxt('Não consegui ler o ficheiro.')}}
+function mpNeed(la,lo,r){const o=[],[iy,ix]=mpTidx(mpTk(la,lo)),n=Math.ceil(r/20000)+1;for(let dy=-n;dy<=n;dy++)for(let dx=-n;dx<=n;dx++){const k=(iy+dy)+'_'+(ix+dx);if(mpMeta[k]||mpQ.some(x=>x.k==k))continue;const d=mpDistTile(k,la,lo);if(d<=r)o.push({k,d})}return o.sort((a,b)=>a.d-b.d)}
+function mpInRace(){return!$('run').hidden}
+function mpRegular(){return st=='run'&&!lk&&!lk0w&&!(seq[cur]&&seq[cur].t=='n')}
+function mpAutoTick(){if(!mpOn||!mpPos||Date.now()-mpPos.t>60000||!mpInRace()||mpBusy||navigator.onLine===false)return;
+const need=mpNeed(mpPos.la,mpPos.lo,24000);if(!need.length)return;
+if(!mpRegular()){mpEnq(need.slice(0,2).map(x=>x.k),'automático',true);return}
+const near=need.filter(x=>x.d<=5000);if(near.length&&mpMeta[mpTk(mpPos.la,mpPos.lo)]&&Date.now()>mpAskT&&$('cf').hidden){mpAskT=Date.now()+600000;const ks=near.slice(0,2).map(x=>x.k);
+askC('Falta a zona do mapa à frente (a '+Math.round(near[0].d/1000)+' km). Descarregar agora? Gasta um pouco de processador.',[['Descarregar',()=>mpEnq(ks,'automático',true)],['Agora não',null]],'mapa')}}
+setInterval(()=>{try{mpAutoTick()}catch(e){}},15000);
+function mpPerf(ms){mpTm.push(ms);if(mpTm.length>60)mpTm.shift();if(ms>40){if(++mpSlow>=5){mpSlow=0;mpOn=false;try{localStorage.setItem('mapOn','0')}catch(e){}mpSum();if($('mpOn'))$('mpOn').value='0';askC('O mapa foi desligado porque o telemóvel ficou lento. A prova continua como antes.',[['OK',null]],'mapa')}}else mpSlow=0;mpPf(0)}
+function mpPf(x,force){const t=Date.now();if(!force&&t-mpPfT<3000)return;mpPfT=t;const e=$('mpPf');if(!e)return;const a=mpTm.length?mpTm.reduce((u,v)=>u+v,0)/mpTm.length:0,m=mpTm.length?Math.max(...mpTm):0;
+e.textContent='Cálculo por leitura: média '+a.toFixed(1).replace('.',',')+' ms, máximo '+m.toFixed(1).replace('.',',')+' ms. Última preparação do mapa: '+Math.round(mpBuildMs)+' ms. Pontos em memória: '+(MP?MP.z.lat.length:0)+'.'}
+async function mpInit(){try{$('mpLim').value=String(mpLim).replace('.',',');mpFa();await mpMetaLoad();$('mpOn').value=mpOn?'1':'0';mpTxt(Object.keys(mpMeta).length?'Mapa guardado no telemóvel.':'Ainda sem mapa guardado.');mpSum();mpList();if(mpOn&&Object.keys(mpMeta).length&&!mpPos){const rl=localStorage.getItem('mapLastPos');if(rl){const q=JSON.parse(rl);mpAround(q[0],q[1])}}}catch(e){mpTxt('O telemóvel não deixou guardar o mapa.')}}
+function mpSum(){const e=$('sMp');if(e)e.textContent=!mpOn?'Desligado':MP?'Ligado, mapa carregado':Object.keys(mpMeta).length?'Ligado, mapa guardado':'Ligado, falta descarregar'}
+function mpSetOn(){mpOn=$('mpOn').value=='1';try{localStorage.setItem('mapOn',mpOn?'1':'0')}catch(e){}mpSum();if(mpOn&&mpPos)mpAround(mpPos.la,mpPos.lo)}
+function mpHere(){if(!navigator.geolocation){mpTxt('GPS indisponível.');return}mpTxt('A procurar a tua posição…');navigator.geolocation.getCurrentPosition(p=>{$('mpLat').value=p.coords.latitude.toFixed(5).replace('.',',');$('mpLon').value=p.coords.longitude.toFixed(5).replace('.',',');mpTxt('Posição preenchida.')},()=>mpTxt('Não consegui a posição. Escreve a latitude e a longitude.'),{enableHighAccuracy:true,timeout:15000})}
+function mpPack(j,c){const id=new Map(),la=[],lo=[],ea=[],eb=[],ni=[];
 (j.elements||[]).forEach(w=>{if(!w.geometry||!w.nodes||w.nodes.length!=w.geometry.length)return;let p=-1;
-w.nodes.forEach((nid,i)=>{let k=id.get(nid);if(k===undefined){k=la.length;id.set(nid,k);la.push(w.geometry[i].lat);lo.push(w.geometry[i].lon)}if(p>=0&&p!=k){ea.push(p);eb.push(k)}p=k})});
-return{lat:Float64Array.from(la),lon:Float64Array.from(lo),ea:Int32Array.from(ea),eb:Int32Array.from(eb),c,date:new Date().toISOString().slice(0,10)}}
-async function mpDel(){try{await mpPut(null);MP=null;mpTxt('Mapa apagado.');mpSum()}catch(e){mpTxt('Não consegui apagar.')}}
+w.nodes.forEach((nid,i)=>{let k=id.get(nid);if(k===undefined){k=la.length;id.set(nid,k);ni.push(nid);la.push(w.geometry[i].lat);lo.push(w.geometry[i].lon)}if(p>=0&&p!=k){ea.push(p);eb.push(k)}p=k})});
+return{lat:Float64Array.from(la),lon:Float64Array.from(lo),ea:Int32Array.from(ea),eb:Int32Array.from(eb),id:Float64Array.from(ni),c,date:new Date().toISOString().slice(0,10)}}
 mpInit();
 /* ---- modo piloto ---- */
 let plPC=null,plCh=null,plRole='',plLast='',plTm=0;
