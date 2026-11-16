@@ -129,7 +129,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 #sct{position:absolute;left:0;right:0;top:16px;text-align:center;font-size:19px;font-weight:700;text-shadow:0 0 6px #000}
 #scc{position:absolute;left:16px;right:16px;bottom:24px;width:auto}
 #pex{position:fixed;right:6px;top:6px;z-index:20;width:auto;padding:4px 12px;margin:0;background:#2a3038;color:var(--fg);opacity:.5}
-</style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
+</style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0c0e11">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -137,7 +137,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 
 <div id="setup">
 <div id="bk" hidden style="position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:8px"><button onclick="voltar()">Voltar à prova</button><button class="s" id="tb" onclick="endTap()">Terminar prova</button></div>
-<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 60</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
+<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 61</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
 <div id="pm"><div class="card"><h1>Rally</h1>
 <label style="margin-top:0">Nome do rally</label><input id="rn0" placeholder="Ex.: Rally de Fafe" aria-label="Nome do rally" onchange="setRName(this.value)">
 <label>Hora de início do rally (partida)</label><input id="h0" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0n" style="text-align:left;font-size:15px;margin-top:4px"></div>
@@ -998,21 +998,24 @@ g('sRb').textContent=($('rbs').textContent||'').slice(0,70);g('sVz').textContent
 setInterval(()=>{if(!$('setup').hidden&&!pgCur)try{pmSum()}catch(e){}},1000);
 let hd=0;{const ps=history.pushState.bind(history);history.pushState=function(s,t,u){hd++;s=Object.assign({},s||{},{m:hd});return ps(s,t,u)}}
 addEventListener('popstate',e=>{hd=(e.state&&e.state.m)||0});
-function arm(){if(leaving||hd>=60)return;armed=true;try{history.pushState({},'')}catch(e){}}
+function arm(){if(leaving||hd>=1)return;armed=true;try{history.pushState({},'')}catch(e){}}
+function restore(){ign++;try{history.forward()}catch(e){}setTimeout(()=>{if(!(history.state&&history.state.m)){ign=Math.max(0,ign-1);try{history.pushState({},'')}catch(e){}}},400)}
 ['pointerup','click','touchend','keydown'].forEach(ev=>addEventListener(ev,arm,{capture:true,passive:true}));
+arm();
 function pgShow(id){document.querySelectorAll('.pg').forEach(e=>e.hidden=true);$('pm').hidden=!!id;if(id)$('pg_'+id).hidden=false;pgCur=id;scrollTo(0,0)}
 function pgOpen(id){arm();pgShow(id);try{history.pushState({m:2},'');pgPushed=true}catch(e){}if(id=='pl')plPaint()}
 function pgClose(){pgShow('');try{pmSum()}catch(e){}}
 function pgBack(){if(pgPushed)history.back();else pgClose()}
 function pgReset(){if(pgCur){pgClose();if(pgPushed){pgPushed=false;ign++;history.back()}}}
 function overlayOpen(){if(!$('scn').hidden)return 'scn';if(!$('afe').hidden)return 'afe';if(!$('afp').hidden)return 'afp';if(!$('cf').hidden)return 'cf';return ''}
-addEventListener('popstate',()=>{if(leaving)return;if(ign>0){ign--;return}
-if(cfKind=='ens'){armed=false;arm();return}
-if(cfKind=='exit'){cfClose();armed=false;arm();return}
+addEventListener('popstate',e=>{if(leaving)return;if(ign>0){ign--;return}
+if(!(e.state&&e.state.m))restore();
+if(cfKind=='ens')return;
+if(cfKind=='exit'){cfClose();return}
 const o=overlayOpen();
-if(o){if(o=='scn')scnClose();else if(o=='afe')afeCn();else if(o=='afp')afClose();else cfClose();if(pgPushed&&pgCur){pgPushed=false}else{armed=false;arm()}return}
+if(o){if(o=='scn')scnClose();else if(o=='afe')afeCn();else if(o=='afp')afClose();else cfClose();if(pgPushed&&pgCur)pgPushed=false;return}
 if(pgCur){pgClose();pgPushed=false;return}
-armed=false;arm();askC('Sair da app?',[['Não, ficar',null],['Sim, sair',()=>{leaving=true;const n=hd;hd=0;if(n>0)history.go(-n);setTimeout(()=>history.back(),250);setTimeout(()=>history.back(),500);setTimeout(()=>history.back(),750);setTimeout(()=>{try{window.close()}catch(e){}},1100)}]],'exit')});
+askC('Sair da app?',[['Não, ficar',null],['Sim, sair',()=>{leaving=true;const n=hd;hd=0;if(n>0)history.go(-n);setTimeout(()=>history.back(),250);setTimeout(()=>history.back(),500);setTimeout(()=>history.back(),750);setTimeout(()=>{try{window.close()}catch(e){}},1100)}]],'exit')});
 /* ---- mapa em segundo plano (v59): só mede falhas de GPS, não desenha nada ---- */
 let MP=null,mpOn=false,mpLast=null,mpGap=null,mpBusy=false;
 try{mpOn=localStorage.getItem('mapOn')=='1'}catch(e){}
@@ -1164,7 +1167,6 @@ function toast(m,ms){const t=$('toast');t.textContent=m;t.hidden=false;clearTime
 function prova(){return st!='done'&&(!$('run').hidden||!$('bk').hidden)}
 async function keepAwake(){wkT=Date.now();try{if(!navigator.wakeLock)throw 0;if(wl&&!wl.released){wkOk=true;return}
 wl=await navigator.wakeLock.request('screen');wkOk=true;wl.addEventListener('release',()=>{if(document.visibilityState=='visible')setTimeout(keepAwake,300)})}catch(e){wkOk=false}}
-addEventListener('popstate',()=>{if(leaving||st=='done'||($('run').hidden&&$('bk').hidden))return;try{history.pushState({r:1},'')}catch(e){}});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState=='visible'){keepAwake();rbKick()}});
 addEventListener('pageshow',e=>{if(e.persisted){keepAwake();rbKick()}});
 addEventListener('pointerdown',()=>{if((!wl||wl.released)&&Date.now()-wkT>2000)keepAwake()},true);
