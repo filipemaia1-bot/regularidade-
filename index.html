@@ -145,7 +145,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 #sct{position:absolute;left:0;right:0;top:16px;text-align:center;font-size:19px;font-weight:700;text-shadow:0 0 6px #000}
 #scc{position:absolute;left:16px;right:16px;bottom:24px;width:auto}
 #pex{position:fixed;right:6px;top:6px;z-index:20;width:auto;padding:4px 12px;margin:0;background:#2a3038;color:var(--fg);opacity:.5}
-</style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
+</style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0c0e11">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -153,7 +153,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 
 <div id="setup">
 <div id="bk" hidden style="position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:8px"><button onclick="voltar()">Voltar à prova</button><button class="s" id="tb" onclick="endTap()">Terminar prova</button></div>
-<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 63</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
+<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 64</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
 <div id="pm"><div class="card"><h1>Rally</h1>
 <label style="margin-top:0">Nome do rally</label><input id="rn0" placeholder="Ex.: Rally de Fafe" aria-label="Nome do rally" onchange="setRName(this.value)">
 <label>Hora de início do rally (partida)</label><input id="h0" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0n" style="text-align:left;font-size:15px;margin-top:4px"></div>
@@ -260,6 +260,8 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 <div class="mut" id="pls" style="text-align:left;font-size:16px;margin-top:8px"></div>
 <div class="mut" style="text-align:left;margin-top:8px">Qualquer telemóvel pode ser navegador ou piloto. Escolha o papel deste telemóvel:</div>
 <div class="r2"><button id="plrn" onclick="plRoleSel('n')">Sou o navegador</button><button id="plrp" onclick="plRoleSel('p')">Sou o piloto</button></div></div>
+<div class="card"><h1>Ligação guardada</h1><div class="mut" id="plSv" style="text-align:left;font-size:15px"></div>
+<button onclick="plReco()">Religar ao telemóvel guardado</button><button class="s dg2" onclick="plForget()">Esquecer a ligação guardada</button></div>
 <div class="card" id="plN" hidden><h1>Navegador: envia o ecrã da prova</h1>
 <button id="plb1" onclick="plHost()">1. Mostrar o meu QR</button>
 <canvas id="plq1" class="qrc" hidden></canvas>
@@ -810,7 +812,7 @@ for(let i=0;i<seq.length;i++){const m=bad(seq[i],i);if(m){err(m);scrollTo(0,0);r
 err('');sm=$('sm').value;try{beep(1,.01)}catch(e){}lead=+$('le').value||10;off=+$('vo').value;if(isNaN(off))off=.6;sv=+$('sv').value||0;af=num($('afv').value)||0;pw=num($('pw').value);if(isNaN(pw)||pw<0)pw=5;cur=k||0;src=$('fo').value;if(src!='s'){if(!gps()&&!(src=='r'&&rbLive())){err(gS);return}clearInterval(gti)}else gOff();rbWas=src=='r'&&rbLive();rbDown=false;if(src=='r'&&!rbWas)toast('Racebox sem sinal: a usar o GPS do telemóvel.',5000);
 $('setup').hidden=true;$('run').hidden=false;try{history.pushState({r:1},'')}catch(e){}
 await keepAwake();if(!wkOk)toast('Atenção: o telemóvel não deixa manter o ecrã ligado. Desligue a poupança de energia ou ponha o ecrã sempre ligado nas definições.',7000);
-init();const run0=()=>{if(lk0&&seq[0]&&cur==0&&k===undefined)enterWaitL0();clearInterval(timer);timer=setInterval(()=>{tick();try{plPush()}catch(e){}},67)};
+init();const run0=()=>{if(lk0&&seq[0]&&cur==0&&k===undefined)enterWaitL0();clearInterval(timer);timer=setInterval(()=>{tick();try{plPush()}catch(e){}},plRole=='host'?33:67)};
 if(lk0&&seq[0]&&cur==0&&k===undefined&&Date.now()>=sched){askC('A hora da '+RN(seq[0],1)+' ('+seq[0].hi+') já passou, por isso a ligação da partida já terminou. Começar a ligação agora, como ensaio? As horas de todas as regularidades passam a contar a partir de agora.',[['Sim, começar a ligação agora',()=>{shiftBy(0,Math.ceil((Date.now()+lk0.tempo*1000-sched)/1000)+1);save();init();run0()}],['Não, manter as horas',()=>run0()]],'ens')}
 else run0()}
 function now(){if(!seq[cur]){cur=0;init()}start(true)}
@@ -1221,7 +1223,7 @@ mpInit();
 let plPC=null,plCh=null,plCf=null,plRole='',plTm=0,plKeyT=0,plWd=0,plPingT=0,plPrev={},plBeatT=0,plRxT=0,plRtt=0,plVis=false,plBad=false,plSt={};
 function plRoleSel(r){$('plN').hidden=r!='n';$('plP').hidden=r!='p';$('plrn').className=r=='n'?'':'s';$('plrp').className=r=='p'?'':'s'}
 function plSet(t){$('pls').textContent=t}
-function plPaint(){plSet(plRole=='pilot'?'Ligado como piloto.':plRole=='host'?'Ligado: este telemóvel envia o ecrã ao piloto.':plPC?'A aguardar a ligação…':'Sem ligação.')}
+function plPaint(){try{$('plSv').textContent=plSavedTxt()}catch(e){}plSet(plRole=='pilot'?'Ligado como piloto.':plRole=='host'?'Ligado: este telemóvel envia o ecrã ao piloto.':plPC?'A aguardar a ligação…':'Sem ligação.')}
 
 function b64e(u){let x='';u.forEach(c=>x+=String.fromCharCode(c));return btoa(x).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function b64d(t){t=t.replace(/-/g,'+').replace(/_/g,'/');while(t.length%4)t+='=';const x=atob(t),u=new Uint8Array(x.length);for(let i=0;i<x.length;i++)u[i]=x.charCodeAt(i);return u}
@@ -1243,22 +1245,47 @@ const sdp='v=0\r\no=- 1 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0\r
 return{t,s:sdp}}
 async function plCam(){try{if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){const m=await navigator.mediaDevices.getUserMedia({video:true});m.getTracks().forEach(x=>x.stop())}}catch(e){}}
 function plIce(pc){return new Promise(r=>{if(pc.iceGatheringState=='complete')return r();const f=()=>{if(pc.iceGatheringState=='complete'){pc.removeEventListener('icegatheringstatechange',f);r()}};pc.addEventListener('icegatheringstatechange',f);setTimeout(r,4000)})}
-function plMk(){plClose();const pc=new RTCPeerConnection({iceServers:[]});plPC=pc;pc.onconnectionstatechange=()=>{if(['failed','closed'].includes(pc.connectionState)&&plPC===pc)plLost()};return pc}
+let plCert=null,plUf='',plPw='',plPend='',plAutoPC=false,plAt=0,plBadT=0,plHostRx=0;
+function plRnd(n){const c='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',a=new Uint8Array(n);crypto.getRandomValues(a);let t='';a.forEach(x=>t+=c[x%62]);return t}
+function plIdb(){return new Promise((ok,ko)=>{const q=indexedDB.open('rp_pl',1);q.onupgradeneeded=()=>q.result.createObjectStore('k');q.onsuccess=()=>ok(q.result);q.onerror=()=>ko(q.error)})}
+async function plIdent(){if(plCert&&plUf)return;
+try{plUf=localStorage.getItem('plUf')||'';plPw=localStorage.getItem('plPw')||''}catch(e){}
+if(!plUf||!plPw){plUf=plRnd(8);plPw=plRnd(24);try{localStorage.setItem('plUf',plUf);localStorage.setItem('plPw',plPw)}catch(e){}}
+let c=null;try{const d=await plIdb();c=await new Promise(ok=>{const r=d.transaction('k').objectStore('k').get('cert');r.onsuccess=()=>ok(r.result||null);r.onerror=()=>ok(null)});d.close()}catch(e){}
+if(c&&c.expires&&c.expires-Date.now()<7*864e5)c=null;
+if(!c){c=await RTCPeerConnection.generateCertificate({name:'ECDSA',namedCurve:'P-256',expires:31536e6});try{const d=await plIdb();await new Promise(ok=>{const t=d.transaction('k','readwrite');t.objectStore('k').put(c,'cert');t.oncomplete=ok;t.onerror=ok});d.close()}catch(e){}}
+plCert=c}
+function plMung(sdp){return sdp.replace(/a=ice-ufrag:.*/g,'a=ice-ufrag:'+plUf).replace(/a=ice-pwd:.*/g,'a=ice-pwd:'+plPw)}
+function plLs(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){}return null}
+function plHas(k){return !!plLs(k)}
+function plDcP(e){const c=e.channel;c.onmessage=plMsg;if(c.label=='f'){plCf=c}else{plCh=c;c.onopen=()=>plOpenPilot();c.onclose=()=>{if(plRole=='pilot')plLost()};if(c.readyState=='open')plOpenPilot()}}
+async function plRecoH(){try{if(plRole=='host'&&plCh&&plCh.readyState=='open'){toast('O piloto já está ligado',3000);return}
+plRoleSel('n');const d=plDec(plLs('plH')||'');if(d.t!='answer')throw new Error('sem ligação guardada: faz primeiro a ligação por QR');plSet('A preparar a religação…');await plCam();await plIdent();const pc=plMk();plAt=Date.now();
+const ch=pc.createDataChannel('p'),cf=pc.createDataChannel('f',{ordered:false,maxRetransmits:0});plCh=ch;plCf=cf;ch.onopen=plOpenHost;ch.onmessage=plMsgH;ch.onclose=()=>{if(plRole=='host')plLost()};
+{const o=await pc.createOffer();o.sdp=plMung(o.sdp);await pc.setLocalDescription(o)}await pc.setRemoteDescription({type:'answer',sdp:d.s});await plIce(pc);
+const code=plEnc(pc.localDescription);$('plc1').value=code;$('plc1').hidden=false;$('plc1b').hidden=false;QRG.draw($('plq1'),code,300);$('plq1').hidden=false;plSet('Mostre este QR ao piloto: ele toca em «Religar» e lê-o. Não precisa de ler nada no navegador.')}catch(e){plSet('Erro: '+(e.message||e))}}
+function plReco(){const pref=plLs('plRolePref');if(!pref||!(plHas('plH')||plHas('plP'))){plSet('Ainda sem ligação guardada. Faz a ligação por QR uma vez.');return}
+if(pref=='h')plRecoH();else{plRoleSel('p');plSet('Aponta a câmara ao QR de religação do navegador.');plScan('p')}}
+function plForget(){plLs('plH',null);plLs('plP',null);plLs('plRolePref',null);plPaint();toast('Ligação guardada apagada',3000)}
+function plSavedTxt(){const pref=plLs('plRolePref');if(!pref||!(plHas('plH')||plHas('plP')))return 'Ainda sem ligação guardada. Faz a ligação por QR uma vez e fica guardada.';return 'Guardado: este telemóvel é '+(pref=='h'?'o navegador':'o piloto')+'. '+(pref=='h'?'Se o piloto se desligar, toca em «Religar»: aparece um QR e o piloto lê só esse.':'Se perderes a ligação, toca em «Religar» e lê só o QR do navegador.')}
+function plMk(){plClose();plAutoPC=false;const pc=new RTCPeerConnection(plCert?{iceServers:[],certificates:[plCert]}:{iceServers:[]});plPC=pc;pc.onconnectionstatechange=()=>{if(['failed','closed'].includes(pc.connectionState)&&plPC===pc)plLost()};return pc}
 function plClose(){clearInterval(plTm);clearInterval(plKeyT);clearInterval(plWd);clearInterval(plPingT);try{plCh&&plCh.close()}catch(e){}try{plCf&&plCf.close()}catch(e){}try{plPC&&plPC.close()}catch(e){}plPC=null;plCh=null;plCf=null}
-function plLost(){clearInterval(plTm);clearInterval(plKeyT);if(plRole=='pilot'){plBad=true;plOv()}else if(plRole=='host'){plRole='';plSet('Ligação com o piloto perdida.');toast('Piloto desligado',4000)}}
-async function plHost(){try{plSet('A criar o código…');await plCam();const pc=plMk(),ch=pc.createDataChannel('p'),cf=pc.createDataChannel('f',{ordered:false,maxRetransmits:0});plCh=ch;plCf=cf;ch.onopen=plOpenHost;ch.onmessage=plMsgH;ch.onclose=()=>{if(plRole=='host')plLost()};
-await pc.setLocalDescription(await pc.createOffer());await plIce(pc);const code=plEnc(pc.localDescription);$('plc1').value=code;$('plc1').hidden=false;$('plc1b').hidden=false;QRG.draw($('plq1'),code,300);$('plq1').hidden=false;plSet('Mostre este QR ao piloto e depois leia o QR dele (passo 2).')}catch(e){plSet('Erro: '+(e.message||e))}}
-async function plFin(){try{const d=plDec($('plc2').value);if(!plPC||d.t!='answer')throw new Error('use primeiro «Criar código» e cole a resposta do piloto');await plPC.setRemoteDescription({type:'answer',sdp:d.s});plSet('A ligar…')}catch(e){plSet('Erro: '+(e.message||e))}}
-async function plJoin(){try{const d=plDec($('plp1').value);if(d.t!='offer')throw new Error('este não é o código do navegador');plSet('A gerar a resposta…');await plCam();const pc=plMk();
-pc.ondatachannel=e=>{const c=e.channel;c.onmessage=plMsg;if(c.label=='f'){plCf=c}else{plCh=c;c.onopen=plOpenPilot;c.onclose=()=>{if(plRole=='pilot')plLost()};if(c.readyState=='open')plOpenPilot()}};
-await pc.setRemoteDescription({type:'offer',sdp:d.s});await pc.setLocalDescription(await pc.createAnswer());await plIce(pc);const code=plEnc(pc.localDescription);$('plp2').value=code;$('plp2').hidden=false;$('plp2b').hidden=false;QRG.draw($('plq2'),code,300);$('plq2').hidden=false;$('plq2t').hidden=false;plSet('Mostre o QR ao navegador para ele o ler.')}catch(e){plSet('Erro: '+(e.message||e))}}
-function plOpenHost(){plRole='host';plPrev={};plPaint();toast('Piloto ligado',3000);clearInterval(plTm);clearInterval(plKeyT);plTm=setInterval(()=>plPush(),250);plKeyT=setInterval(()=>plPush(true),2000);plPush(true)}
-function plMsgH(e){try{const m=JSON.parse(e.data);if(m.t=='p'&&plCh&&plCh.readyState=='open')plCh.send(JSON.stringify({t:'q',c:m.c}))}catch(x){}}
-function plState(){const r=$('run'),o={};if(r.hidden)return o;r.querySelectorAll('[id]').forEach(e=>{if(e.id=='ar')return;o[e.id]=[e.querySelector('[id]')?null:e.innerHTML,e.className,e.style.cssText,e.hidden?1:0]});return o}
+function plLost(){clearInterval(plTm);clearInterval(plKeyT);if(plRole=='pilot'){if(!plBad)plBadT=Date.now();plBad=true;plOv()}else if(plRole=='host'){plRole='';plSet('Ligação com o piloto perdida. A tentar ligar de novo…');toast('Piloto desligado',4000);plRate()}}
+async function plHost(){try{plSet('A criar o código…');await plCam();await plIdent();const pc=plMk(),ch=pc.createDataChannel('p'),cf=pc.createDataChannel('f',{ordered:false,maxRetransmits:0});plCh=ch;plCf=cf;ch.onopen=plOpenHost;ch.onmessage=plMsgH;ch.onclose=()=>{if(plRole=='host')plLost()};
+{const o=await pc.createOffer();o.sdp=plMung(o.sdp);await pc.setLocalDescription(o)}await plIce(pc);const code=plEnc(pc.localDescription);$('plc1').value=code;$('plc1').hidden=false;$('plc1b').hidden=false;QRG.draw($('plq1'),code,300);$('plq1').hidden=false;plSet('Mostre este QR ao piloto e depois leia o QR dele (passo 2).')}catch(e){plSet('Erro: '+(e.message||e))}}
+async function plFin(){try{const d=plDec($('plc2').value);if(!plPC||d.t!='answer')throw new Error('use primeiro «Criar código» e cole a resposta do piloto');plPend=$('plc2').value.replace(/\s+/g,'');await plPC.setRemoteDescription({type:'answer',sdp:d.s});plSet('A ligar…')}catch(e){plSet('Erro: '+(e.message||e))}}
+async function plJoin(){try{const d=plDec($('plp1').value);if(d.t!='offer')throw new Error('este não é o código do navegador');plSet('A gerar a resposta…');await plCam();await plIdent();const pc=plMk();plPend=$('plp1').value.replace(/\s+/g,'');
+pc.ondatachannel=plDcP;
+await pc.setRemoteDescription({type:'offer',sdp:d.s});{const a=await pc.createAnswer();a.sdp=plMung(a.sdp);await pc.setLocalDescription(a)}await plIce(pc);const code=plEnc(pc.localDescription);$('plp2').value=code;$('plp2').hidden=false;$('plp2b').hidden=false;QRG.draw($('plq2'),code,300);$('plq2').hidden=false;$('plq2t').hidden=false;plSet('Mostre o QR ao navegador para ele o ler.')}catch(e){plSet('Erro: '+(e.message||e))}}
+function plOpenHost(){plRole='host';plPrev={};plHostRx=Date.now();if(plPend){plLs('plH',plPend);plPend=''}plLs('plRolePref','h');plPaint();plRate();toast('Piloto ligado',3000);clearInterval(plTm);clearInterval(plKeyT);plTm=setInterval(()=>plPush(),250);plKeyT=setInterval(()=>plPush(true),2000);plPush(true)}
+function plMsgH(e){plHostRx=Date.now();try{const m=JSON.parse(e.data);if(m.t=='p'&&plCh&&plCh.readyState=='open')plCh.send(JSON.stringify({t:'q',c:m.c}))}catch(x){}}
+function plRun(){return !$('run').hidden||!$('bk').hidden}
+function plRate(){if(!timer||($('run').hidden&&$('bk').hidden))return;clearInterval(timer);timer=setInterval(()=>{tick();try{plPush()}catch(e){}},plRole=='host'?33:67)}
+function plState(){const r=$('run'),o={};if(!plRun())return o;r.querySelectorAll('[id]').forEach(e=>{if(e.id=='ar')return;o[e.id]=[e.querySelector('[id]')?null:e.innerHTML,e.className,e.style.cssText,e.hidden?1:0]});return o}
 function plPush(key){if(plRole!='host')return;const ch=key?plCh:plCf;if(!ch||ch.readyState!='open')return;const r=$('run'),cur=plState(),d={};let n=0;
 for(const id in cur){if(key||plPrev[id]!==JSON.stringify(cur[id])){d[id]=cur[id];n++}}
 const now=Date.now();if(!key&&!n&&now-plBeatT<500)return;if(!key&&ch.bufferedAmount>8192)return;
-const m={v:r.hidden?0:1,a:r.classList.contains('abs')?1:0};if(n)m.d=d;
+const m={v:plRun()?1:0,a:r.classList.contains('abs')?1:0};if(n)m.d=d;
 try{ch.send(JSON.stringify(m))}catch(e){return}plBeatT=now;if(key)plPrev={};for(const id in d)plPrev[id]=JSON.stringify(d[id])}
 
 let scnS=null,scnT=0,scnCb=null;
@@ -1268,9 +1295,11 @@ const loop=async()=>{if($('scn').hidden)return;try{const r=await det.detect(v);i
 catch(e){scnClose();toast('Não consegui abrir a câmara: '+((e&&e.message)||e),5000)}}
 function scnClose(){clearTimeout(scnT);$('scn').hidden=true;try{scnS&&scnS.getTracks().forEach(t=>t.stop())}catch(e){}scnS=null;scnCb=null}
 function plScan(r){scnOpen(t=>{if(r=='n'){$('plc2').value=t;plFin()}else{$('plp1').value=t;plJoin()}})}
-function plOpenPilot(){if(plRole=='pilot')return;plRole='pilot';plRxT=Date.now();plBad=false;plVis=false;plSt={};$('setup').hidden=true;const r=$('run');r.hidden=false;r.classList.add('pilot');$('pex').hidden=false;$('plr').hidden=false;plOv();try{keepAwake()}catch(e){}
-clearInterval(plWd);clearInterval(plPingT);plWd=setInterval(()=>{const b=Date.now()-plRxT>2500;if(b!==plBad){plBad=b;plOv()}},500);plPingT=setInterval(()=>{try{if(plCh&&plCh.readyState=='open')plCh.send(JSON.stringify({t:'p',c:Date.now()}))}catch(e){}},1000)}
-function plOv(){const w=$('plw');if(plBad){w.className='bad';$('plwi').textContent='✕';$('plw1').textContent='Sem ligação';$('plw2').textContent='Sem sinal do navegador. Confirma o ponto de acesso. Toca no ✕ para sair.';w.hidden=false}
+function plOpenPilot(){const first=plRole!='pilot';plRole='pilot';plRxT=Date.now();plBad=false;
+if(first){plVis=false;plSt={};$('setup').hidden=true;const r=$('run');r.hidden=false;r.classList.add('pilot');$('pex').hidden=false;$('plr').hidden=false;try{keepAwake()}catch(e){}}
+plOv();if(plPend){plLs('plP',plPend);plPend=''}plLs('plRolePref','p');
+clearInterval(plWd);clearInterval(plPingT);plWd=setInterval(()=>{const b=Date.now()-plRxT>2500;if(b!==plBad){plBad=b;if(b)plBadT=Date.now();plOv()}},500);plPingT=setInterval(()=>{try{if(plCh&&plCh.readyState=='open')plCh.send(JSON.stringify({t:'p',c:Date.now()}))}catch(e){}},1000)}
+function plOv(){const w=$('plw');if(plBad){w.className='bad';$('plwi').textContent='✕';$('plw1').textContent='Sem ligação';$('plw2').textContent='Sem sinal do navegador. A tentar ligar de novo… Confirma o ponto de acesso. Toca no ✕ para sair.';w.hidden=false}
 else if(!plVis){w.className='ok';$('plwi').textContent='✓';$('plw1').textContent='Ligado';$('plw2').textContent='À espera que o navegador inicie a prova…';w.hidden=false}else w.hidden=true}
 const PLFIT={rc:1,rn:1,rs:1,rv:1,fm:1,fq:1,rd:1,fs:1};
 function plFit(el){if(!el||!el.clientWidth)return;let f=parseFloat(getComputedStyle(el).fontSize),n=0;while(el.scrollWidth>el.clientWidth+1&&f>10&&n++<14){f*=.88;el.style.fontSize=f+'px'}}
