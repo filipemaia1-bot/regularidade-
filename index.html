@@ -145,7 +145,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 #sct{position:absolute;left:0;right:0;top:16px;text-align:center;font-size:19px;font-weight:700;text-shadow:0 0 6px #000}
 #scc{position:absolute;left:16px;right:16px;bottom:24px;width:auto}
 #pex{position:fixed;right:6px;top:6px;z-index:20;width:auto;padding:4px 12px;margin:0;background:#2a3038;color:var(--fg);opacity:.5}
-</style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
+</style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0c0e11">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -153,7 +153,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 
 <div id="setup">
 <div id="bk" hidden style="position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:8px"><button onclick="voltar()">Voltar à prova</button><button class="s" id="tb" onclick="endTap()">Terminar prova</button></div>
-<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 64</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
+<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 65</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
 <div id="pm"><div class="card"><h1>Rally</h1>
 <label style="margin-top:0">Nome do rally</label><input id="rn0" placeholder="Ex.: Rally de Fafe" aria-label="Nome do rally" onchange="setRName(this.value)">
 <label>Hora de início do rally (partida)</label><input id="h0" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0n" style="text-align:left;font-size:15px;margin-top:4px"></div>
@@ -261,7 +261,10 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 <div class="mut" style="text-align:left;margin-top:8px">Qualquer telemóvel pode ser navegador ou piloto. Escolha o papel deste telemóvel:</div>
 <div class="r2"><button id="plrn" onclick="plRoleSel('n')">Sou o navegador</button><button id="plrp" onclick="plRoleSel('p')">Sou o piloto</button></div></div>
 <div class="card"><h1>Ligação guardada</h1><div class="mut" id="plSv" style="text-align:left;font-size:15px"></div>
-<button onclick="plReco()">Religar ao telemóvel guardado</button><button class="s dg2" onclick="plForget()">Esquecer a ligação guardada</button></div>
+<label>Religação automática pela internet</label><select id="plBrS" onchange="plBrSet()"><option value="1">Ligada</option><option value="0">Desligada</option></select>
+<div class="mut" style="text-align:left;font-size:14px">Quando a ligação cai ou o piloto reabre a app, os dois trocam, por um serviço gratuito (ntfy.sh), só o endereço novo da ligação. Os dados da prova nunca passam pela internet: vão diretamente pelo hotspot. Precisa de internet nos dois telemóveis; sem ela usa-se o QR.</div>
+<button class="s" onclick="plBrNow()">Procurar agora o navegador (piloto)</button>
+<button onclick="plReco()">Religar por QR</button><button class="s dg2" onclick="plForget()">Esquecer a ligação guardada</button></div>
 <div class="card" id="plN" hidden><h1>Navegador: envia o ecrã da prova</h1>
 <button id="plb1" onclick="plHost()">1. Mostrar o meu QR</button>
 <canvas id="plq1" class="qrc" hidden></canvas>
@@ -1223,7 +1226,7 @@ mpInit();
 let plPC=null,plCh=null,plCf=null,plRole='',plTm=0,plKeyT=0,plWd=0,plPingT=0,plPrev={},plBeatT=0,plRxT=0,plRtt=0,plVis=false,plBad=false,plSt={};
 function plRoleSel(r){$('plN').hidden=r!='n';$('plP').hidden=r!='p';$('plrn').className=r=='n'?'':'s';$('plrp').className=r=='p'?'':'s'}
 function plSet(t){$('pls').textContent=t}
-function plPaint(){try{$('plSv').textContent=plSavedTxt()}catch(e){}plSet(plRole=='pilot'?'Ligado como piloto.':plRole=='host'?'Ligado: este telemóvel envia o ecrã ao piloto.':plPC?'A aguardar a ligação…':'Sem ligação.')}
+function plPaint(){try{$('plSv').textContent=plSavedTxt();$('plBrS').value=plBrOnS()?'1':'0'}catch(e){}plSet(plRole=='pilot'?'Ligado como piloto.':plRole=='host'?'Ligado: este telemóvel envia o ecrã ao piloto.':plPC?'A aguardar a ligação…':'Sem ligação.')}
 
 function b64e(u){let x='';u.forEach(c=>x+=String.fromCharCode(c));return btoa(x).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function b64d(t){t=t.replace(/-/g,'+').replace(/_/g,'/');while(t.length%4)t+='=';const x=atob(t),u=new Uint8Array(x.length);for(let i=0;i<x.length;i++)u[i]=x.charCodeAt(i);return u}
@@ -1259,15 +1262,42 @@ function plMung(sdp){return sdp.replace(/a=ice-ufrag:.*/g,'a=ice-ufrag:'+plUf).r
 function plLs(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){}return null}
 function plHas(k){return !!plLs(k)}
 function plDcP(e){const c=e.channel;c.onmessage=plMsg;if(c.label=='f'){plCf=c}else{plCh=c;c.onopen=()=>plOpenPilot();c.onclose=()=>{if(plRole=='pilot')plLost()};if(c.readyState=='open')plOpenPilot()}}
-async function plRecoH(){try{if(plRole=='host'&&plCh&&plCh.readyState=='open'){toast('O piloto já está ligado',3000);return}
-plRoleSel('n');const d=plDec(plLs('plH')||'');if(d.t!='answer')throw new Error('sem ligação guardada: faz primeiro a ligação por QR');plSet('A preparar a religação…');await plCam();await plIdent();const pc=plMk();plAt=Date.now();
+async function plRecoH(q){try{if(!q&&plRole=='host'&&plCh&&plCh.readyState=='open'){toast('O piloto já está ligado',3000);return}
+if(!q)plRoleSel('n');const d=plDec(plLs('plH')||'');if(d.t!='answer')throw new Error('sem ligação guardada: faz primeiro a ligação por QR');if(!q){plSet('A preparar a religação…');await plCam()}await plIdent();const pc=plMk();plAt=Date.now();
 const ch=pc.createDataChannel('p'),cf=pc.createDataChannel('f',{ordered:false,maxRetransmits:0});plCh=ch;plCf=cf;ch.onopen=plOpenHost;ch.onmessage=plMsgH;ch.onclose=()=>{if(plRole=='host')plLost()};
 {const o=await pc.createOffer();o.sdp=plMung(o.sdp);await pc.setLocalDescription(o)}await pc.setRemoteDescription({type:'answer',sdp:d.s});await plIce(pc);
-const code=plEnc(pc.localDescription);$('plc1').value=code;$('plc1').hidden=false;$('plc1b').hidden=false;QRG.draw($('plq1'),code,300);$('plq1').hidden=false;plSet('Mostre este QR ao piloto: ele toca em «Religar» e lê-o. Não precisa de ler nada no navegador.')}catch(e){plSet('Erro: '+(e.message||e))}}
+const code=plEnc(pc.localDescription);if(q)return code;$('plc1').value=code;$('plc1').hidden=false;$('plc1b').hidden=false;QRG.draw($('plq1'),code,300);$('plq1').hidden=false;plSet('Mostre este QR ao piloto: ele toca em «Religar» e lê-o. Não precisa de ler nada no navegador.')}catch(e){if(!q)plSet('Erro: '+(e.message||e));return ''}}
+const PLRELAY=()=>window.PLRELAY||'https://ntfy.sh';
+let plBrWs=null,plBrTopic='',plBrWantT=0,plBrUntil=Date.now()+600000,plBrCode='',plBrCodeT=0,plBrHostT=0,plBrSeekT=0,plBrWas=false,plBrMk=0;
+function plBrOnS(){return plLs('plBr')!='0'}
+async function plMyFp(){await plIdent();try{const f=await plCert.getFingerprints();if(f&&f[0])return f[0].value.toUpperCase()}catch(e){}
+const pc=new RTCPeerConnection({iceServers:[],certificates:[plCert]});pc.createDataChannel('x');const o=await pc.createOffer();pc.close();const m=o.sdp.match(/a=fingerprint:sha-256 ([0-9A-Fa-f:]+)/);return m?m[1].toUpperCase():''}
+async function plTopic(){const pref=plLs('plRolePref'),code=plLs(pref=='h'?'plH':'plP');if(!code)return '';const d=plDec(code),m=d.s.match(/a=fingerprint:sha-256 ([0-9A-Fa-f:]+)/);if(!m)return '';const me=await plMyFp();
+const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode([me,m[1].toUpperCase()].sort().join('|')));return 'rp'+[...new Uint8Array(buf)].slice(0,12).map(x=>x.toString(16).padStart(2,'0')).join('')}
+function plBrClose(){const w=plBrWs;plBrWs=null;plBrTopic='';plBrMk++;try{w&&w.close()}catch(e){}}
+async function plBrEnsure(){if(plBrWs)return;const mk=++plBrMk;let t='';try{t=await plTopic()}catch(e){}if(!t||mk!==plBrMk||plBrWs)return;let w;try{w=new WebSocket(PLRELAY().replace(/^http/,'ws')+'/'+t+'/ws')}catch(e){return}plBrWs=w;plBrTopic=t;
+w.onmessage=e=>{try{const m=JSON.parse(e.data);if(m.event=='message')plBrMsg(String(m.message||''))}catch(x){}};w.onclose=()=>{if(plBrWs===w){plBrWs=null;plBrTopic=''}};w.onerror=()=>{}}
+function plBrPost(t){if(!plBrTopic)return;fetch(PLRELAY()+'/'+plBrTopic,{method:'POST',body:t}).catch(()=>{})}
+function plBrMsg(t){const p=t.split('|');if(p[0]!='RP')return;if(p[1]=='w')plBrOnWant();else if(p[1]=='o')plBrOnOffer(p.slice(3).join('|'))}
+async function plBrOnWant(){if(plLs('plRolePref')!='h'||!plHas('plH')||!plBrOnS())return;const now=Date.now();if(plRole=='host'&&plCh&&plCh.readyState=='open'&&now-plHostRx<4000)return;if(now-plBrHostT<4000)return;plBrHostT=now;
+const code=await plRecoH(true);if(code)plBrPost('RP|o|'+Date.now()+'|'+code)}
+async function plBrOnOffer(code){if(plLs('plRolePref')!='p'||!plBrOnS())return;const now=Date.now();if(plRole=='pilot'&&!plBad)return;if(code===plBrCode&&now-plBrCodeT<15000)return;plBrCode=code;plBrCodeT=now;
+try{const d=plDec(code);if(d.t!='offer')return;await plIdent();const pc=plMk();plAt=now;pc.ondatachannel=plDcP;plPend=code;await pc.setRemoteDescription({type:'offer',sdp:d.s});const a=await pc.createAnswer();a.sdp=plMung(a.sdp);await pc.setLocalDescription(a)}catch(e){}}
+function plBrLoop(){try{if(!plBrOnS()||typeof WebSocket=='undefined'||navigator.onLine===false){if(plBrWs)plBrClose();return}
+const now=Date.now(),pref=plLs('plRolePref');let want=false;
+if(pref=='h'&&plHas('plH'))want=!(plRole=='host'&&plCh&&plCh.readyState=='open'&&now-plHostRx<4000);
+else if(pref=='p'&&plHas('plP'))want=!(plRole=='pilot'&&!plBad)&&(plRole=='pilot'||now<plBrUntil);
+if(!want){plBrWas=false;if(plBrWs)plBrClose();return}
+if(!plBrWas){plBrWas=true;plBrSeekT=now;plBrWantT=0}
+plBrEnsure();
+if(pref=='p'&&plBrWs&&plBrWs.readyState==1&&plBrTopic){const gap=now-plBrSeekT<300000?12000:60000,ready=plRole=='pilot'?now-plBadT>2500:true;if(ready&&now-plBrWantT>gap){plBrWantT=now;plBrPost('RP|w|'+now)}}}catch(e){}}
+setInterval(plBrLoop,2000);
+function plBrSet(){plLs('plBr',$('plBrS').value);plPaint()}
+function plBrNow(){plBrUntil=Date.now()+600000;plBrSeekT=Date.now();plBrWantT=0;toast('A procurar o navegador…',3000)}
 function plReco(){const pref=plLs('plRolePref');if(!pref||!(plHas('plH')||plHas('plP'))){plSet('Ainda sem ligação guardada. Faz a ligação por QR uma vez.');return}
 if(pref=='h')plRecoH();else{plRoleSel('p');plSet('Aponta a câmara ao QR de religação do navegador.');plScan('p')}}
 function plForget(){plLs('plH',null);plLs('plP',null);plLs('plRolePref',null);plPaint();toast('Ligação guardada apagada',3000)}
-function plSavedTxt(){const pref=plLs('plRolePref');if(!pref||!(plHas('plH')||plHas('plP')))return 'Ainda sem ligação guardada. Faz a ligação por QR uma vez e fica guardada.';return 'Guardado: este telemóvel é '+(pref=='h'?'o navegador':'o piloto')+'. '+(pref=='h'?'Se o piloto se desligar, toca em «Religar»: aparece um QR e o piloto lê só esse.':'Se perderes a ligação, toca em «Religar» e lê só o QR do navegador.')}
+function plSavedTxt(){const pref=plLs('plRolePref');if(!pref||!(plHas('plH')||plHas('plP')))return 'Ainda sem ligação guardada. Faz a ligação por QR uma vez e fica guardada.';return 'Guardado: este telemóvel é '+(pref=='h'?'o navegador':'o piloto')+'. '+(plBrOnS()?'Se a ligação cair, religa sozinho (precisa de internet). ':'')+(pref=='h'?'Sem internet: toca em «Religar por QR» e o piloto lê só esse.':'Sem internet: toca em «Religar por QR» e lê só o QR do navegador.')}
 function plMk(){plClose();plAutoPC=false;const pc=new RTCPeerConnection(plCert?{iceServers:[],certificates:[plCert]}:{iceServers:[]});plPC=pc;pc.onconnectionstatechange=()=>{if(['failed','closed'].includes(pc.connectionState)&&plPC===pc)plLost()};return pc}
 function plClose(){clearInterval(plTm);clearInterval(plKeyT);clearInterval(plWd);clearInterval(plPingT);try{plCh&&plCh.close()}catch(e){}try{plCf&&plCf.close()}catch(e){}try{plPC&&plPC.close()}catch(e){}plPC=null;plCh=null;plCf=null}
 function plLost(){clearInterval(plTm);clearInterval(plKeyT);if(plRole=='pilot'){if(!plBad)plBadT=Date.now();plBad=true;plOv()}else if(plRole=='host'){plRole='';plSet('Ligação com o piloto perdida. A tentar ligar de novo…');toast('Piloto desligado',4000);plRate()}}
@@ -1277,16 +1307,19 @@ async function plFin(){try{const d=plDec($('plc2').value);if(!plPC||d.t!='answer
 async function plJoin(){try{const d=plDec($('plp1').value);if(d.t!='offer')throw new Error('este não é o código do navegador');plSet('A gerar a resposta…');await plCam();await plIdent();const pc=plMk();plPend=$('plp1').value.replace(/\s+/g,'');
 pc.ondatachannel=plDcP;
 await pc.setRemoteDescription({type:'offer',sdp:d.s});{const a=await pc.createAnswer();a.sdp=plMung(a.sdp);await pc.setLocalDescription(a)}await plIce(pc);const code=plEnc(pc.localDescription);$('plp2').value=code;$('plp2').hidden=false;$('plp2b').hidden=false;QRG.draw($('plq2'),code,300);$('plq2').hidden=false;$('plq2t').hidden=false;plSet('Mostre o QR ao navegador para ele o ler.')}catch(e){plSet('Erro: '+(e.message||e))}}
-function plOpenHost(){plRole='host';plPrev={};plHostRx=Date.now();if(plPend){plLs('plH',plPend);plPend=''}plLs('plRolePref','h');plPaint();plRate();toast('Piloto ligado',3000);clearInterval(plTm);clearInterval(plKeyT);plTm=setInterval(()=>plPush(),250);plKeyT=setInterval(()=>plPush(true),2000);plPush(true)}
+function plOpenHost(){plRole='host';plPrev={};plHostRx=Date.now();if(plPend){plLs('plH',plPend);plPend=''}plLs('plRolePref','h');plPaint();plRate();toast('Piloto ligado',3000);clearInterval(plTm);clearInterval(plKeyT);plTm=setInterval(()=>plPush(),250);plKeyT=setInterval(()=>plPush(true),4000);plPush(true)}
 function plMsgH(e){plHostRx=Date.now();try{const m=JSON.parse(e.data);if(m.t=='p'&&plCh&&plCh.readyState=='open')plCh.send(JSON.stringify({t:'q',c:m.c}))}catch(x){}}
 function plRun(){return !$('run').hidden||!$('bk').hidden}
 function plRate(){if(!timer||($('run').hidden&&$('bk').hidden))return;clearInterval(timer);timer=setInterval(()=>{tick();try{plPush()}catch(e){}},plRole=='host'?33:67)}
 function plState(){const r=$('run'),o={};if(!plRun())return o;r.querySelectorAll('[id]').forEach(e=>{if(e.id=='ar')return;o[e.id]=[e.querySelector('[id]')?null:e.innerHTML,e.className,e.style.cssText,e.hidden?1:0]});return o}
-function plPush(key){if(plRole!='host')return;const ch=key?plCh:plCf;if(!ch||ch.readyState!='open')return;const r=$('run'),cur=plState(),d={};let n=0;
+let plSeq=0,plGap=30,plLastSend=0,plOk=0,plBeatT2=0;
+function plPush(key){if(plRole!='host')return;const ch=key?plCh:plCf;if(!ch||ch.readyState!='open')return;const now=Date.now();
+if(!key){if(now-plLastSend<plGap)return;if(ch.bufferedAmount>600){plGap=Math.min(400,plGap*1.5+10);return}}else if(ch.bufferedAmount>1500)return;
+const r=$('run'),cur=plState(),d={};let n=0;
 for(const id in cur){if(key||plPrev[id]!==JSON.stringify(cur[id])){d[id]=cur[id];n++}}
-const now=Date.now();if(!key&&!n&&now-plBeatT<500)return;if(!key&&ch.bufferedAmount>8192)return;
-const m={v:plRun()?1:0,a:r.classList.contains('abs')?1:0};if(n)m.d=d;
-try{ch.send(JSON.stringify(m))}catch(e){return}plBeatT=now;if(key)plPrev={};for(const id in d)plPrev[id]=JSON.stringify(d[id])}
+if(!key&&!n&&now-plBeatT<500)return;
+const m={q:++plSeq,h:now,v:plRun()?1:0,a:r.classList.contains('abs')?1:0};if(n)m.d=d;
+try{ch.send(JSON.stringify(m))}catch(e){return}plBeatT=now;plLastSend=now;if(!key){if(++plOk>=20){plOk=0;plGap=Math.max(30,plGap*.85)}}if(key)plPrev={};for(const id in d)plPrev[id]=JSON.stringify(d[id])}
 
 let scnS=null,scnT=0,scnCb=null;
 async function scnOpen(cb){if(!('BarcodeDetector' in window)||!navigator.mediaDevices){toast('Este telemóvel não lê QR pela câmara. Use «Copiar e colar».',5000);return}
@@ -1296,18 +1329,24 @@ catch(e){scnClose();toast('Não consegui abrir a câmara: '+((e&&e.message)||e),
 function scnClose(){clearTimeout(scnT);$('scn').hidden=true;try{scnS&&scnS.getTracks().forEach(t=>t.stop())}catch(e){}scnS=null;scnCb=null}
 function plScan(r){scnOpen(t=>{if(r=='n'){$('plc2').value=t;plFin()}else{$('plp1').value=t;plJoin()}})}
 function plOpenPilot(){const first=plRole!='pilot';plRole='pilot';plRxT=Date.now();plBad=false;
-if(first){plVis=false;plSt={};$('setup').hidden=true;const r=$('run');r.hidden=false;r.classList.add('pilot');$('pex').hidden=false;$('plr').hidden=false;try{keepAwake()}catch(e){}}
+plQ=-1;plQd={};plRel=[];plQms=0;if(first){plVis=false;plSt={};$('setup').hidden=true;const r=$('run');r.hidden=false;r.classList.add('pilot');$('pex').hidden=false;$('plr').hidden=false;try{keepAwake()}catch(e){}}
 plOv();if(plPend){plLs('plP',plPend);plPend=''}plLs('plRolePref','p');
 clearInterval(plWd);clearInterval(plPingT);plWd=setInterval(()=>{const b=Date.now()-plRxT>2500;if(b!==plBad){plBad=b;if(b)plBadT=Date.now();plOv()}},500);plPingT=setInterval(()=>{try{if(plCh&&plCh.readyState=='open')plCh.send(JSON.stringify({t:'p',c:Date.now()}))}catch(e){}},1000)}
 function plOv(){const w=$('plw');if(plBad){w.className='bad';$('plwi').textContent='✕';$('plw1').textContent='Sem ligação';$('plw2').textContent='Sem sinal do navegador. A tentar ligar de novo… Confirma o ponto de acesso. Toca no ✕ para sair.';w.hidden=false}
 else if(!plVis){w.className='ok';$('plwi').textContent='✓';$('plw1').textContent='Ligado';$('plw2').textContent='À espera que o navegador inicie a prova…';w.hidden=false}else w.hidden=true}
 const PLFIT={rc:1,rn:1,rs:1,rv:1,fm:1,fq:1,rd:1,fs:1};
 function plFit(el){if(!el||!el.clientWidth)return;let f=parseFloat(getComputedStyle(el).fontSize),n=0;while(el.scrollWidth>el.clientWidth+1&&f>10&&n++<14){f*=.88;el.style.fontSize=f+'px'}}
-function plMsg(e){let m;try{m=JSON.parse(e.data)}catch(x){return}plRxT=Date.now();if(m.t=='q'){plRtt=Date.now()-m.c;$('plr').textContent='ligação '+plRtt+' ms';return}
-$('run').classList.toggle('abs',!!m.a);const v=!!m.v;if(plBad||v!==plVis){plBad=false;plVis=v;plOv()}
+let plQ=-1,plQd={},plRaf=0,plRel=[],plQms=0,plFitT={};
+function plMsg(e){let m;try{m=JSON.parse(e.data)}catch(x){return}plRxT=Date.now();if(m.t=='q'){plRtt=Date.now()-m.c;plShowQ();return}
+if(m.q!==undefined){if(m.q<plQ)return;plQ=m.q}
+if(m.h){const rel=plRxT-m.h;plRel.push([plRxT,rel]);while(plRel.length&&plRxT-plRel[0][0]>20000)plRel.shift();let mn=1e12;plRel.forEach(x=>{if(x[1]<mn)mn=x[1]});plQms=plQms*.7+(rel-mn)*.3}
+plQd.a=m.a;plQd.v=m.v;if(m.d){plQd.d=plQd.d||{};for(const id in m.d)plQd.d[id]=m.d[id]}
+if(!plRaf)plRaf=requestAnimationFrame(plFlush)}
+function plShowQ(){const e=$('plr');if(!e)return;const q=Math.round(plQms);e.textContent='ligação '+plRtt+' ms · fila +'+q+' ms';e.style.color=q>150?'#ff453a':q>60?'#ffd60a':''}
+function plFlush(){plRaf=0;const m=plQd;plQd={};$('run').classList.toggle('abs',!!m.a);const v=!!m.v;if(plBad||v!==plVis){plBad=false;plVis=v;plOv()}
 if(m.d){const fit=[];for(const id in m.d){const el=document.getElementById(id);if(!el)continue;const a=m.d[id],o=plSt[id]||[];let ch=0;
 if(a[0]!==null&&a[0]!==o[0]){el.innerHTML=a[0];ch=1}if(a[1]!==o[1])el.className=a[1];if(a[2]!==o[2]){el.style.cssText=a[2];ch=1}if((a[3]?1:0)!==o[3])el.hidden=!!a[3];
-plSt[id]=[a[0],a[1],a[2],a[3]?1:0];if(ch&&PLFIT[id])fit.push(el)}fit.forEach(plFit)}}
+plSt[id]=[a[0],a[1],a[2],a[3]?1:0];if(ch&&PLFIT[id])fit.push(el)}fit.forEach(plFit)}plShowQ()}
 function plExitAsk(){askC('Sair do modo piloto?',[['Não, continuar',null],['Sim, sair',()=>{plClose();location.reload()}]],'pil')}
 async function plCopy(i){try{await navigator.clipboard.writeText($(i).value);toast('Copiado')}catch(e){$(i).select();toast('Selecione e copie à mão')}}
 async function plShare(i){try{if(navigator.share)await navigator.share({text:$(i).value});else plCopy(i)}catch(e){}}
