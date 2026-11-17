@@ -134,7 +134,8 @@ button.gr{background:#1c7c3a;color:#fff;font-weight:800}
 #run.pilot .frame{flex:2.2 1 0;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
 #run.pilot .st{font-size:min(6vw,3.4dvh)}
 #run.pilot .two{flex:1;align-items:center}#run.pilot .two>div{flex:1 1 0;min-width:0;text-align:center;font-size:min(18vw,11dvh);overflow:hidden}
-#run.pilot #rd{flex:1 1 0;display:flex;align-items:center;justify-content:center;font-size:min(10vw,5.5dvh);overflow:hidden;white-space:nowrap}
+#run.pilot #rd{flex:1.8 1 0;display:flex;align-items:center;justify-content:center;font-size:min(26vw,15dvh);overflow:hidden;white-space:nowrap}
+#run.pilot #rd .dl{font-size:.32em;margin-right:.3em}
 #plw{position:fixed;inset:0;z-index:15;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2dvh;text-align:center;padding:16px}
 #plw .ic{font-size:min(30vw,18dvh);line-height:1}#plw .t1{font-size:min(9vw,5.5dvh);font-weight:800}#plw .t2{font-size:min(5vw,3dvh);color:var(--mut)}
 #plw.ok .ic,#plw.ok .t1{color:#2ee66b}#plw.bad .ic,#plw.bad .t1{color:#ff453a}
@@ -146,7 +147,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 #sct{position:absolute;left:0;right:0;top:16px;text-align:center;font-size:19px;font-weight:700;text-shadow:0 0 6px #000}
 #scc{position:absolute;left:16px;right:16px;bottom:24px;width:auto}
 #pex{position:fixed;right:6px;top:6px;z-index:20;width:auto;padding:4px 12px;margin:0;background:#2a3038;color:var(--fg);opacity:.5}
-</style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
+</style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0c0e11">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -154,7 +155,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 
 <div id="setup">
 <div id="bk" hidden style="position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:8px"><button onclick="voltar()">Voltar à prova</button><button class="s" id="tb" onclick="endTap()">Terminar prova</button></div>
-<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 67</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
+<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 68</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
 <div id="pm"><div class="card"><h1>Rally</h1>
 <label style="margin-top:0">Nome do rally</label><input id="rn0" placeholder="Ex.: Rally de Fafe" aria-label="Nome do rally" onchange="setRName(this.value)">
 <label>Hora de início do rally (partida)</label><input id="h0" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0n" style="text-align:left;font-size:15px;margin-top:4px"></div>
@@ -261,9 +262,10 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 <div class="mut" id="pls" style="text-align:left;font-size:16px;margin-top:8px"></div>
 <div class="mut" style="text-align:left;margin-top:8px">Qualquer telemóvel pode ser navegador ou piloto. Escolha o papel deste telemóvel:</div>
 <div class="r2"><button id="plrn" onclick="plRoleSel('n')">Sou o navegador</button><button id="plrp" onclick="plRoleSel('p')">Sou o piloto</button></div></div>
+<div class="card"><h1>Diagnóstico do piloto</h1><div class="mut" style="text-align:left;font-size:14px">Medições da última prova de teste neste telemóvel, quando era o piloto. Toque em copiar e cole na conversa.</div><pre id="plDg" style="white-space:pre-wrap;font-size:12px;text-align:left;margin:8px 0"></pre><button class="s" onclick="plDgCopy()">Copiar diagnóstico</button></div>
 <div class="card"><h1>Ligação guardada</h1><div class="mut" id="plSv" style="text-align:left;font-size:15px"></div>
 <label>Religação automática pela internet</label><select id="plBrS" onchange="plBrSet()"><option value="1">Ligada</option><option value="0">Desligada</option></select>
-<div class="mut" style="text-align:left;font-size:14px">Quando a ligação cai ou o piloto reabre a app, os dois trocam, por um serviço gratuito (ntfy.sh), só o endereço novo da ligação. Os dados da prova nunca passam pela internet: vão diretamente pelo hotspot. Precisa de internet nos dois telemóveis; sem ela usa-se o QR.</div>
+<div class="mut" style="text-align:left;font-size:14px">Quando a ligação cai ou o piloto reabre a app, os dois trocam, por um serviço gratuito (ntfy.sh), só o endereço novo da ligação. Os dados da prova nunca passam pela internet: vão diretamente pelo hotspot. Precisa de internet nos dois telemóveis (o ponto de acesso tem de ter dados móveis ligados); sem ela usa-se o QR.</div>
 <button class="s" onclick="plBrNow()">Procurar agora o navegador (piloto)</button>
 <button onclick="plReco()">Religar por QR</button><button class="s dg2" onclick="plForget()">Esquecer a ligação guardada</button></div>
 <div class="card" id="plN" hidden><h1>Navegador: envia o ecrã da prova</h1>
@@ -587,7 +589,7 @@ if(r.t=='f')PT=r.r.map(x=>({D:x[0],T:x[1],l:'Passei · '+x[0]+' m'})).sort((a,b)
 else if(r.t=='h')PT=HT.map((T,k)=>({D:100*k,T,l:'Passei · marco '+mk(r,k)})).filter((x,k)=>k>0);
 e.forEach(x=>x.f=Math.max(0,x.at-off));e.sort((a,b)=>a.f-b.f);return{e,p}}
 
-function beep(f,d){try{if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();ac.resume();const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;g.gain.value=.35;o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}
+function beep(f,d,gn){try{if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();ac.resume();const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;g.gain.value=gn||.35;o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}
 try{speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices()}catch(e){}
 function ptv(){const l=speechSynthesis.getVoices().filter(x=>/^pt/i.test(x.lang));return l.find(x=>/^pt[-_]PT/i.test(x.lang)&&x.localService)||l.find(x=>x.localService)}
 function voiceInfo(){try{const l=speechSynthesis.getVoices().filter(x=>/^pt/i.test(x.lang));if(!l.length)return'Nenhuma voz portuguesa encontrada neste telemóvel. Instale o português em Definições, Texto para voz.';
@@ -724,8 +726,9 @@ start(true)}
 function skipP(){cur=lk?lk.nx+1:cur+1;init()}
 function enterLink(r){const nx=seq[cur+1],fin=!nx;
 lkSched=fin?msOf(cur)+r.lk.tempo*1000:msOf(cur+1);
-lk={D0:dEnd(r),Dl:r.lk.dist,Tl:Math.max(1,r.lk.tempo-(end-3)),te:end-3,nx:cur+1,src:'r',fin};asked=false;$('us').hidden=true;$('w3').hidden=true;
-$('kn').textContent='Faltam';$('ks').textContent='Média a fazer';$('rt').textContent=fin?'Ligação final · '+(cur+1)+' → controlo horário':'Ligação '+(cur+1)+' → '+(cur+2);
+lk={D0:dEnd(r),Dl:r.lk.dist,Tl:Math.max(1,r.lk.tempo-(end-3)),te:end-3,nx:cur+1,src:'r',fin,nol:!!r.lk.nol};asked=false;$('us').hidden=true;$('w3').hidden=true;
+$('kn').textContent=lk.nol?'Percorridos':'Faltam';$('ks').textContent='Média a fazer';$('rt').textContent=lk.nol?'Fim da regularidade · sem ligação final':fin?'Ligação final · '+(cur+1)+' → controlo horário':'Ligação '+(cur+1)+' → '+(cur+2);
+if(lk.nol){asked=true;if(sm.includes('v'))say('Fim da regularidade');if(sm.includes('b'))beep(1200,.3);return}
 const tt=Math.round(lk.Tl),m=Math.floor(tt/60),sc=tt%60,du=(m?m+(m==1?' minuto':' minutos'):'')+(m&&sc?' e ':'')+(sc?sc+(sc==1?' segundo':' segundos'):'');
 if(sm.includes('v'))say('Fim de prova. Início da deslocação. Tem '+du+'.');if(sm.includes('b'))beep(1200,.3)}
 
@@ -737,6 +740,7 @@ const TT={f:'FIG',h:'HECTO',a:'Absoluta',k:'TAB',n:'NEUT'};
 function topTxt(){let t='';if(lk0w||(lk&&lk.src=='z'))t='Ligação 0→1';else if(lk)t=lk.fin?'Ligação final':'Ligação '+lk.nx+'→'+(lk.nx+1);else if(st=='done')t='Fim';else if(seq[cur])t='Reg. '+(cur+1)+' · '+(TT[seq[cur].t]||'');const e=$('rtt');if(e&&e.textContent!==t)e.textContent=t;const f=$('fin');if(f){const h=!(lk&&lk.fin&&st=='run');if(f.hidden!==h){f.hidden=h;if(h){f.dataset.a='';f.textContent='Terminar prova'}}}}
 let finT=null;
 function finTap(){const f=$('fin');if(f.dataset.a){clearTimeout(finT);f.dataset.a='';cur=seq.length;init();return}f.dataset.a='1';f.textContent='Toque de novo para terminar';finT=setTimeout(()=>{f.dataset.a='';f.textContent='Terminar prova'},4000)}
+let alT=0;
 function tick(){topTxt();const r=seq[cur];if(!r)return;rbWatch();
 if(st=='wait'&&lk0w){siUp();const rm=(sched0-Date.now())/1000;$('rl').textContent='Ligação da partida às '+hAdd(seq[0].hi,-lk0.tempo)+' · faltam';$('rc').textContent=rm>0?hms(rm):'0';$('rc').style.color='';
 if(rm<-lk0.tempo){lk0w=false;init();return}
@@ -753,8 +757,8 @@ while(idx<ev.length&&ev[idx].f<=el){if(el-ev[idx].f<2.5&&sm.includes('v')){lastS
 while(bi<bp.length&&bp[bi]<=el){if(el-bp[bi]<1&&sm.includes('b')){ps.includes(bp[bi])?beep(1400,.35):beep(880,.12)}bi++}
 if(lk&&lk.src=='z'&&el<0){$('rl').textContent='Ligação arranca em';$('rc').textContent=hms(-el);$('rc').style.color=-el<=5?'#ffd60a':'';$('rn').innerHTML=Math.round(lk.Dl)+'<small>m</small>';$('rs').innerHTML='—'}
 else if(lk){const rt=lk.Tl-(eI-lk.te),dl=lk.Dl-d;
-$('rl').textContent=lk.fin&&rt<0?'Ligação · em atraso':'Ligação · tempo que resta';$('rc').textContent=rt>0?hms(rt):lk.fin&&rt<-.5?'−'+hms(-rt):'0';$('rc').style.color='';
-$('rn').innerHTML=Math.max(0,Math.round(dl))+'<small>m</small>';
+$('rl').textContent=lk.nol?'Fim da regularidade · tempo':lk.fin&&rt<0?'Ligação · em atraso':'Ligação · tempo que resta';$('rc').textContent=lk.nol?hms(Math.max(0,eI-end)):rt>0?hms(rt):lk.fin&&rt<-.5?'−'+hms(-rt):'0';$('rc').style.color='';
+$('rn').innerHTML=(lk.nol?Math.max(0,Math.round(d-lk.D0)):Math.max(0,Math.round(dl)))+'<small>m</small>';
 $('rs').innerHTML=rt>0?Math.max(0,dl/rt*3.6).toFixed(0)+'<small>km/h</small>':'—'}
 else if(r.t=='k'){tickK(r,el,d)}
 else if(r.t=='a'){const i=abSeg(d),S=AB.s[i],N=AB.s[i+1];
@@ -779,11 +783,13 @@ if(r.t=='k')kFr();else{const dm=d-ideal(eI),ds=v>0?dm/v:0,ok=v>1?Math.abs(ds)<=.
 $('fr').style.borderColor=col;$('fs').style.color=col;$('fm').style.color=col;$('fq').style.color=col;
 $('fs').textContent=el<0?'AGUARDA INÍCIO':ok?'NO IDEAL · MANTER':ad?'ADIANTADO · TRAVAR':'ATRASADO · ACELERAR';
 $('fm').textContent=el<0?'0 m':(Math.abs(dm).toFixed(0)=='0'?'':sg)+Math.abs(dm).toFixed(0)+' m';
+if(sm.includes('b')&&el>=3&&v>1&&!fz&&st=='run'){const a=Math.abs(ds),T=Date.now(),lv=a>=1.5?2:a>=.5?1:0;if(lv&&T-alT>(lv==2?1000:2000)){alT=T;beep(lv==2?440:330,lv==2?.18:.12,lv==2?.22:.1)}}
 $('fq').textContent=el<0?'0,0 s':(Math.abs(ds).toFixed(1)=='0.0'?'':sg)+Math.abs(ds).toFixed(1).replace('.',',')+' s';barUp(r,el,dm)}
 if(!fz&&el>=0&&$('sg').hidden&&$('afp').hidden&&d-lastAn>=2000){const f=afF(),n=f.u.length;lastAn=d;winC=[];
 if(n&&f.s!==null){const s=f.s;if(Math.abs(s)>=1){sugV=s;$('sq').textContent='O equipamento mede '+Math.abs(s).toFixed(1).replace('.',',')+' m a '+(s>0?'menos':'mais')+' por quilómetro (com base em '+n+(n==1?' correção':' correções')+'). Aplicar correção?';$('sg').hidden=false;if(sm.includes('v'))say('Sugestão de correção da aferição');beep(1200,.3)}}}
 if(lk&&lk.fin){const rm2=(lkSched-Date.now())/1000;if(rm2<=0&&!asked){asked=true;if(sm.includes('v'))say('Chegada ao controlo horário');beep(1200,.3)}}
 else if(lk){const rm2=(lkSched-Date.now())/1000;if(rm2<=15&&!asked){asked=true;ask(seq[lk.nx],lkSched,lk.nx+1,1e9)}else if(asked&&!$('pr').hidden)pqt(seq[lk.nx],lkSched,lk.nx+1,1e9)}
+else if(cur==seq.length-1&&r.t!='n'&&(!r.lk||(!r.lk.dist&&!r.lk.tempo))){if((r.t!='k'&&r.z)?(d>=dEnd(r)||el>=end):el>end)enterLink(Object.assign({},r,{lk:{dist:0,tempo:0,nol:1}}))}
 else if(isEng(r,cur)){if(d>=dEnd(r)||el>=end)autoNext()}
 else if((r.lk?el>end-3:el>end)&&cur<seq.length){if(r.lk)enterLink(r);else{cur++;init()}}}
 
@@ -1227,7 +1233,7 @@ mpInit();
 let plPC=null,plCh=null,plCf=null,plRole='',plTm=0,plKeyT=0,plWd=0,plPingT=0,plPrev={},plBeatT=0,plRxT=0,plRtt=0,plVis=false,plBad=false,plSt={};
 function plRoleSel(r){$('plN').hidden=r!='n';$('plP').hidden=r!='p';$('plrn').className=r=='n'?'':'s';$('plrp').className=r=='p'?'':'s'}
 function plSet(t){$('pls').textContent=t}
-function plPaint(){try{$('plSv').textContent=plSavedTxt();$('plBrS').value=plBrOnS()?'1':'0'}catch(e){}plSet(plRole=='pilot'?'Ligado como piloto.':plRole=='host'?'Ligado: este telemóvel envia o ecrã ao piloto.':plPC?'A aguardar a ligação…':'Sem ligação.')}
+function plPaint(){plDgShow();try{$('plSv').textContent=plSavedTxt();$('plBrS').value=plBrOnS()?'1':'0'}catch(e){}plSet(plRole=='pilot'?'Ligado como piloto.':plRole=='host'?'Ligado: este telemóvel envia o ecrã ao piloto.':plPC?'A aguardar a ligação…':'Sem ligação.')}
 
 function b64e(u){let x='';u.forEach(c=>x+=String.fromCharCode(c));return btoa(x).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function b64d(t){t=t.replace(/-/g,'+').replace(/_/g,'/');while(t.length%4)t+='=';const x=atob(t),u=new Uint8Array(x.length);for(let i=0;i<x.length;i++)u[i]=x.charCodeAt(i);return u}
@@ -1294,7 +1300,7 @@ plBrEnsure();
 if(pref=='p'&&plBrWs&&plBrWs.readyState==1&&plBrTopic){const gap=now-plBrSeekT<300000?12000:60000,ready=plRole=='pilot'?now-plBadT>2500:true;if(ready&&now-plBrWantT>gap){plBrWantT=now;plBrPost('RP|w|'+now)}}}catch(e){}}
 setInterval(plBrLoop,2000);
 function plBrSet(){plLs('plBr',$('plBrS').value);plPaint()}
-function plBrNow(){plBrUntil=Date.now()+600000;plBrSeekT=Date.now();plBrWantT=0;toast('A procurar o navegador…',3000)}
+function plBrNow(){plBrUntil=Date.now()+600000;plBrSeekT=Date.now();plBrWantT=0;toast('A procurar o navegador…',3000);setTimeout(()=>{if(plRole!='pilot'&&!(plBrWs&&plBrWs.readyState==1))toast('Sem internet para procurar. Ligue os dados móveis no ponto de acesso, ou use o QR do navegador.',8000)},7000)}
 function plReco(){const pref=plLs('plRolePref');if(!pref||!(plHas('plH')||plHas('plP'))){plSet('Ainda sem ligação guardada. Faz a ligação por QR uma vez.');return}
 if(pref=='h')plRecoH();else{plRoleSel('p');plSet('Aponta a câmara ao QR de religação do navegador.');plScan('p')}}
 function plForget(){plLs('plH',null);plLs('plP',null);plLs('plRolePref',null);plPaint();toast('Ligação guardada apagada',3000)}
@@ -1308,18 +1314,22 @@ async function plFin(){try{const d=plDec($('plc2').value);if(!plPC||d.t!='answer
 async function plJoin(){try{const d=plDec($('plp1').value);if(d.t!='offer')throw new Error('este não é o código do navegador');plSet('A gerar a resposta…');await plCam();await plIdent();const pc=plMk();plPend=$('plp1').value.replace(/\s+/g,'');
 pc.ondatachannel=plDcP;
 await pc.setRemoteDescription({type:'offer',sdp:d.s});{const a=await pc.createAnswer();a.sdp=plMung(a.sdp);await pc.setLocalDescription(a)}await plIce(pc);const code=plEnc(pc.localDescription);$('plp2').value=code;$('plp2').hidden=false;$('plp2b').hidden=false;QRG.draw($('plq2'),code,300);$('plq2').hidden=false;$('plq2t').hidden=false;plSet('Mostre o QR ao navegador para ele o ler.')}catch(e){plSet('Erro: '+(e.message||e))}}
-function plOpenHost(){plRole='host';plPrev={};plLastJ='';plGap=50;plHostRx=Date.now();if(plPend){plLs('plH',plPend);plPend=''}plLs('plRolePref','h');plPaint();plRate();toast('Piloto ligado',3000);clearInterval(plTm);clearInterval(plKeyT);plTm=setInterval(()=>plPush(),250);plKeyT=setInterval(()=>plPush(true),4000);plPush(true)}
+function plOpenHost(){plRole='host';plPrev={};plLastJ='';plLastSt='';plGap=40;plHostRx=Date.now();if(plPend){plLs('plH',plPend);plPend=''}plLs('plRolePref','h');plPaint();plRate();toast('Piloto ligado',3000);clearInterval(plTm);clearInterval(plKeyT);plTm=setInterval(()=>plPush(),250);plKeyT=setInterval(()=>plPush(true),4000);plPush(true)}
 function plMsgH(e){plHostRx=Date.now();try{const m=JSON.parse(e.data);if(m.t=='p'&&plCh&&plCh.readyState=='open')plCh.send(JSON.stringify({t:'q',c:m.c}))}catch(x){}}
 function plRun(){return !$('run').hidden||!$('bk').hidden}
 function plRate(){if(!timer||($('run').hidden&&$('bk').hidden))return;clearInterval(timer);timer=setInterval(()=>{tick();try{plPush()}catch(e){}},plRole=='host'?33:67)}
-const PLSKIP={ar:1,si:1,mpI:1,us:1,fin:1,zq:1};
+const PLSKIP={ar:1,si:1,mpI:1,us:1,fin:1,zq:1,bu:1,bd:1};
 function plState(){const r=$('run'),o={};if(!plRun())return o;r.querySelectorAll('[id]').forEach(e=>{if(PLSKIP[e.id])return;o[e.id]=[e.querySelector('[id]')?null:e.innerHTML,e.className,e.style.cssText,e.hidden?1:0]});return o}
-let plSeq=0,plGap=50,plLastSend=0,plOk=0,plLastJ='';
+let plSeq=0,plGap=40,plLastSend=0,plOk=0,plLastJ='',plSig=0,plLastSt='',plSigT=0;
 function plPush(){if(plRole!='host'||!plCh||plCh.readyState!='open')return;const ch=plCf&&plCf.readyState=='open'?plCf:plCh,now=Date.now();
 if(now-plLastSend<plGap)return;if(ch.bufferedAmount>1200){plGap=Math.min(300,plGap*1.5+10);return}
-const r=$('run'),f=plState(),j=JSON.stringify(f);if(j===plLastJ&&now-plBeatT<300)return;
-const m=JSON.stringify({q:++plSeq,h:now,v:plRun()?1:0,a:r.classList.contains('abs')?1:0,f});
-try{ch.send(m)}catch(e){return}plLastJ=j;plBeatT=now;plLastSend=now;if(++plOk>=20){plOk=0;plGap=Math.max(50,plGap*.85)}}
+const r=$('run'),f=plState(),ids=Object.keys(f);
+const st=JSON.stringify(ids.map(k=>[f[k][1],f[k][2],f[k][3]]));
+if(st!==plLastSt||now-plSigT>2000){if(st!==plLastSt){plLastSt=st;plSig++}plSigT=now;if(plCh.bufferedAmount<3000){try{plCh.send(JSON.stringify({S:plSig,ids,st:JSON.parse(st)}))}catch(e){return}}}
+const t=ids.map(k=>f[k][0]),bu=$('bu'),bd=$('bd'),b=bu?[bu.style.height,bd.style.height]:0,j=JSON.stringify([t,b]);
+if(j===plLastJ&&now-plBeatT<300)return;
+try{ch.send(JSON.stringify({q:++plSeq,h:now,g:plSig,v:plRun()?1:0,a:r.classList.contains('abs')?1:0,t,b}))}catch(e){return}
+plLastJ=j;plBeatT=now;plLastSend=now;if(++plOk>=20){plOk=0;plGap=Math.max(40,plGap*.85)}}
 
 let scnS=null,scnT=0,scnCb=null;
 async function scnOpen(cb){if(!('BarcodeDetector' in window)||!navigator.mediaDevices){toast('Este telemóvel não lê QR pela câmara. Use «Copiar e colar».',5000);return}
@@ -1328,27 +1338,38 @@ const loop=async()=>{if($('scn').hidden)return;try{const r=await det.detect(v);i
 catch(e){scnClose();toast('Não consegui abrir a câmara: '+((e&&e.message)||e),5000)}}
 function scnClose(){clearTimeout(scnT);$('scn').hidden=true;try{scnS&&scnS.getTracks().forEach(t=>t.stop())}catch(e){}scnS=null;scnCb=null}
 function plScan(r){scnOpen(t=>{if(r=='n'){$('plc2').value=t;plFin()}else{$('plp1').value=t;plJoin()}})}
-function plOpenPilot(){const first=plRole!='pilot';plRole='pilot';plRxT=Date.now();plBad=false;
-plQ=-1;plQd=null;plHL=0;plRel=[];plQms=0;plErr='';try{if(gW!==null){navigator.geolocation.clearWatch(gW);gW=null}}catch(e){}if(first){plVis=false;plSt={};$('setup').hidden=true;const r=$('run');r.hidden=false;r.classList.add('pilot');$('pex').hidden=false;$('plr').hidden=false;try{keepAwake()}catch(e){}}
+function plOpenPilot(){const first=plRole!='pilot';plRole='pilot';if(cfKind=='rb'){try{cfClose()}catch(e){}}plRxT=Date.now();plBad=false;
+plQ=-1;plQd=null;plHL=0;plSS={};plLastRx=0;plDgNew();plRel=[];plQms=0;plErr='';try{if(gW!==null){navigator.geolocation.clearWatch(gW);gW=null}}catch(e){}if(first){plVis=false;plSt={};$('setup').hidden=true;const r=$('run');r.hidden=false;r.classList.add('pilot');$('pex').hidden=false;$('plr').hidden=false;try{keepAwake()}catch(e){}}
 plOv();if(plPend){plLs('plP',plPend);plPend=''}plLs('plRolePref','p');
 clearInterval(plWd);clearInterval(plPingT);plWd=setInterval(()=>{const b=Date.now()-plRxT>2500;if(b!==plBad){plBad=b;if(b)plBadT=Date.now();plOv()}},500);plPingT=setInterval(()=>{try{if(plCh&&plCh.readyState=='open')plCh.send(JSON.stringify({t:'p',c:Date.now()}))}catch(e){}},1000)}
 function plOv(){const w=$('plw');if(plBad){w.className='bad';$('plwi').textContent='✕';$('plw1').textContent='Sem ligação';$('plw2').textContent='Sem sinal do navegador. A tentar ligar de novo… Confirma o ponto de acesso. Toca no ✕ para sair.';w.hidden=false}
 else if(!plVis){w.className='ok';$('plwi').textContent='✓';$('plw1').textContent='Ligado';$('plw2').textContent='À espera que o navegador inicie a prova…';w.hidden=false}else w.hidden=true}
 const PLFIT={rc:1,rn:1,rs:1,rv:1,fm:1,fq:1,rd:1,fs:1};
 function plFit(el){if(!el||!el.clientWidth)return;el.style.fontSize='';let f=parseFloat(getComputedStyle(el).fontSize),n=0;while(el.scrollWidth>el.clientWidth+1&&f>10&&n++<14){f*=.88;el.style.fontSize=f+'px'}}
-let plQ=-1,plQd=null,plRaf=0,plRel=[],plQms=0,plHL=0,plErr='';
-function plMsg(e){let m;try{m=JSON.parse(e.data)}catch(x){return}plRxT=Date.now();if(m.t=='q'){plRtt=Date.now()-m.c;plShowQ();return}
-if(m.q===undefined||!m.f)return;if(m.h<plHL-3000)plQ=-1;plHL=m.h;if(m.q<plQ)return;plQ=m.q;
-{const rel=plRxT-m.h;plRel.push([plRxT,rel]);while(plRel.length&&plRxT-plRel[0][0]>20000)plRel.shift();let mn=1e12;plRel.forEach(x=>{if(x[1]<mn)mn=x[1]});plQms=plQms*.7+(rel-mn)*.3}
-plQd=m;if(!plRaf)plRaf=requestAnimationFrame(plFlush)}
+let plQ=-1,plQd=null,plRaf=0,plRel=[],plQms=0,plHL=0,plErr='',plSS={},plSN=0,plDg=null,plLastRx=0;
+function plDgNew(){plDg={t0:Date.now(),n:0,lost:0,q:[],gap:[],rd:[],skip:0,rtt:[]}}
+function plMsg(e){let m;try{m=JSON.parse(e.data)}catch(x){return}const nowp=performance.now();plRxT=Date.now();if(m.t=='q'){plRtt=Date.now()-m.c;if(plDg){plDg.rtt.push(plRtt);if(plDg.rtt.length>600)plDg.rtt.shift()}plShowQ();return}
+if(m.S){plSS[m.S]=m;if(++plSN>6){delete plSS[m.S-6]}return}
+if(m.q===undefined||!m.t)return;if(m.h<plHL-3000){plQ=-1;plSS={}}plHL=m.h;if(m.q<plQ)return;if(!plDg)plDgNew();
+if(plQ>=0&&m.q>plQ+1)plDg.lost+=m.q-plQ-1;plQ=m.q;plDg.n++;if(plLastRx){const g=nowp-plLastRx;plDg.gap.push(g);if(plDg.gap.length>3000)plDg.gap.shift()}plLastRx=nowp;
+{const rel=plRxT-m.h;plRel.push([plRxT,rel]);while(plRel.length&&plRxT-plRel[0][0]>20000)plRel.shift();let mn=1e12;plRel.forEach(x=>{if(x[1]<mn)mn=x[1]});plQms=plQms*.7+(rel-mn)*.3;plDg.q.push(rel-mn);if(plDg.q.length>3000)plDg.q.shift()}
+m.rx=nowp;plQd=m;if(!plRaf)plRaf=requestAnimationFrame(plFlush)}
 function plShowQ(){const e=$('plr');if(!e)return;if(plErr){e.textContent='erro: '+plErr;e.style.color='#ff453a';return}const q=Math.round(plQms);e.textContent='ligação '+plRtt+' ms · fila +'+q+' ms';e.style.color=q>150?'#ff453a':q>60?'#ffd60a':''}
-function plFlush(){plRaf=0;const m=plQd;plQd=null;if(!m)return;$('run').classList.toggle('abs',!!m.a);const v=!!m.v;if(plBad||v!==plVis){plBad=false;plVis=v;plOv()}
-const fit=[];for(const id in m.f){const el=document.getElementById(id);if(!el)continue;const a=m.f[id],o=plSt[id]||(plSt[id]=[]);
-if(a[0]!==null&&a[0]!==o[0]){el.innerHTML=a[0];if(PLFIT[id]&&(o[0]||'').length!==a[0].length)fit.push(el);o[0]=a[0]}
-if(a[1]!==o[1]){el.className=a[1];o[1]=a[1]}
-if(a[2]!==o[2]){el.style.cssText=a[2];o[2]=a[2];if(PLFIT[id]&&o[0]!==undefined&&!fit.includes(el))fit.push(el)}
-const h=a[3]?1:0;if(h!==o[3]){el.hidden=!!h;o[3]=h}}
-fit.forEach(plFit);plShowQ()}
+function plFlush(){plRaf=0;const m=plQd;plQd=null;if(!m)return;const S=plSS[m.g];if(!S||S.ids.length!=m.t.length){if(plDg)plDg.skip++;return}
+$('run').classList.toggle('abs',!!m.a);const v=!!m.v;if(plBad||v!==plVis){plBad=false;plVis=v;plOv()}
+const fit=[];S.ids.forEach((id,k)=>{const el=document.getElementById(id);if(!el)return;const x=m.t[k],a=S.st[k],o=plSt[id]||(plSt[id]=[]);
+if(x!==null&&x!==o[0]){if(x.indexOf('<')<0)el.textContent=x;else el.innerHTML=x;if(PLFIT[id]&&(o[0]||'').length!==x.length)fit.push(el);o[0]=x}
+if(a[0]!==o[1]){el.className=a[0];o[1]=a[0]}
+if(a[1]!==o[2]){el.style.cssText=a[1];o[2]=a[1];if(PLFIT[id]&&o[0]!==undefined&&!fit.includes(el))fit.push(el)}
+const h=a[2]?1:0;if(h!==o[3]){el.hidden=!!h;o[3]=h}});
+if(m.b){const U=document.getElementById('bu'),D=document.getElementById('bd');if(U&&U.style.height!==m.b[0])U.style.height=m.b[0];if(D&&D.style.height!==m.b[1])D.style.height=m.b[1]}
+fit.forEach(plFit);plShowQ();if(plDg){plDg.rd.push(performance.now()-m.rx);if(plDg.rd.length>3000)plDg.rd.shift()}}
+function plPct(a,p){if(!a.length)return 0;const b=a.slice().sort((x,y)=>x-y);return Math.round(b[Math.min(b.length-1,Math.floor(b.length*p))]*10)/10}
+function plDgTxt(){let d=plDg;if(!d){try{return localStorage.getItem('plDiag')||'Ainda sem medições. Faz uma prova de teste com este telemóvel como piloto.'}catch(e){return ''}}
+const dur=Math.round((Date.now()-d.t0)/1000),g=d.gap;return 'Diagnóstico do piloto (versão 68)\nDuração '+dur+' s · mensagens '+d.n+' · perdidas '+d.lost+' ('+(d.n?Math.round(d.lost*1000/(d.n+d.lost))/10:0)+' %) · ecrã por desenhar '+d.skip+'\nAtraso da fila (ms): mediana '+plPct(d.q,.5)+' · 90 % '+plPct(d.q,.9)+' · 99 % '+plPct(d.q,.99)+' · máx '+plPct(d.q,1)+'\nIntervalo entre mensagens (ms): mediana '+plPct(g,.5)+' · 90 % '+plPct(g,.9)+' · máx '+plPct(g,1)+' · acima de 200 ms: '+g.filter(x=>x>200).length+' · acima de 500 ms: '+g.filter(x=>x>500).length+'\nDesenho no piloto (ms): mediana '+plPct(d.rd,.5)+' · 99 % '+plPct(d.rd,.99)+' · máx '+plPct(d.rd,1)+'\nIda e volta (ms): mediana '+plPct(d.rtt,.5)+' · 90 % '+plPct(d.rtt,.9)+' · máx '+plPct(d.rtt,1)}
+setInterval(()=>{if(plRole=='pilot'&&plDg){try{localStorage.setItem('plDiag',plDgTxt())}catch(e){}}},5000);
+function plDgShow(){try{const e=$('plDg');if(e)e.textContent=plDgTxt()}catch(x){}}
+async function plDgCopy(){try{await navigator.clipboard.writeText(plDgTxt());toast('Copiado')}catch(e){toast('Não consegui copiar')}}
 function plExitAsk(){askC('Sair do modo piloto?',[['Não, continuar',null],['Sim, sair',()=>{plClose();location.reload()}]],'pil')}
 async function plCopy(i){try{await navigator.clipboard.writeText($(i).value);toast('Copiado')}catch(e){$(i).select();toast('Selecione e copie à mão')}}
 async function plShare(i){try{if(navigator.share)await navigator.share({text:$(i).value});else plCopy(i)}catch(e){}}
