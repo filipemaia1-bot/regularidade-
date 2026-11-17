@@ -5,6 +5,7 @@
 <style>
 :root{--bg:#0c0e11;--fg:#f3f5f8;--mut:#8f98a6;--ac:#ffb300;--card:#171b21}
 *{box-sizing:border-box}
+html,body{overscroll-behavior:none}
 [hidden]{display:none!important}
 body{margin:0;padding:12px;background:var(--bg);color:var(--fg);font:16px/1.4 system-ui,sans-serif}
 h1{font-size:19px;margin:0 0 10px}
@@ -118,10 +119,25 @@ button.gr{background:#1c7c3a;color:#fff;font-weight:800}
 .mc{display:block;text-align:left;background:#1d2229;color:var(--fg);border:1px solid #333a44;padding:16px;margin:0 0 10px;font-size:19px;font-weight:700}.mc span{display:block;font-weight:400;font-size:14px;color:var(--mut);margin-top:3px}
 .pgh{position:sticky;top:0;z-index:5;background:var(--bg);padding:6px 0}.pgh button{margin:0}
 #go{font-size:21px;padding:18px}
-#run.pilot{height:100vh;height:100dvh}
-#run.pilot .bar button,#run.pilot #us,#run.pilot #fin,#run.pilot #zq,#run.pilot .adj,#run.pilot .fb,#run.pilot .ar{display:none!important}
-#run.pilot .frame{flex:1;display:flex;flex-direction:column;justify-content:center}
-#run.pilot .two div{font-size:min(19vw,110px)}#run.pilot .st{font-size:min(7vw,38px)}
+#run.pilot{height:100vh;height:100dvh;gap:1.4dvh;padding-left:6px}
+#run.pilot .bar,#run.pilot #si,#run.pilot #mpI,#run.pilot #us,#run.pilot #fin,#run.pilot #zq,#run.pilot .adj,#run.pilot .fb,#run.pilot .ar{display:none!important}
+#run.pilot>*{min-height:0}
+#run.pilot #rt{font-size:13px;text-align:center}
+#run.pilot #rl{font-size:min(5vw,3dvh);text-align:center}
+#run.pilot #rc{flex:2.4 1 0;font-size:min(26vw,15dvh);overflow:hidden;white-space:nowrap}
+#run.pilot.abs #rc .ab1{font-size:min(24vw,12dvh)}#run.pilot.abs #rc .ab2{font-size:min(11vw,5.5dvh)}
+#run.pilot .row2{flex:1.7 1 0}
+#run.pilot .row2 .win{display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+#run.pilot .row2 .win .k{font-size:min(3.6vw,2dvh)}
+#run.pilot .row2 .win .v{font-size:min(14vw,8dvh)}
+#run.pilot .frame{flex:2.2 1 0;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+#run.pilot .st{font-size:min(6vw,3.4dvh)}
+#run.pilot .two{flex:1;align-items:center}#run.pilot .two>div{flex:1 1 0;min-width:0;text-align:center;font-size:min(18vw,11dvh);overflow:hidden}
+#run.pilot #rd{flex:1 1 0;display:flex;align-items:center;justify-content:center;font-size:min(10vw,5.5dvh);overflow:hidden;white-space:nowrap}
+#plw{position:fixed;inset:0;z-index:15;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2dvh;text-align:center;padding:16px}
+#plw .ic{font-size:min(30vw,18dvh);line-height:1}#plw .t1{font-size:min(9vw,5.5dvh);font-weight:800}#plw .t2{font-size:min(5vw,3dvh);color:var(--mut)}
+#plw.ok .ic,#plw.ok .t1{color:#2ee66b}#plw.bad .ic,#plw.bad .t1{color:#ff453a}
+#plr{position:fixed;left:8px;top:6px;z-index:16;font-size:11px;color:var(--mut);opacity:.8}
 .qrc{display:block;margin:12px auto;background:#fff;max-width:100%;height:auto;border-radius:8px}
 textarea.cod{margin-top:10px;min-height:80px;font:12px/1.3 monospace;word-break:break-all}
 details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
@@ -129,7 +145,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 #sct{position:absolute;left:0;right:0;top:16px;text-align:center;font-size:19px;font-weight:700;text-shadow:0 0 6px #000}
 #scc{position:absolute;left:16px;right:16px;bottom:24px;width:auto}
 #pex{position:fixed;right:6px;top:6px;z-index:20;width:auto;padding:4px 12px;margin:0;background:#2a3038;color:var(--fg);opacity:.5}
-</style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
+</style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0c0e11">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -137,7 +153,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 
 <div id="setup">
 <div id="bk" hidden style="position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:8px"><button onclick="voltar()">Voltar à prova</button><button class="s" id="tb" onclick="endTap()">Terminar prova</button></div>
-<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 62</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
+<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 63</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
 <div id="pm"><div class="card"><h1>Rally</h1>
 <label style="margin-top:0">Nome do rally</label><input id="rn0" placeholder="Ex.: Rally de Fafe" aria-label="Nome do rally" onchange="setRName(this.value)">
 <label>Hora de início do rally (partida)</label><input id="h0" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0n" style="text-align:left;font-size:15px;margin-top:4px"></div>
@@ -222,6 +238,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 <div class="pg" id="pg_mp" hidden><div class="pgh"><button class="s" onclick="pgBack()">← Preparar rally</button></div><div class="card">
 <h1>Mapa em segundo plano</h1>
 <div class="mut" style="text-align:left;font-size:15px">Trabalha em segundo plano, sem desenhar nenhum mapa. Quando o GPS falha (túneis, árvores), a app mede no mapa a distância percorrida e, quando o sinal volta, sugere a correção. Durante a prova também compara o odómetro com o mapa e avisa se a diferença ficar estável. Nunca corrige sozinha: tu decides.</div>
+<div id="mpZ" style="font-size:16px;font-weight:700;margin-top:8px"></div>
 <label>Usar o mapa nas provas</label><select id="mpOn" onchange="mpSetOn()"><option value="0">Desligado</option><option value="1">Ligado</option></select>
 <label>Região inteira</label><div class="r2"><select id="mpReg" style="flex:1;min-width:0"><option>Viana do Castelo</option><option>Braga</option><option>Porto</option><option>Vila Real</option><option>Bragança</option><option>Aveiro</option><option>Viseu</option><option>Guarda</option><option>Coimbra</option><option>Castelo Branco</option><option>Leiria</option><option>Santarém</option><option>Portalegre</option><option>Lisboa</option><option>Setúbal</option><option>Évora</option><option>Beja</option><option>Faro</option><option>Madeira</option></select></div>
 <button onclick="mpDownReg()">Descarregar a região (precisa de internet)</button>
@@ -236,7 +253,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 <div id="mpFa" class="mut" style="text-align:left;font-size:15px;margin-top:6px"></div><button class="s" onclick="mpFmReset()">Repor o fator do mapa</button>
 <button class="s dg2" onclick="mpDel()">Apagar todo o mapa</button>
 <div id="mpPf" class="mut" style="text-align:left;font-size:13px;margin-top:6px"></div>
-<div id="mpS" class="mut" style="text-align:left;font-size:15px;margin-top:8px"></div></div></div>
+<progress id="mpPb" value="0" max="1" hidden style="width:100%;height:14px;margin-top:8px"></progress><div id="mpS" class="mut" style="text-align:left;font-size:15px;margin-top:8px"></div></div></div>
 <div class="pg" id="pg_pl" hidden><div class="pgh"><button class="s" onclick="pgBack()">← Preparar rally</button></div>
 <div class="card"><h1>Modo piloto</h1>
 <div class="mut" style="text-align:left;font-size:15px">Dois telemóveis com a app aberta, ligados à mesma rede (por exemplo o ponto de acesso do navegador). Não precisa de internet. O ecrã do piloto mostra o essencial e não tem botões de correção. A ligação faz-se lendo um QR de cada telemóvel.</div>
@@ -266,6 +283,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 
 <div id="run" hidden>
 <div class="bar"><button class="s" onclick="toPrep()">← Preparação</button><div id="rtt"></div><button class="s" onclick="afOpen()">Aferição</button></div>
+<div id="mpI" style="font-size:13px;font-weight:700;margin:0 0 2px 2px"></div>
 <div style="position:relative"><div class="mut" id="rt"></div><div id="si"></div></div>
 <div class="mut" id="rl"></div>
 <div class="big" id="rc">0</div>
@@ -283,7 +301,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 <div class="fb"><button id="fz" class="s" onclick="frz()">Congelar distância</button><button id="un" class="s" onclick="undo()">↶ Desfazer</button></div>
 <div class="ar"><input id="ar" inputmode="decimal" placeholder="Distância real (km)"><button onclick="apl()">Aplicar</button></div>
 </div>
-<div id="scn" hidden><video id="scv" playsinline muted></video><div id="sct">Aponte a câmara ao QR do outro telemóvel</div><button class="s" id="scc" onclick="scnClose()">Cancelar</button></div><div id="vs"></div><div id="toast" hidden></div><button id="pex" hidden onclick="location.reload()">✕</button>
+<div id="scn" hidden><video id="scv" playsinline muted></video><div id="sct">Aponte a câmara ao QR do outro telemóvel</div><button class="s" id="scc" onclick="scnClose()">Cancelar</button></div><div id="plw" class="ok" hidden><div class="ic" id="plwi">✓</div><div class="t1" id="plw1">Ligado</div><div class="t2" id="plw2">À espera que o navegador inicie a prova…</div></div><div id="plr" hidden></div><div id="vs"></div><div id="toast" hidden></div><button id="pex" hidden onclick="plExitAsk()">✕</button>
 <div id="afe" class="ov" hidden style="border-top:4px solid #7fd1ff"><div class="mut" style="font-size:16px">Fator de aferição</div><div id="afen" style="font-size:20px;margin-top:6px"></div><div class="adj" style="margin-top:8px"><button class="s rm" onclick="afeAdj(-1)">−1</button><button class="s rm" onclick="afeAdj(-.1)">−0,1</button><button class="s gp" onclick="afeAdj(.1)">+0,1</button><button class="s gp" onclick="afeAdj(1)">+1</button></div><div class="mut" style="font-size:12px">metros por quilómetro</div><div class="r2"><button onclick="afeSv()">Guardar</button><button class="s" onclick="afeCn()">Cancelar</button></div></div>
 <div id="afp" class="ov" hidden style="border-top:4px solid #7fd1ff;max-height:75dvh;overflow:auto">
 <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:20px">Aferição</b><button class="s" style="width:auto;margin:0;padding:8px 18px" onclick="afClose()">Fechar</button></div>
@@ -328,6 +346,8 @@ let dOff=0,st='wait',sched=0,asked=false,ac=null,bp=[],bi=0,sm='vb',fz=false,fzD
 try{seq=JSON.parse(localStorage.getItem('seq')||'[]')}catch(e){}
 try{L=JSON.parse(localStorage.getItem('log')||'[]');lid=L.reduce((m,e)=>Math.max(m,e.id),0)}catch(e){L=[]}
 try{const a=localStorage.getItem('af');if(a!==null){af=num(a)||0;$('afv').value=String(af).replace('.',',')}}catch(e){}
+function RN(r,n){return(r&&r.t=='n'?'neutralização ':'regularidade ')+n}
+function RNs(r,n){return RN(r,n)+(r&&r.t!='n'?', '+NM[r.t].toLowerCase().replace('tabelas / hitos quilómetro','tabelas'):'')}
 const NM={f:'Figura',h:'Hectométrica',a:'Absoluta',k:'Tabelas / Hitos quilómetro',n:'Neutralização'};
 let zsI=1;const ZS=[.85,1,1.15,1.3];
 try{const g=localStorage.getItem('zs');if(g!==null&&+g>=0&&+g<=3)zsI=+g}catch(e){}
@@ -487,12 +507,12 @@ function edit(i){const x=seq[i];ei=i;$('tp').value=x.t;lab();if(x.t=='k')$('iv')
 $('dt').value=x.t=='f'?x.r.map(a=>kmf(a[0])+' '+hms(a[1])).join('\n'):x.t=='h'?(x.q?x.q.map(a=>a.map(v=>String(v).replace('.',',')).join(' ')).join('\n'):''):x.r.map((a,i)=>kmf(a[0])+' '+kmf(i<x.r.length-1?x.r[i+1][0]:x.dtot)+' '+String(a[1]).replace('.',',')).join('\n');
 $('du').value=hms(x.du);if(x.t=='h'){$('mi').value=String(x.mi==null?0:x.mi).replace('.',',');$('sen').value=x.sen||'c'}
 if(x.t=='a')$('dtot').value=x.dtot||'';
-$('ab').textContent='Guardar alterações da regularidade '+(i+1);$('cb').hidden=false;err('');scrollTo(0,0)}
-function rem(i){if(!seq[i])return;askC('Remover a regularidade '+(i+1)+' ('+NM[seq[i].t]+')?',[['Remover',()=>rem2(i),'dg2'],['Cancelar']])}
+$('ab').textContent='Guardar alterações da '+RN(seq[i],i+1);$('cb').hidden=false;err('');scrollTo(0,0)}
+function rem(i){if(!seq[i])return;askC('Remover a '+RN(seq[i],i+1)+(seq[i].t=='n'?'':' ('+NM[seq[i].t]+')')+'?',[['Remover',()=>rem2(i),'dg2'],['Cancelar']])}
 function rem2(i){seq.splice(i,1);if(ei==i)cancelEdit();else if(ei>i)ei--;save();show()}
 function err2(m){$('er2').textContent=m}
 function setHi(i,v){if(!v.trim()&&i>0){delete seq[i].man;err2('');save();show();return}
-const h=ck(v);if(!h){err2('Hora inválida na regularidade '+(i+1)+'. Use hh:mm:ss.');show();return}err2('');seq[i].hi=h;if(i>0&&lkT(seq[i-1])!==null)seq[i].man=true;save();show()}
+const h=ck(v);if(!h){err2('Hora inválida na '+RN(seq[i],i+1)+'. Use hh:mm:ss.');show();return}err2('');seq[i].hi=h;if(i>0&&lkT(seq[i-1])!==null)seq[i].man=true;save();show()}
 function dEnd(r){if(r.t=='k'||r.t=='n')return 0;if(r.t=='h'&&r.q)return Math.round(Math.abs(r.q[r.q.length-1][2]-r.q[0][0])*1000);if(r.t=='f')return Math.max(...r.r.map(a=>a[0]));if(r.t=='a')return r.dtot;
 const m=r.r.slice().sort((a,b)=>a[0]-b[0]);let i=0,k=0,T=m[0][0],D=0;while(T<=r.du){while(i+1<m.length&&T>=m[i+1][0])i++;D=100*k;k++;T+=m[i][1]}return D}
 let lastS='',lastT=0,lk0=null,hiTouched=false,r0='00:00:00';try{lk0=JSON.parse(localStorage.getItem('lk0')||'null')}catch(e){}try{r0=ck(localStorage.getItem('r0')||'')||'00:00:00'}catch(e){}
@@ -522,7 +542,7 @@ const e=dEnd(seq[i]);
 if(ds&&(Math.round(num(ds)*1000)===0||Math.round(num(ds)*1000)===e)){delete seq[i].lk;delete seq[i].ask;seq[i].z=true;delete seq[i].ac;err2('');save();show();return}
 if(!ds||!ts)return;
 let d=Math.round(num(ds)*1000),t=tp(ts);
-if(isNaN(d)||isNaN(t)||t<=0){err2('Ligação após a regularidade '+(i+1)+': escreva a distância em quilómetros e o tempo, por exemplo 0,180 e 3:00.');show();return}
+if(isNaN(d)||isNaN(t)||t<=0){err2('Ligação após a '+RN(seq[i],i+1)+': escreva a distância em quilómetros e o tempo, por exemplo 0,180 e 3:00.');show();return}
 const du_=durOf(seq[i]);let nt='';
 if(d<=e){d+=e;nt='distância'}
 if(t<=du_){t+=du_;nt+=(nt?' e ':'')+'tempo'}
@@ -534,8 +554,8 @@ function fimH(x){try{const d=durOf(x);return d>0?hAdd(x.hi,d):''}catch(e){return
 function show(){recalc();try{pmSum()}catch(e){}if(ei<0&&!hiTouched)$('hi').value=hiProp();
 const rn=$('rn0');if(rn)rn.value=(rid&&RL[rid])?RL[rid].name||'':'';if(!$('rlist').hidden)renderRL();
 const hh=$('h0');if(hh){hh.value=seq.length?hAdd(seq[0].hi,-(lk0?lk0.tempo:0)):r0;hh.disabled=false;
-$('h0n').textContent=!seq.length?'As horas das regularidades calculam-se a partir desta hora (por defeito 00:00:00).':lk0?'A regularidade 1 começa às '+seq[0].hi+' (partida + ligação de '+hms(lk0.tempo)+').':'Sem ligação da partida: a regularidade 1 começa a esta hora.'}
-$('ls').innerHTML=seq.length?`<div class="lkr"><div class="lt">↓ Ligação da partida até à regularidade 1</div><div class="ct"><input placeholder="Dist. (km)" inputmode="decimal" value="${lk0?kmf(lk0.dist):''}" onchange="setLk0(this)"><input placeholder="Tempo mm:ss" value="${lk0?hms(lk0.tempo):''}" onchange="setLk0(this)"></div></div>`+seq.map((x,i)=>{const nl=(x.r||[]).length,f=fimH(x);return `<div class="rg"><div class="h"><span class="n">${i+1} · ${NM[x.t]}${x.man?'<span class="tg">hora fixa</span>':''}</span><span class="t">${x.t=='k'?'a cada '+(x.iv>=1000?'1 km':x.iv+' m'):x.t=='n'?hms(x.du):nl+' '+(nl==1?'linha':'linhas')}</span></div><div class="tm">${x.hi}${f?' → '+f:''}</div><div class="ct"><div class="f a"><span>Mover (± min)</span><input class="mn" placeholder="± min" inputmode="decimal" aria-label="Minutos a somar ou subtrair" onchange="shiftMin(${i},this)"></div><div class="f"><span>Hora de início</span><input value="${x.hi}" aria-label="Hora de início" title="${i&&lkT(seq[i-1])!==null?(x.man?'Hora fixa, escrita por si. Apague para voltar ao cálculo pela ligação.':'Calculada pela ligação. Escreva outra hora para a fixar.'):''}" onchange="setHi(${i},this.value)"></div></div><div class="ac">${$('bk').hidden?`<button class="ok" onclick="go(${i})">Iniciar</button>`:''}<button class="ed" onclick="edit(${i})">Editar</button><button class="dg" onclick="rem(${i})">Remover</button></div></div>`+`<div class="lkr"><div class="lt">↓ ${i<seq.length-1?'Ligação até à regularidade '+(i+2):'Ligação final até ao controlo horário'}${fimTxt(x,1)}${x.z?' · ligação 0: a seguinte começa sozinha ao chegar à distância final':''} ${i<seq.length-1&&x.t!='n'&&x.t!='k'?'<button class="eng'+(isEng(x,i)?' on':'')+'" onclick="setEng('+i+')" aria-pressed="'+(isEng(x,i)?'true':'false')+'">Engate'+(isEng(x,i)?' ✓':'')+'</button>':''}</div><div class="ct"><input placeholder="${i<seq.length-1?'Dist. (km)':'Dist. final (km)'}" inputmode="decimal" value="${x.lk?kmf(x.lk.dist):''}" onchange="setLk(${i},this)"><input placeholder="Tempo mm:ss" value="${x.lk?hms(x.lk.tempo):''}" onchange="setLk(${i},this)"></div></div>`}).join(''):'Ainda vazia.'}
+$('h0n').textContent=!seq.length?'As horas das regularidades calculam-se a partir desta hora (por defeito 00:00:00).':lk0?'A '+RN(seq[0],1)+' começa às '+seq[0].hi+' (partida + ligação de '+hms(lk0.tempo)+').':'Sem ligação da partida: a '+RN(seq[0],1)+' começa a esta hora.'}
+$('ls').innerHTML=seq.length?`<div class="lkr"><div class="lt">↓ Ligação da partida até à ${RN(seq[0],1)}</div><div class="ct"><input placeholder="Dist. (km)" inputmode="decimal" value="${lk0?kmf(lk0.dist):''}" onchange="setLk0(this)"><input placeholder="Tempo mm:ss" value="${lk0?hms(lk0.tempo):''}" onchange="setLk0(this)"></div></div>`+seq.map((x,i)=>{const nl=(x.r||[]).length,f=fimH(x);return `<div class="rg"><div class="h"><span class="n">${i+1} · ${NM[x.t]}${x.man?'<span class="tg">hora fixa</span>':''}</span><span class="t">${x.t=='k'?'a cada '+(x.iv>=1000?'1 km':x.iv+' m'):x.t=='n'?hms(x.du):nl+' '+(nl==1?'linha':'linhas')}</span></div><div class="tm">${x.hi}${f?' → '+f:''}</div><div class="ct"><div class="f a"><span>Mover (± min)</span><input class="mn" placeholder="± min" inputmode="decimal" aria-label="Minutos a somar ou subtrair" onchange="shiftMin(${i},this)"></div><div class="f"><span>Hora de início</span><input value="${x.hi}" aria-label="Hora de início" title="${i&&lkT(seq[i-1])!==null?(x.man?'Hora fixa, escrita por si. Apague para voltar ao cálculo pela ligação.':'Calculada pela ligação. Escreva outra hora para a fixar.'):''}" onchange="setHi(${i},this.value)"></div></div><div class="ac">${$('bk').hidden?`<button class="ok" onclick="go(${i})">Iniciar</button>`:''}<button class="ed" onclick="edit(${i})">Editar</button><button class="dg" onclick="rem(${i})">Remover</button></div></div>`+`<div class="lkr"><div class="lt">↓ ${i<seq.length-1?'Ligação até à '+RN(seq[i+1],i+2):'Ligação final até ao controlo horário'}${fimTxt(x,1)}${x.z?' · ligação 0: a seguinte começa sozinha ao chegar à distância final':''} ${i<seq.length-1&&x.t!='n'&&x.t!='k'?'<button class="eng'+(isEng(x,i)?' on':'')+'" onclick="setEng('+i+')" aria-pressed="'+(isEng(x,i)?'true':'false')+'">Engate'+(isEng(x,i)?' ✓':'')+'</button>':''}</div><div class="ct"><input placeholder="${i<seq.length-1?'Dist. (km)':'Dist. final (km)'}" inputmode="decimal" value="${x.lk?kmf(x.lk.dist):''}" onchange="setLk(${i},this)"><input placeholder="Tempo mm:ss" value="${x.lk?hms(x.lk.tempo):''}" onchange="setLk(${i},this)"></div></div>`}).join(''):'Ainda vazia.'}
 
 function build(r){const e=[],p=[];P=[[0,0]];AB=null;PT=[];HT=[];if(r.t=='k'||r.t=='n')return{e,p};
 if(r.t=='f'){const f=r.r.map(x=>[x[1],x[0]]).sort((a,b)=>a[0]-b[0]);let pv=-99;
@@ -588,7 +608,7 @@ sched=msOf(cur);t0=sched;pk=-1;aw={};cdN=99;$('w3').hidden=!(r.t=='a'||r.t=='k')
 end=(r.t=='k'?1e9:r.t=='n'?r.du:r.t=='a'?AB.Ttot:(r.t=='f'?(ps.length?ps[ps.length-1]:0):r.du))+3;st='wait';asked=false;
 $('kn').textContent=r.t=='a'?'Média troço':r.t=='h'?'Próximo marco':'Próxima passagem';$('rc').classList.toggle('ab',r.t=='a');$('run').classList.toggle('abs',r.t=='a');$('ks').textContent=r.t=='a'?'Vel. necessária':'Média a fazer';
 $('us').hidden=r.t=='a'||r.t=='k';
-$('rt').textContent='Regularidade '+(cur+1)+' de '+seq.length+' · '+NM[r.t];$('kl').hidden=r.t!='k';$('rn').style.fontSize=r.t=='k'?'min(9.5vw,5.2dvh)':'';if(r.t=='k'){$('kn').textContent='Marca (km)';$('ks').textContent='Média (km/h)'}}
+$('rt').textContent=r.t=='n'?'Neutralização '+(cur+1)+' de '+seq.length:'Regularidade '+(cur+1)+' de '+seq.length+' · '+NM[r.t];$('kl').hidden=r.t!='k';$('rn').style.fontSize=r.t=='k'?'min(9.5vw,5.2dvh)':'';if(r.t=='k'){$('kn').textContent='Marca (km)';$('ks').textContent='Média (km/h)'}}
 
 let gAc=0,src='s',gW=null,gP=null,gM=0,gA=0,gV=0,gT=0,gS='a procurar GPS…',afOn=false,gti=null;
 function hav(a,b){const R=6371000,t=Math.PI/180,x=(b.latitude-a.latitude)*t,y=(b.longitude-a.longitude)*t,q=Math.sin(x/2)**2+Math.cos(a.latitude*t)*Math.cos(b.latitude*t)*Math.sin(y/2)**2;return 2*R*Math.asin(Math.sqrt(q))}
@@ -661,7 +681,7 @@ function afAdj(x){afPend=Math.round(((afPend===null?af:afPend)+x)*10)/10;afUpd()
 function afSv(){if(afPend===null)return;const p=af;setAf(afPend);afhAdd('Ajuste manual',{f:af,prev:p});afPend=null;afUpd()}
 function afCn(){afPend=null;afUpd()}
 function afAcc(){const i=afInfo();if(i.s===null)return;afPend=null;const p=af;setAf(Math.round((af+i.s)*10)/10);afhAdd('Sugestão aceite',{f:af,prev:p});winC=[];lastAn=dNow();afUpd()}
-function siUp(){let c,t;if(src=='r'&&rbLive()){t='RACEBOX';c='#2ee66b'}else if(src!='s'){t=src=='r'?'GPS reserva':'GPS';c=!(gT&&Date.now()-gT<=3000)?'#ff453a':gAc>30?'#ffd60a':'#2ee66b'}else{t='SIM';c='#2ee66b'}
+function siUp(){try{mpInd()}catch(x){}let c,t;if(src=='r'&&rbLive()){t='RACEBOX';c='#2ee66b'}else if(src!='s'){t=src=='r'?'GPS reserva':'GPS';c=!(gT&&Date.now()-gT<=3000)?'#ff453a':gAc>30?'#ffd60a':'#2ee66b'}else{t='SIM';c='#2ee66b'}
 const h='<i style="background:'+c+'"></i>'+t+(wkOk?'':' <b style="color:#ff453a">ecrã</b>');if($('si').dataset.h!=h){$('si').dataset.h=h;$('si').innerHTML=h}}
 function recSug(){$('sg').hidden=true}
 
@@ -669,9 +689,9 @@ let accOff=0,curD=0;
 function start(testNow,auto){if(!seq[cur])return;try{mpStart()}catch(x){}accOff=0;lk=null;hk=1;pk=-1;cdN=99;aw={};gM=0;fz=false;idx=0;bi=0;dOff=0;U=[];fzU=[];lastAn=0;lastCorrD=0;winC=[];lastSeg=-1;kN=0;kL=[];t0=testNow?Date.now():sched;dStart=auto?Date.now():t0;st='run';$('pr').hidden=true;$('sg').hidden=true;blank();
 if(!testNow){const e=(Date.now()-sched)/1000;if(e>0)dOff=-dr(e)}}
 function pqt(r,sch,n,lim){const late=Math.round((Date.now()-sch)/1000);
-$('pq').textContent=late<0?'A regularidade '+n+' ('+NM[r.t]+') começa às '+r.hi+', daqui a '+(-late)+' s. Dar início?':'Chegou a hora da regularidade '+n+' ('+NM[r.t]+', '+r.hi+'). Dar início?';
+const nn=r.t=='n',tx=nn?'':' ('+NM[r.t]+')';$('pq').textContent=late<0?(nn?'A neutralização ':'A regularidade ')+n+tx+' começa às '+r.hi+', daqui a '+(-late)+' s. Dar início?':'Chegou a hora da '+(nn?'neutralização ':'regularidade ')+n+(nn?' ('+r.hi+')':' ('+NM[r.t]+', '+r.hi+')')+'. Dar início?';
 $('pb').hidden=false;$('pn').hidden=true;$('pb').textContent=late<0?'Confirmar: arranca às '+r.hi:'Dar início: tempo da hora oficial, km 0 agora (atraso de '+late+' s)'}
-function ask(r,sch,n,lim){if($('run').hidden&&!$('setup').hidden&&!$('bk').hidden)voltar();pqt(r,sch,n,lim);$('pr').hidden=false;if(sm.includes('v'))say('Dar início à regularidade '+n+'?');beep(1200,.3)}
+function ask(r,sch,n,lim){if($('run').hidden&&!$('setup').hidden&&!$('bk').hidden)voltar();pqt(r,sch,n,lim);$('pr').hidden=false;if(sm.includes('v'))say('Dar início à '+RNs(r,n)+'?');beep(1200,.3)}
 function pqtL0(){const late=Math.round((Date.now()-sched0)/1000),h=hAdd(seq[0].hi,-lk0.tempo);
 $('pq').textContent=late<0?'A ligação da partida começa às '+h+', daqui a '+(-late)+' s. Dar início?':'Chegou a hora da ligação da partida ('+h+'). Dar início?';
 $('pb').hidden=false;$('pn').hidden=true;$('pb').textContent=late<0?'Confirmar: arranca às '+h:'Dar início: km 0 agora (atraso de '+late+' s)'}
@@ -734,8 +754,8 @@ else if(r.t=='k'){tickK(r,el,d)}
 else if(r.t=='a'){const i=abSeg(d),S=AB.s[i],N=AB.s[i+1];
 if(el>=0){const mt=Math.max(0,Math.round((N?N.s:AB.dtot)-d));$('rl').textContent='Cronómetro '+hms(el);$('rc').innerHTML='<span class="ab1">'+mt+'<small>m</small></span><span class="ab2">'+(N?'→ '+(Math.round(N.avg*10)/10)+' km/h':'→ fim')+'</span>'}
 if(el>=0&&i!=lastSeg){lastSeg=i;if(i>0&&S.g<10){if(sm.includes('v'))say(S.avg>AB.s[i-1].avg?'sobe':'desce')}else if(sm.includes('v'))say('Média '+Math.round(S.avg));if(i>0&&sm.includes('b'))beep(1400,.35)}
-if(el>=0&&N&&!(N.g<10)){const vi=vNow()/3.6,tt=(N.s-d)/(vi>1?vi:S.v),k=i+1;
-if(tt>5.5&&tt<=7&&!aw['v'+k]){aw['v'+k]=1;if(sm.includes('v'))say('Média '+Math.round(N.avg)+' daqui a '+Math.round(tt)+' segundos')}
+if(el>=0&&N){const vi=vNow()/3.6,rm=N.s-d,tt=rm/(vi>1?vi:S.v),k=i+1;
+if(tt>0&&tt<=7&&!aw['v'+k]){aw['v'+k]=1;if(sm.includes('v'))say((N.avg>S.avg?'Sobe':'Desce')+' para '+Math.round(N.avg)+', daqui a '+Math.max(10,Math.round(rm/10)*10)+' metros')}
 if(tt>0&&tt<5.5){const n=Math.round(tt);if(n>=1&&aw['b'+k]!==n){aw['b'+k]=n;if(sm.includes('b'))beep(880,.12)}}}
 $('rc').style.color='';
 $('rn').innerHTML=(Math.round(S.avg*10)/10)+'<small>km/h</small>';
@@ -790,8 +810,8 @@ for(let i=0;i<seq.length;i++){const m=bad(seq[i],i);if(m){err(m);scrollTo(0,0);r
 err('');sm=$('sm').value;try{beep(1,.01)}catch(e){}lead=+$('le').value||10;off=+$('vo').value;if(isNaN(off))off=.6;sv=+$('sv').value||0;af=num($('afv').value)||0;pw=num($('pw').value);if(isNaN(pw)||pw<0)pw=5;cur=k||0;src=$('fo').value;if(src!='s'){if(!gps()&&!(src=='r'&&rbLive())){err(gS);return}clearInterval(gti)}else gOff();rbWas=src=='r'&&rbLive();rbDown=false;if(src=='r'&&!rbWas)toast('Racebox sem sinal: a usar o GPS do telemóvel.',5000);
 $('setup').hidden=true;$('run').hidden=false;try{history.pushState({r:1},'')}catch(e){}
 await keepAwake();if(!wkOk)toast('Atenção: o telemóvel não deixa manter o ecrã ligado. Desligue a poupança de energia ou ponha o ecrã sempre ligado nas definições.',7000);
-init();const run0=()=>{if(lk0&&seq[0]&&cur==0&&k===undefined)enterWaitL0();clearInterval(timer);timer=setInterval(tick,67)};
-if(lk0&&seq[0]&&cur==0&&k===undefined&&Date.now()>=sched){askC('A hora da regularidade 1 ('+seq[0].hi+') já passou, por isso a ligação da partida já terminou. Começar a ligação agora, como ensaio? As horas de todas as regularidades passam a contar a partir de agora.',[['Sim, começar a ligação agora',()=>{shiftBy(0,Math.ceil((Date.now()+lk0.tempo*1000-sched)/1000)+1);save();init();run0()}],['Não, manter as horas',()=>run0()]],'ens')}
+init();const run0=()=>{if(lk0&&seq[0]&&cur==0&&k===undefined)enterWaitL0();clearInterval(timer);timer=setInterval(()=>{tick();try{plPush()}catch(e){}},67)};
+if(lk0&&seq[0]&&cur==0&&k===undefined&&Date.now()>=sched){askC('A hora da '+RN(seq[0],1)+' ('+seq[0].hi+') já passou, por isso a ligação da partida já terminou. Começar a ligação agora, como ensaio? As horas de todas as regularidades passam a contar a partir de agora.',[['Sim, começar a ligação agora',()=>{shiftBy(0,Math.ceil((Date.now()+lk0.tempo*1000-sched)/1000)+1);save();init();run0()}],['Não, manter as horas',()=>run0()]],'ens')}
 else run0()}
 function now(){if(!seq[cur]){cur=0;init()}start(true)}
 function skip(){cur++;init()}
@@ -801,7 +821,7 @@ function chainMs(){const b=new Date(Date.now());b.setHours(0,0,0,0);let prev=-1;
 for(let j=0;j<seq.length;j++){const q=seq[j].hi.split(':').map(Number);let m=b.getTime()+((q[0]*60+q[1])*60+(q[2]||0))*1000;if(prev>=0)while(m<prev)m+=864e5;prev=m;o.push(m)}return o}
 function msOf(i){const o=chainMs();if(!o.length)return -1;const ref=Math.min(Math.max(cur,0),o.length-1),sh=o[ref]-Date.now()>18*36e5?-864e5:0;return o[Math.min(i,o.length-1)]+sh}
 function hiMs(hi){const q=hi.split(':').map(Number),d=new Date(Date.now());d.setHours(q[0],q[1],q[2]||0,0);return d.getTime()}
-function setLabels(r){$('kn').textContent=r.t=='a'?'Média troço':r.t=='h'?'Próximo marco':'Próxima passagem';$('rc').classList.toggle('ab',r.t=='a');$('run').classList.toggle('abs',r.t=='a');$('ks').textContent=r.t=='a'?'Vel. necessária':'Média a fazer';$('us').hidden=r.t=='a'||r.t=='k';$('w3').hidden=!(r.t=='a'||r.t=='k');$('rt').textContent='Regularidade '+(cur+1)+' de '+seq.length+' · '+NM[r.t];$('kl').hidden=r.t!='k';$('rn').style.fontSize=r.t=='k'?'min(9.5vw,5.2dvh)':'';if(r.t=='k'){$('kn').textContent='Marca (km)';$('ks').textContent='Média (km/h)'}}
+function setLabels(r){$('kn').textContent=r.t=='a'?'Média troço':r.t=='h'?'Próximo marco':'Próxima passagem';$('rc').classList.toggle('ab',r.t=='a');$('run').classList.toggle('abs',r.t=='a');$('ks').textContent=r.t=='a'?'Vel. necessária':'Média a fazer';$('us').hidden=r.t=='a'||r.t=='k';$('w3').hidden=!(r.t=='a'||r.t=='k');$('rt').textContent=r.t=='n'?'Neutralização '+(cur+1)+' de '+seq.length:'Regularidade '+(cur+1)+' de '+seq.length+' · '+NM[r.t];$('kl').hidden=r.t!='k';$('rn').style.fontSize=r.t=='k'?'min(9.5vw,5.2dvh)':'';if(r.t=='k'){$('kn').textContent='Marca (km)';$('ks').textContent='Média (km/h)'}}
 function rebuild(r,d0){const el=(Date.now()-t0)/1000;cT=r.t;const b=build(r);ev=b.e;ps=b.p;
 tg=r.t=='f'?r.r.map(x=>x[0]).sort((a,b)=>a-b):[];
 bp=ev.filter(x=>/^\d+$/.test(x.s)).map(x=>x.at).sort((a,b)=>a-b);
@@ -942,7 +962,7 @@ else if(rbDown){rbDown=false;say2('Racebox ligada de novo.')}}
 async function rbBoot(){if(rb.on||rb.want||prova())return;
 try{if(navigator.bluetooth.getDevices){const ds=await navigator.bluetooth.getDevices(),id=localStorage.getItem('rbid'),d=ds.find(x=>x.id==id);
 if(d){rb.dev=d;rb.want=true;d.addEventListener('gattserverdisconnected',rbDrop);await Promise.race([rbLink(),new Promise(r=>setTimeout(r,9000))]);if(rb.on)return}}}catch(e){}
-if(!rb.on&&!prova())askC('Ligar ao Racebox?',[['Sim, ligar',()=>rbPick()],['Agora não']],'rb')}
+if(!rb.on&&!prova()&&plRole!='pilot')askC('Ligar ao Racebox?',[['Sim, ligar',()=>rbPick()],['Agora não']],'rb')}
 function rbInit(){setInterval(rbPaint,500);
 if(!navigator.bluetooth||!window.isSecureContext){$('rbs').textContent='Este navegador não deixa ligar por Bluetooth. Abra a app no Chrome, no Android.';$('rbb').disabled=true;return}
 setTimeout(rbBoot,600)}
@@ -1017,7 +1037,8 @@ function overlayOpen(){if(!$('scn').hidden)return 'scn';if(!$('afe').hidden)retu
 addEventListener('popstate',e=>{if(leaving)return;if(ign>0){ign--;return}
 if(!(e.state&&e.state.m))restore();
 if(cfKind=='ens')return;
-if(cfKind=='exit'){cfClose();return}
+if(cfKind=='exit'||cfKind=='pil'){cfClose();return}
+if(plRole=='pilot'&&!overlayOpen()){plExitAsk();return}
 const o=overlayOpen();
 if(o){if(o=='scn')scnClose();else if(o=='afe')afeCn();else if(o=='afp')afClose();else cfClose();if(pgPushed&&pgCur)pgPushed=false;return}
 if(pgCur){pgClose();pgPushed=false;return}
@@ -1102,23 +1123,27 @@ function mpTb(k){const[iy,ix]=mpTidx(k);return[iy*MPG[0],ix*MPG[1],(iy+1)*MPG[0]
 function mpKeysBox(s0,w,n,e){const o=[];for(let y=Math.floor(s0/MPG[0]);y<=Math.floor(n/MPG[0]);y++)for(let x=Math.floor(w/MPG[1]);x<=Math.floor(e/MPG[1]);x++)o.push(y+'_'+x);return o}
 function mpDistTile(k,la,lo){const b=mpTb(k),cy=Math.max(b[0],Math.min(b[2],la)),cx=Math.max(b[1],Math.min(b[3],lo));return Math.hypot((cy-la)*111195,(cx-lo)*111195*Math.cos(la*Math.PI/180))}
 const MPREG={'Viana do Castelo':[41.60,-8.95,42.16,-8.00],'Braga':[41.35,-8.85,41.90,-7.85],'Porto':[40.95,-8.80,41.50,-7.85],'Vila Real':[41.00,-8.10,42.00,-7.10],'Bragança':[41.00,-7.35,41.99,-6.18],'Aveiro':[40.30,-8.85,41.05,-7.85],'Viseu':[40.40,-8.40,41.30,-7.35],'Guarda':[40.15,-7.75,41.30,-6.80],'Coimbra':[39.85,-8.95,40.50,-7.60],'Castelo Branco':[39.35,-8.20,40.35,-6.85],'Leiria':[39.35,-9.50,40.00,-8.10],'Santarém':[38.85,-9.05,39.80,-7.80],'Portalegre':[38.85,-8.15,39.75,-7.05],'Lisboa':[38.40,-9.55,39.30,-8.85],'Setúbal':[37.95,-9.25,38.85,-8.00],'Évora':[38.20,-8.60,39.05,-7.15],'Beja':[37.15,-8.45,38.45,-7.10],'Faro':[36.95,-8.95,37.60,-7.40],'Madeira':[32.55,-17.30,33.15,-16.25]};
-const MPW="const mpPack="+mpPack.toString()+";\nfunction idb(){return new Promise((ok,ko)=>{const q=indexedDB.open('rp_map',2);q.onupgradeneeded=()=>{const d=q.result;if(!d.objectStoreNames.contains('z'))d.createObjectStore('z');if(!d.objectStoreNames.contains('m'))d.createObjectStore('m')};q.onsuccess=()=>ok(q.result);q.onerror=()=>ko(q.error)})}\nonmessage=async e=>{const m=e.data;try{const q='[out:json][timeout:90];way[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|unclassified|residential|living_street)(_link)?$\"][\"access\"!~\"^(no|private)$\"]('+m.bb+');out skel geom qt;';\nconst r=await fetch(m.url,{method:'POST',body:'data='+encodeURIComponent(q),headers:{'Content-Type':'application/x-www-form-urlencoded'}});if(!r.ok)throw new Error('servidor '+r.status);const j=await r.json();const z=mpPack(j,m.c);z.k=m.k;\nconst bytes=z.lat.byteLength+z.lon.byteLength+z.ea.byteLength+z.eb.byteLength+z.id.byteLength;const meta={k:m.k,g:m.g,date:z.date,bytes,pts:z.lat.length,ed:z.ea.length,t:Date.now()};\nconst d=await idb();await new Promise((ok,ko)=>{const t=d.transaction(['z','m'],'readwrite');t.objectStore('z').put(z,'b:'+m.k);t.objectStore('m').put(meta,m.k);t.oncomplete=ok;t.onerror=()=>ko(t.error)});d.close();postMessage({id:m.id,meta})}catch(err){postMessage({id:m.id,err:String(err&&err.message||err)})}};";
+const MPW="const mpPack="+mpPack.toString()+";\nfunction idb(){return new Promise((ok,ko)=>{const q=indexedDB.open('rp_map',2);q.onupgradeneeded=()=>{const d=q.result;if(!d.objectStoreNames.contains('z'))d.createObjectStore('z');if(!d.objectStoreNames.contains('m'))d.createObjectStore('m')};q.onsuccess=()=>ok(q.result);q.onerror=()=>ko(q.error)})}\nonmessage=async e=>{const m=e.data;try{const q='[out:json][timeout:90];way[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|unclassified|residential|living_street)(_link)?$\"][\"access\"!~\"^(no|private)$\"]('+m.bb+');out skel geom qt;';\nconst r=await fetch(m.url,{method:'POST',body:'data='+encodeURIComponent(q),headers:{'Content-Type':'application/x-www-form-urlencoded'}});if(!r.ok)throw new Error('servidor '+r.status);const j=await r.json();if(!j||!Array.isArray(j.elements))throw new Error('resposta inválida');if(j.remark&&/error|timed out|out of memory|too busy|rate/i.test(j.remark))throw new Error('servidor ocupado');const z=mpPack(j,m.c);z.k=m.k;\nconst bytes=z.lat.byteLength+z.lon.byteLength+z.ea.byteLength+z.eb.byteLength+z.id.byteLength;const meta={k:m.k,g:m.g,date:z.date,bytes,pts:z.lat.length,ed:z.ea.length,t:Date.now()};\nconst d=await idb();await new Promise((ok,ko)=>{const t=d.transaction(['z','m'],'readwrite');t.objectStore('z').put(z,'b:'+m.k);t.objectStore('m').put(meta,m.k);t.oncomplete=ok;t.onerror=()=>ko(t.error)});d.close();postMessage({id:m.id,meta})}catch(err){postMessage({id:m.id,err:String(err&&err.message||err)})}};";
 function mpWorker(){if(!mpWk){mpWk=new Worker(URL.createObjectURL(new Blob([MPW],{type:'text/javascript'})))}return mpWk}
-let mpWid=0,mpSv=0;
+let mpWid=0,mpSv=0;const MPURLS=['https://overpass-api.de/api/interpreter','https://overpass.kumi.systems/api/interpreter','https://overpass-api.de/api/interpreter','https://maps.mail.ru/osm/tools/overpass/api/interpreter'];let mpFail={},mpCurT=0,mpPbT=0;
 function mpWork(it){return new Promise((ok,ko)=>{const w=mpWorker(),id=++mpWid,b=mpTb(it.k),bb=b.map(v=>v.toFixed(4)).join(',');const tm=setTimeout(()=>{w.removeEventListener('message',h);try{w.terminate()}catch(e){}mpWk=null;ko(new Error('demorou demasiado'))},150000);
 function h(e){if(e.data.id!=id)return;clearTimeout(tm);w.removeEventListener('message',h);e.data.err?ko(new Error(e.data.err)):ok(e.data.meta)}
-w.addEventListener('message',h);w.postMessage({id,k:it.k,g:it.g,bb,c:[(b[0]+b[2])/2,(b[1]+b[3])/2],url:window.MPURL||'https://overpass-api.de/api/interpreter'})})}
+w.addEventListener('message',h);w.postMessage({id,k:it.k,g:it.g,bb,c:[(b[0]+b[2])/2,(b[1]+b[3])/2],url:window.MPURL||MPURLS[(it.tries||0)%MPURLS.length]})})}
 const mpSleep=ms=>new Promise(r=>setTimeout(r,ms));
 async function mpMetaLoad(){const d=await mpIdb();const all=await new Promise((ok,ko)=>{const r=d.transaction('m').objectStore('m').getAll();r.onsuccess=()=>ok(r.result||[]);r.onerror=()=>ko(r.error)});mpMeta={};all.forEach(m=>mpMeta[m.k]=m);
 const lk2=await new Promise(ok=>{const r=d.transaction('z').objectStore('z').getKey('zona');r.onsuccess=()=>ok(r.result);r.onerror=()=>ok(null)});if(lk2){const lz=mpOn||!1?await mpGet():null;mpMeta['legacy']={k:'legacy',g:'Zona antiga (versão 59)',bytes:lz?lz.lat.byteLength+lz.lon.byteLength+lz.ea.byteLength+lz.eb.byteLength:0,pts:lz?lz.lat.length:0,ed:0,date:'',t:0}}}
 function mpEnq(keys,g,auto){let n=0;keys.forEach(k=>{if(mpMeta[k]||mpQ.some(x=>x.k==k))return;mpQ.push({k,g,auto,tries:0});n++;mpQn++});if(n)mpRunQ();return n}
-async function mpRunQ(){if(mpBusy||!mpQ.length)return;mpBusy=true;mpStopQ=false;
-while(mpQ.length&&!mpStopQ){const it=mpQ[0];mpTxt('A descarregar o bloco '+(mpQd+1)+' de '+mpQn+'…');
-try{const m=await mpWork(it);mpMeta[it.k]=m;mpQ.shift();mpQd++;mpList();if(it.auto)mpPrune();if(mpPos){const a=mpTidx(mpTk(mpPos.la,mpPos.lo)),b=mpTidx(it.k);if(Math.abs(a[0]-b[0])<=1&&Math.abs(a[1]-b[1])<=1)mpActK=''}}
-catch(e){it.tries++;if(it.tries>=3){mpQ.shift();mpQn=Math.max(0,mpQn-1);mpTxt('Não consegui o bloco '+it.k+' ('+(e&&e.message||e)+'). Precisa de internet.')}else await mpSleep(4000)}
+async function mpRunQ(){if(mpBusy||!mpQ.length)return;mpBusy=true;mpStopQ=false;clearInterval(mpPbT);mpPbT=setInterval(mpTick,1000);
+while(mpQ.length&&!mpStopQ){const it=mpQ[0];mpCurT=Date.now();mpTick();
+try{const m=await mpWork(it);mpMeta[it.k]=m;delete mpFail[it.k];mpQ.shift();mpQd++;mpList();if(it.auto)mpPrune();if(mpPos){const a=mpTidx(mpTk(mpPos.la,mpPos.lo)),b=mpTidx(it.k);if(Math.abs(a[0]-b[0])<=1&&Math.abs(a[1]-b[1])<=1)mpActK=''}}
+catch(e){it.tries++;const msg=String(e&&e.message||e);mpCurT=0;if(it.tries>=4){mpQ.shift();mpQn=Math.max(0,mpQn-1);mpFail[it.k]={g:it.g,auto:it.auto,msg};mpList();mpTxt('Não consegui o bloco '+it.k+' ('+msg+'). Fica na lista para repetir.')}else{mpTxt('O bloco falhou ('+msg+'). A tentar outra vez ('+(it.tries+1)+' de 4)…');await mpSleep(3000*it.tries)}}
 await mpSleep(1200)}
-mpBusy=false;if(mpStopQ){mpQ=[];mpQn=mpQd=0;mpTxt('Descarga parada.')}else if(!mpQ.length){mpTxt('Descarga concluída: '+mpQd+(mpQd==1?' bloco':' blocos')+'.');mpQn=mpQd=0}
+mpCurT=0;clearInterval(mpPbT);const nf=Object.keys(mpFail).length,pb=$('mpPb');if(pb)pb.hidden=true;
+mpBusy=false;if(mpStopQ){mpQ=[];mpQn=mpQd=0;mpTxt('Descarga parada.')}else if(!mpQ.length){mpTxt('Descarga concluída: '+mpQd+(mpQd==1?' bloco':' blocos')+'.'+(nf?' Falharam '+nf+': carrega em «Repetir».':''));mpQn=mpQd=0}
 mpActK='';if(mpPos)mpAround(mpPos.la,mpPos.lo);mpSum();mpList()}
+function mpTick(){if(!mpCurT||!mpBusy)return;const sc=Math.round((Date.now()-mpCurT)/1000),it=mpQ[0],pb=$('mpPb');mpTxt('A descarregar o bloco '+(mpQd+1)+' de '+Math.max(mpQn,mpQd+1)+(it&&it.tries?' (tentativa '+(it.tries+1)+')':'')+'… '+sc+' s');if(pb){pb.hidden=false;pb.max=Math.max(1,mpQn);pb.value=mpQd}}
+function mpEmpty(){return Object.values(mpMeta).filter(m=>m.k!='legacy'&&(!m.ed||(m.bytes||0)<1000))}
+async function mpRetry(){const gm={};mpEmpty().forEach(m=>gm[m.k]=m.g);Object.keys(mpFail).forEach(k=>gm[k]=mpFail[k].g);const ek=mpEmpty().map(m=>m.k);mpFail={};if(ek.length)await mpDelKeys(ek);const ks=Object.keys(gm);if(!ks.length){mpTxt('Não há blocos para repetir.');return}ks.forEach(k=>mpEnq([k],gm[k],false))}
 function mpStopB(){mpStopQ=true}
 async function mpMerge(recs){const id=new Map(),la=[],lo=[],ea=[],eb=[],es=new Set();
 for(const z of recs){const n=z.lat.length,map=new Int32Array(n);
@@ -1150,7 +1175,8 @@ async function mpDelKeys(keys){const d=await mpIdb();await new Promise((ok,ko)=>
 function mpMB(b){return(b/1048576).toFixed(1).replace('.',',')+' MB'}
 function mpList(){const e=$('mpZl');if(!e)return;const gs={};Object.values(mpMeta).forEach(m=>{const g=gs[m.g]||(gs[m.g]={n:0,b:0});g.n++;g.b+=m.bytes||0});const names=Object.keys(gs);
 let tot=0;names.forEach(n=>tot+=gs[n].b);
-e.innerHTML=names.length?names.map(n=>'<div class="r2" style="align-items:center;margin-top:6px"><div style="flex:1;text-align:left;font-size:15px">'+n.replace(/[<>&]/g,'')+'<br><span class="mut" style="font-size:13px">'+gs[n].n+(gs[n].n==1?' bloco, ':' blocos, ')+mpMB(gs[n].b)+'</span></div><button class="s dg2" style="width:auto;margin:0;padding:8px 12px" data-g="'+encodeURIComponent(n)+'" onclick="mpDelG(decodeURIComponent(this.dataset.g))">Apagar</button></div>').join('')+'<div class="mut" style="text-align:left;font-size:14px;margin-top:6px">Total guardado: '+mpMB(tot)+'</div>':'<div class="mut" style="text-align:left;font-size:14px">Ainda sem mapa guardado.</div>'}
+const em=mpEmpty().length,nf=Object.keys(mpFail).length,ex=(em||nf)?'<div class="mut" style="text-align:left;font-size:14px;margin-top:8px">'+(nf?nf+(nf==1?' bloco falhou. ':' blocos falharam. '):'')+(em?em+(em==1?' bloco está vazio (0 MB; pode ser mar). ':' blocos estão vazios (0 MB; podem ser mar). '):'')+'</div><button onclick="mpRetry()">Repetir os blocos falhados e vazios</button>':'';
+e.innerHTML=(names.length?names.map(n=>'<div class="r2" style="align-items:center;margin-top:6px"><div style="flex:1;text-align:left;font-size:15px">'+n.replace(/[<>&]/g,'')+'<br><span class="mut" style="font-size:13px">'+gs[n].n+(gs[n].n==1?' bloco, ':' blocos, ')+mpMB(gs[n].b)+'</span></div><button class="s dg2" style="width:auto;margin:0;padding:8px 12px" data-g="'+encodeURIComponent(n)+'" onclick="mpDelG(decodeURIComponent(this.dataset.g))">Apagar</button></div>').join('')+'<div class="mut" style="text-align:left;font-size:14px;margin-top:6px">Total guardado: '+mpMB(tot)+'</div>':'<div class="mut" style="text-align:left;font-size:14px">Ainda sem mapa guardado.</div>')+ex}
 function mpDelG(g){mpDelKeys(Object.values(mpMeta).filter(m=>m.g==g).map(m=>m.k))}
 async function mpDel(){await mpDelKeys(Object.keys(mpMeta));mpTxt('Mapa apagado.')}
 function mpAsk(keys,g){const n=keys.filter(k=>!mpMeta[k]).length;if(!n){mpTxt('Essa zona já está guardada.');return}
@@ -1175,11 +1201,15 @@ if(!mpRegular()){mpEnq(need.slice(0,2).map(x=>x.k),'automático',true);return}
 const near=need.filter(x=>x.d<=5000);if(near.length&&mpMeta[mpTk(mpPos.la,mpPos.lo)]&&Date.now()>mpAskT&&$('cf').hidden){mpAskT=Date.now()+600000;const ks=near.slice(0,2).map(x=>x.k);
 askC('Falta a zona do mapa à frente (a '+Math.round(near[0].d/1000)+' km). Descarregar agora? Gasta um pouco de processador.',[['Descarregar',()=>mpEnq(ks,'automático',true)],['Agora não',null]],'mapa')}}
 setInterval(()=>{try{mpAutoTick()}catch(e){}},15000);
+setInterval(()=>{try{mpInd()}catch(e){}},3000);
 function mpPerf(ms){mpTm.push(ms);if(mpTm.length>60)mpTm.shift();if(ms>40){if(++mpSlow>=5){mpSlow=0;mpOn=false;try{localStorage.setItem('mapOn','0')}catch(e){}mpSum();if($('mpOn'))$('mpOn').value='0';askC('O mapa foi desligado porque o telemóvel ficou lento. A prova continua como antes.',[['OK',null]],'mapa')}}else mpSlow=0;mpPf(0)}
 function mpPf(x,force){const t=Date.now();if(!force&&t-mpPfT<3000)return;mpPfT=t;const e=$('mpPf');if(!e)return;const a=mpTm.length?mpTm.reduce((u,v)=>u+v,0)/mpTm.length:0,m=mpTm.length?Math.max(...mpTm):0;
 e.textContent='Cálculo por leitura: média '+a.toFixed(1).replace('.',',')+' ms, máximo '+m.toFixed(1).replace('.',',')+' ms. Última preparação do mapa: '+Math.round(mpBuildMs)+' ms. Pontos em memória: '+(MP?MP.z.lat.length:0)+'.'}
 async function mpInit(){try{$('mpLim').value=String(mpLim).replace('.',',');mpFa();await mpMetaLoad();$('mpOn').value=mpOn?'1':'0';mpTxt(Object.keys(mpMeta).length?'Mapa guardado no telemóvel.':'Ainda sem mapa guardado.');mpSum();mpList();if(mpOn&&Object.keys(mpMeta).length&&!mpPos){const rl=localStorage.getItem('mapLastPos');if(rl){const q=JSON.parse(rl);mpAround(q[0],q[1])}}}catch(e){mpTxt('O telemóvel não deixou guardar o mapa.')}}
-function mpSum(){const e=$('sMp');if(e)e.textContent=!mpOn?'Desligado':MP?'Ligado, mapa carregado':Object.keys(mpMeta).length?'Ligado, mapa guardado':'Ligado, falta descarregar'}
+function mpHereK(){let la,lo;if(mpPos&&Date.now()-mpPos.t<120000){la=mpPos.la;lo=mpPos.lo}else{try{const q=JSON.parse(localStorage.getItem('mapLastPos')||'null');if(q){la=q[0];lo=q[1]}}catch(e){}}return la===undefined?null:mpTk(la,lo)}
+function mpInd(){const e=$('mpI');if(!e)return;let h='';if(mpOn){const k=mpPos&&Date.now()-mpPos.t<120000?mpTk(mpPos.la,mpPos.lo):null;h=!k?'<span style="color:#ffd60a">● Mapa: à espera do GPS</span>':(MP&&mpMeta[k]?'<span style="color:#2ee66b">● Mapa carregado</span>':'<span style="color:#ff453a">● Sem mapa nesta zona</span>')}
+if(e.dataset.h!==h){e.dataset.h=h;e.innerHTML=h}const z=$('mpZ');if(z){const k=mpHereK(),t=!mpOn?'<span class="mut">Mapa da tua zona: desligado</span>':!k?'<span class="mut">Mapa da tua zona: posição desconhecida (liga o GPS)</span>':mpMeta[k]&&(mpMeta[k].ed||0)>0?'<span style="color:#1c7c3a">● Mapa da tua zona: guardado</span>':'<span style="color:#b3261e">● Mapa da tua zona: em falta</span>';if(z.dataset.h!==t){z.dataset.h=t;z.innerHTML=t}}}
+function mpSum(){try{mpInd()}catch(x){}const e=$('sMp');if(e)e.textContent=!mpOn?'Desligado':MP?'Ligado, mapa carregado':Object.keys(mpMeta).length?'Ligado, mapa guardado':'Ligado, falta descarregar'}
 function mpSetOn(){mpOn=$('mpOn').value=='1';try{localStorage.setItem('mapOn',mpOn?'1':'0')}catch(e){}mpSum();if(mpOn&&mpPos)mpAround(mpPos.la,mpPos.lo)}
 function mpHere(){if(!navigator.geolocation){mpTxt('GPS indisponível.');return}mpTxt('A procurar a tua posição…');navigator.geolocation.getCurrentPosition(p=>{$('mpLat').value=p.coords.latitude.toFixed(5).replace('.',',');$('mpLon').value=p.coords.longitude.toFixed(5).replace('.',',');mpTxt('Posição preenchida.')},()=>mpTxt('Não consegui a posição. Escreve a latitude e a longitude.'),{enableHighAccuracy:true,timeout:15000})}
 function mpPack(j,c){const id=new Map(),la=[],lo=[],ea=[],eb=[],ni=[];
@@ -1188,7 +1218,7 @@ w.nodes.forEach((nid,i)=>{let k=id.get(nid);if(k===undefined){k=la.length;id.set
 return{lat:Float64Array.from(la),lon:Float64Array.from(lo),ea:Int32Array.from(ea),eb:Int32Array.from(eb),id:Float64Array.from(ni),c,date:new Date().toISOString().slice(0,10)}}
 mpInit();
 /* ---- modo piloto ---- */
-let plPC=null,plCh=null,plRole='',plLast='',plTm=0;
+let plPC=null,plCh=null,plCf=null,plRole='',plTm=0,plKeyT=0,plWd=0,plPingT=0,plPrev={},plBeatT=0,plRxT=0,plRtt=0,plVis=false,plBad=false,plSt={};
 function plRoleSel(r){$('plN').hidden=r!='n';$('plP').hidden=r!='p';$('plrn').className=r=='n'?'':'s';$('plrp').className=r=='p'?'':'s'}
 function plSet(t){$('pls').textContent=t}
 function plPaint(){plSet(plRole=='pilot'?'Ligado como piloto.':plRole=='host'?'Ligado: este telemóvel envia o ecrã ao piloto.':plPC?'A aguardar a ligação…':'Sem ligação.')}
@@ -1214,15 +1244,22 @@ return{t,s:sdp}}
 async function plCam(){try{if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){const m=await navigator.mediaDevices.getUserMedia({video:true});m.getTracks().forEach(x=>x.stop())}}catch(e){}}
 function plIce(pc){return new Promise(r=>{if(pc.iceGatheringState=='complete')return r();const f=()=>{if(pc.iceGatheringState=='complete'){pc.removeEventListener('icegatheringstatechange',f);r()}};pc.addEventListener('icegatheringstatechange',f);setTimeout(r,4000)})}
 function plMk(){plClose();const pc=new RTCPeerConnection({iceServers:[]});plPC=pc;pc.onconnectionstatechange=()=>{if(['failed','closed'].includes(pc.connectionState)&&plPC===pc)plLost()};return pc}
-function plClose(){clearInterval(plTm);try{plCh&&plCh.close()}catch(e){}try{plPC&&plPC.close()}catch(e){}plPC=null;plCh=null}
-function plLost(){clearInterval(plTm);if(plRole=='pilot'){toast('Ligação perdida. Toque no ✕ para sair.',6000)}else if(plRole=='host'){plRole='';plSet('Ligação com o piloto perdida.');toast('Piloto desligado',4000)}}
-async function plHost(){try{plSet('A criar o código…');await plCam();const pc=plMk(),ch=pc.createDataChannel('p');plCh=ch;ch.onopen=plOpenHost;ch.onclose=()=>{if(plRole=='host')plLost()};
+function plClose(){clearInterval(plTm);clearInterval(plKeyT);clearInterval(plWd);clearInterval(plPingT);try{plCh&&plCh.close()}catch(e){}try{plCf&&plCf.close()}catch(e){}try{plPC&&plPC.close()}catch(e){}plPC=null;plCh=null;plCf=null}
+function plLost(){clearInterval(plTm);clearInterval(plKeyT);if(plRole=='pilot'){plBad=true;plOv()}else if(plRole=='host'){plRole='';plSet('Ligação com o piloto perdida.');toast('Piloto desligado',4000)}}
+async function plHost(){try{plSet('A criar o código…');await plCam();const pc=plMk(),ch=pc.createDataChannel('p'),cf=pc.createDataChannel('f',{ordered:false,maxRetransmits:0});plCh=ch;plCf=cf;ch.onopen=plOpenHost;ch.onmessage=plMsgH;ch.onclose=()=>{if(plRole=='host')plLost()};
 await pc.setLocalDescription(await pc.createOffer());await plIce(pc);const code=plEnc(pc.localDescription);$('plc1').value=code;$('plc1').hidden=false;$('plc1b').hidden=false;QRG.draw($('plq1'),code,300);$('plq1').hidden=false;plSet('Mostre este QR ao piloto e depois leia o QR dele (passo 2).')}catch(e){plSet('Erro: '+(e.message||e))}}
 async function plFin(){try{const d=plDec($('plc2').value);if(!plPC||d.t!='answer')throw new Error('use primeiro «Criar código» e cole a resposta do piloto');await plPC.setRemoteDescription({type:'answer',sdp:d.s});plSet('A ligar…')}catch(e){plSet('Erro: '+(e.message||e))}}
 async function plJoin(){try{const d=plDec($('plp1').value);if(d.t!='offer')throw new Error('este não é o código do navegador');plSet('A gerar a resposta…');await plCam();const pc=plMk();
-pc.ondatachannel=e=>{plCh=e.channel;e.channel.onopen=plOpenPilot;e.channel.onmessage=plMsg;e.channel.onclose=()=>{if(plRole=='pilot')plLost()}};
+pc.ondatachannel=e=>{const c=e.channel;c.onmessage=plMsg;if(c.label=='f'){plCf=c}else{plCh=c;c.onopen=plOpenPilot;c.onclose=()=>{if(plRole=='pilot')plLost()};if(c.readyState=='open')plOpenPilot()}};
 await pc.setRemoteDescription({type:'offer',sdp:d.s});await pc.setLocalDescription(await pc.createAnswer());await plIce(pc);const code=plEnc(pc.localDescription);$('plp2').value=code;$('plp2').hidden=false;$('plp2b').hidden=false;QRG.draw($('plq2'),code,300);$('plq2').hidden=false;$('plq2t').hidden=false;plSet('Mostre o QR ao navegador para ele o ler.')}catch(e){plSet('Erro: '+(e.message||e))}}
-function plOpenHost(){plRole='host';plLast='';plPaint();toast('Piloto ligado',3000);clearInterval(plTm);plTm=setInterval(plSend,120)}
+function plOpenHost(){plRole='host';plPrev={};plPaint();toast('Piloto ligado',3000);clearInterval(plTm);clearInterval(plKeyT);plTm=setInterval(()=>plPush(),250);plKeyT=setInterval(()=>plPush(true),2000);plPush(true)}
+function plMsgH(e){try{const m=JSON.parse(e.data);if(m.t=='p'&&plCh&&plCh.readyState=='open')plCh.send(JSON.stringify({t:'q',c:m.c}))}catch(x){}}
+function plState(){const r=$('run'),o={};if(r.hidden)return o;r.querySelectorAll('[id]').forEach(e=>{if(e.id=='ar')return;o[e.id]=[e.querySelector('[id]')?null:e.innerHTML,e.className,e.style.cssText,e.hidden?1:0]});return o}
+function plPush(key){if(plRole!='host')return;const ch=key?plCh:plCf;if(!ch||ch.readyState!='open')return;const r=$('run'),cur=plState(),d={};let n=0;
+for(const id in cur){if(key||plPrev[id]!==JSON.stringify(cur[id])){d[id]=cur[id];n++}}
+const now=Date.now();if(!key&&!n&&now-plBeatT<500)return;if(!key&&ch.bufferedAmount>8192)return;
+const m={v:r.hidden?0:1,a:r.classList.contains('abs')?1:0};if(n)m.d=d;
+try{ch.send(JSON.stringify(m))}catch(e){return}plBeatT=now;if(key)plPrev={};for(const id in d)plPrev[id]=JSON.stringify(d[id])}
 
 let scnS=null,scnT=0,scnCb=null;
 async function scnOpen(cb){if(!('BarcodeDetector' in window)||!navigator.mediaDevices){toast('Este telemóvel não lê QR pela câmara. Use «Copiar e colar».',5000);return}
@@ -1231,13 +1268,18 @@ const loop=async()=>{if($('scn').hidden)return;try{const r=await det.detect(v);i
 catch(e){scnClose();toast('Não consegui abrir a câmara: '+((e&&e.message)||e),5000)}}
 function scnClose(){clearTimeout(scnT);$('scn').hidden=true;try{scnS&&scnS.getTracks().forEach(t=>t.stop())}catch(e){}scnS=null;scnCb=null}
 function plScan(r){scnOpen(t=>{if(r=='n'){$('plc2').value=t;plFin()}else{$('plp1').value=t;plJoin()}})}
-let plBeat=0;
-function plSend(){if(!plCh||plCh.readyState!='open')return;let m;if($('run').hidden||$('run').classList.contains('pilot')){m={w:1}}else m={h:$('run').innerHTML};
-const j=JSON.stringify(m),n=Date.now();if(j===plLast&&n-plBeat<2000)return;plLast=j;plBeat=n;try{plCh.send(j)}catch(e){}}
-function plOpenPilot(){plRole='pilot';$('setup').hidden=true;const r=$('run');r.hidden=false;r.classList.add('pilot');r.innerHTML='<div class="mut" style="margin:auto;font-size:22px">Ligado. A aguardar a prova…</div>';$('pex').hidden=false;try{keepAwake()}catch(e){}}
-function plMsg(e){let m;try{m=JSON.parse(e.data)}catch(x){return}const r=$('run');
-if(m.w){const w='<div class="mut" style="margin:auto;font-size:22px">A aguardar a prova…</div>';if(r.dataset.w!='1'){r.innerHTML=w;r.dataset.w='1'}return}
-if(m.h!==undefined){r.dataset.w='';if(r.dataset.h!==m.h){r.innerHTML=m.h;r.dataset.h=m.h}}}
+function plOpenPilot(){if(plRole=='pilot')return;plRole='pilot';plRxT=Date.now();plBad=false;plVis=false;plSt={};$('setup').hidden=true;const r=$('run');r.hidden=false;r.classList.add('pilot');$('pex').hidden=false;$('plr').hidden=false;plOv();try{keepAwake()}catch(e){}
+clearInterval(plWd);clearInterval(plPingT);plWd=setInterval(()=>{const b=Date.now()-plRxT>2500;if(b!==plBad){plBad=b;plOv()}},500);plPingT=setInterval(()=>{try{if(plCh&&plCh.readyState=='open')plCh.send(JSON.stringify({t:'p',c:Date.now()}))}catch(e){}},1000)}
+function plOv(){const w=$('plw');if(plBad){w.className='bad';$('plwi').textContent='✕';$('plw1').textContent='Sem ligação';$('plw2').textContent='Sem sinal do navegador. Confirma o ponto de acesso. Toca no ✕ para sair.';w.hidden=false}
+else if(!plVis){w.className='ok';$('plwi').textContent='✓';$('plw1').textContent='Ligado';$('plw2').textContent='À espera que o navegador inicie a prova…';w.hidden=false}else w.hidden=true}
+const PLFIT={rc:1,rn:1,rs:1,rv:1,fm:1,fq:1,rd:1,fs:1};
+function plFit(el){if(!el||!el.clientWidth)return;let f=parseFloat(getComputedStyle(el).fontSize),n=0;while(el.scrollWidth>el.clientWidth+1&&f>10&&n++<14){f*=.88;el.style.fontSize=f+'px'}}
+function plMsg(e){let m;try{m=JSON.parse(e.data)}catch(x){return}plRxT=Date.now();if(m.t=='q'){plRtt=Date.now()-m.c;$('plr').textContent='ligação '+plRtt+' ms';return}
+$('run').classList.toggle('abs',!!m.a);const v=!!m.v;if(plBad||v!==plVis){plBad=false;plVis=v;plOv()}
+if(m.d){const fit=[];for(const id in m.d){const el=document.getElementById(id);if(!el)continue;const a=m.d[id],o=plSt[id]||[];let ch=0;
+if(a[0]!==null&&a[0]!==o[0]){el.innerHTML=a[0];ch=1}if(a[1]!==o[1])el.className=a[1];if(a[2]!==o[2]){el.style.cssText=a[2];ch=1}if((a[3]?1:0)!==o[3])el.hidden=!!a[3];
+plSt[id]=[a[0],a[1],a[2],a[3]?1:0];if(ch&&PLFIT[id])fit.push(el)}fit.forEach(plFit)}}
+function plExitAsk(){askC('Sair do modo piloto?',[['Não, continuar',null],['Sim, sair',()=>{plClose();location.reload()}]],'pil')}
 async function plCopy(i){try{await navigator.clipboard.writeText($(i).value);toast('Copiado')}catch(e){$(i).select();toast('Selecione e copie à mão')}}
 async function plShare(i){try{if(navigator.share)await navigator.share({text:$(i).value});else plCopy(i)}catch(e){}}
 async function plPaste(i){try{$(i).value=await navigator.clipboard.readText()}catch(e){toast('Cole à mão no campo (toque longo)')}}
