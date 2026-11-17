@@ -147,7 +147,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 #sct{position:absolute;left:0;right:0;top:16px;text-align:center;font-size:19px;font-weight:700;text-shadow:0 0 6px #000}
 #scc{position:absolute;left:16px;right:16px;bottom:24px;width:auto}
 #pex{position:fixed;right:6px;top:6px;z-index:20;width:auto;padding:4px 12px;margin:0;background:#2a3038;color:var(--fg);opacity:.5}
-</style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
+</style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0c0e11">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -155,7 +155,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 
 <div id="setup">
 <div id="bk" hidden style="position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:8px"><button onclick="voltar()">Voltar à prova</button><button class="s" id="tb" onclick="endTap()">Terminar prova</button></div>
-<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 68</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
+<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 69.1</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
 <div id="pm"><div class="card"><h1>Rally</h1>
 <label style="margin-top:0">Nome do rally</label><input id="rn0" placeholder="Ex.: Rally de Fafe" aria-label="Nome do rally" onchange="setRName(this.value)">
 <label>Hora de início do rally (partida)</label><input id="h0" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0n" style="text-align:left;font-size:15px;margin-top:4px"></div>
@@ -174,7 +174,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 <button id="go" onclick="go()">Começar prova</button>
 </div>
 <div class="pg" id="pg_af" hidden><div class="pgh"><button class="s" onclick="pgBack()">← Preparar rally</button></div><div class="card"><h1>Aferição do equipamento</h1>
-<label>Distância oficial do troço de teste (km)</label><input id="ao" inputmode="decimal" value="1,000">
+<label>Distância oficial do troço de teste (km)</label><input id="ao" inputmode="decimal" value="1,000" oninput="afSyncO(this)">
 <div class="mut" id="am" style="font-size:24px;font-weight:700;margin-top:8px">0,000 km</div>
 <div class="mut" style="font-size:15px;text-align:left">Carregue em Iniciar ao passar no início do troço e em Terminar ao passar no fim.</div>
 <div style="display:flex;gap:8px"><button id="a1" onclick="afIni()">Iniciar aferição</button><button id="a2" class="s" disabled onclick="afFim()">Terminar aferição</button></div>
@@ -306,7 +306,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 <div id="zq" hidden><span>Km: zerar ou continuar a somar?</span><button onclick="zqZero()">Zerar</button><button onclick="zqHide()">Continuar a somar</button></div>
 <button id="fin" class="s" hidden onclick="finTap()">Terminar prova</button>
 <div class="adj"><button class="s rm" onclick="adj(-10)">−10 m</button><button class="s rm" onclick="adj(-1)">−1 m</button><button class="s gp" onclick="adj(1)">+1 m</button><button class="s gp" onclick="adj(10)">+10 m</button></div>
-<div class="fb"><button id="fz" class="s" onclick="frz()">Congelar distância</button><button id="un" class="s" onclick="undo()">↶ Desfazer</button></div>
+<div class="fb"><button id="fz" class="s" onclick="frz()">Congelar distância</button><button id="un" class="s" onclick="unTap()">↶ Desfazer</button></div>
 <div class="ar"><input id="ar" inputmode="decimal" placeholder="Distância real (km)"><button onclick="apl()">Aplicar</button></div>
 </div>
 <div id="scn" hidden><video id="scv" playsinline muted></video><div id="sct">Aponte a câmara ao QR do outro telemóvel</div><button class="s" id="scc" onclick="scnClose()">Cancelar</button></div><div id="plw" class="ok" hidden><div class="ic" id="plwi">✓</div><div class="t1" id="plw1">Ligado</div><div class="t2" id="plw2">À espera que o navegador inicie a prova…</div></div><div id="plr" hidden></div><div id="vs"></div><div id="toast" hidden></div><button id="pex" hidden onclick="plExitAsk()">✕</button>
@@ -318,7 +318,8 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 <div class="mut" style="font-size:12px">metros por quilómetro</div>
 <div id="afpd" class="r2" hidden><button onclick="afSv()">Guardar</button><button class="s" onclick="afCn()">Cancelar</button></div>
 <button id="afa" onclick="afAcc()">Aceitar sugestão</button>
-<button class="s" onclick="toggleAfh2()">Histórico de aferições</button><div id="afh2" hidden style="max-height:28dvh;overflow:auto;margin-top:6px"></div></div>
+<button class="s" onclick="toggleAfh2()">Histórico de aferições</button><div id="afh2" hidden style="max-height:28dvh;overflow:auto;margin-top:6px"></div>
+</div>
 <div id="pr" class="ov" hidden style="border-top:4px solid var(--ac)">
 <div id="pq" style="font-size:20px;font-weight:700"></div>
 <button id="pb" onclick="startAny()">Confirmar</button>
@@ -655,6 +656,9 @@ function apl(){act('valor escrito',Math.round(num($('ar').value)*1e6)/1e3-accOff
 function frz(){const el=(Date.now()-t0)/1000;if(st!='run')return;
 if(!fz){fz=true;fzEl=el;fzDr=dr(el);fzD=fzDr+dOff;fz0={dOff,fzD};fzU=[]}
 else{const net=fzD-fz0.fzD;if(Math.abs(net)>=.5){const id=++lid;U.push({dOff:fz0.dOff,id,lcd:lastCorrD});logC(id,'congelada',true,fz0.fzD,fzD)}dOff=fzD-fzDr;fz=false;fzU=[]}}
+let unT=0;
+function unRst(){clearTimeout(unT);const b=$('un');b.dataset.a='';b.textContent='↶ Desfazer';b.style.background='';b.style.color=''}
+function unTap(){const b=$('un');if(!b.dataset.a){b.dataset.a='1';b.textContent='Toque de novo para desfazer';b.style.background='#ff9f0a';b.style.color='#000';clearTimeout(unT);unT=setTimeout(unRst,3000);return}unRst();undo()}
 function undo(){if(st!='run')return;if(fz){if(fzU.length)fzD=fzU.pop();return}
 const u=U.pop();if(!u)return;dOff=u.dOff;if(u.pk!==undefined)pk=u.pk;if(u.lcd!==undefined)lastCorrD=u.lcd;L=L.filter(e=>e.id!=u.id);winC=winC.filter(e=>e.id!=u.id);saveL();showLog()}
 function mk(r,k){const v=r.mi+(r.sen=='d'?-1:1)*k/10;return String(Number(v.toFixed(3))).replace('.',',')}
@@ -858,7 +862,9 @@ function stop(){lk0w=false;$('bk').hidden=true;$('go').hidden=false;show();$('tb
 
 let ta0=0,ati=null;
 function afM(){return src!='s'?gA:(Date.now()-ta0)/1000*(Math.max(0,sv)/3.6)}
-function afIni(){sv=+$('sv').value||0;src=$('fo').value;if(src!='s'){if(!gps()&&!(src=='r'&&rbLive())){$('ar2').textContent=gS;return}gA=0;afOn=true}$('afc').hidden=true;afP=null;ta0=Date.now();$('a1').disabled=true;$('a2').disabled=false;$('ar2').textContent='';clearInterval(ati);ati=setInterval(()=>{$('am').textContent=kmf(Math.round(afM()))+' km'},200)}
+function afE(id,fn){const a=$(id),b=$('p'+id);if(a)fn(a);if(b)fn(b)}
+function afSyncO(el){const o=el.id=='ao'?$('pao'):$('ao');if(o)o.value=el.value}
+function afIni(){sv=+$('sv').value||0;src=$('fo').value;if(src!='s'){if(!gps()&&!(src=='r'&&rbLive())){afE('ar2',e=>e.textContent=gS);return}gA=0;afOn=true}afE('afc',e=>e.hidden=true);afP=null;ta0=Date.now();afE('a1',e=>e.disabled=true);afE('a2',e=>e.disabled=false);afE('ar2',e=>e.textContent='');clearInterval(ati);ati=setInterval(()=>{const t=kmf(Math.round(afM()))+' km';afE('am',e=>e.textContent=t)},200)}
 let afeP=null;
 function afeOpen(){afeP=af;afePaint();$('afe').hidden=false}
 function afePaint(){$('afen').innerHTML='Atual: <b>'+f1(af)+'</b> m/km<br>Novo: <b>'+f1(afeP)+'</b> m/km'+(afeP===af?' <span style="color:var(--mut)">(sem alteração)</span>':' <span style="color:var(--mut)">(ainda não guardado)</span>')}
@@ -867,12 +873,12 @@ function afeSv(){if(afeP!==null&&afeP!==af){const p=af;af=afeP;try{localStorage.
 function afeCn(){afeP=null;$('afe').hidden=true}
 function afSetM(){const o=af;afSet();if(af!==o)afhAdd('Valor escrito à mão',{f:af,prev:o})}
 function afSet(){af=num($('afv').value)||0;try{localStorage.setItem('af',String(af))}catch(e){}}
-function afFim(){afOn=false;clearInterval(ati);const M=afM(),O=Math.round(num($('ao').value)*1000);$('a1').disabled=false;$('a2').disabled=true;
-if(!(M>50)||!(O>0)){$('ar2').textContent='Medição demasiado curta ou distância oficial inválida.';return}
+function afFim(){afOn=false;clearInterval(ati);const M=afM(),O=Math.round(num($('ao').value)*1000);afE('a1',e=>e.disabled=false);afE('a2',e=>e.disabled=true);
+if(!(M>50)||!(O>0)){afE('ar2',e=>e.textContent='Medição demasiado curta ou distância oficial inválida.');return}
 const f=(O-M)/M*1000;afP={M:Math.round(M),O,f:Math.round(f*10)/10};
-$('afct').innerHTML='Medido <b>'+kmf(afP.M)+' km</b> para <b>'+kmf(O)+' km</b> oficiais.<br>O equipamento mede '+Math.abs(f).toFixed(1).replace('.',',')+' m a '+(f>0?'menos':'mais')+' por quilómetro.<br>Fator novo: <b>'+f1(afP.f)+' m/km</b> (agora: '+f1(af)+').';$('afc').hidden=false;$('ar2').textContent=''}
-function afSave(){if(!afP)return;const p=af;$('afv').value=afP.f.toFixed(1).replace('.',',');afSet();afhAdd('Aferição no troço',{f:afP.f,M:afP.M,O:afP.O,prev:p});afP=null;$('afc').hidden=true;$('ar2').textContent='Fator '+f1(af)+' m/km guardado.'}
-function afDisc(){afP=null;$('afc').hidden=true;$('ar2').textContent='Descartado. Fica o fator anterior ('+f1(af)+' m/km).'}
+const ht='Medido <b>'+kmf(afP.M)+' km</b> para <b>'+kmf(O)+' km</b> oficiais.<br>O equipamento mede '+Math.abs(f).toFixed(1).replace('.',',')+' m a '+(f>0?'menos':'mais')+' por quilómetro.<br>Fator novo: <b>'+f1(afP.f)+' m/km</b> (agora: '+f1(af)+').';afE('afct',e=>e.innerHTML=ht);afE('afc',e=>e.hidden=false);afE('ar2',e=>e.textContent='')}
+function afSave(){if(!afP)return;const p=af;if(st=='run'&&(!$('run').hidden||!$('bk').hidden))setAf(afP.f);else{$('afv').value=afP.f.toFixed(1).replace('.',',');afSet()}afhAdd('Aferição no troço',{f:afP.f,M:afP.M,O:afP.O,prev:p});afP=null;afE('afc',e=>e.hidden=true);const m='Fator '+f1(af)+' m/km guardado.';afE('ar2',e=>e.textContent=m);try{afUpd()}catch(x){}}
+function afDisc(){afP=null;afE('afc',e=>e.hidden=true);const m='Descartado. Fica o fator anterior ('+f1(af)+' m/km).';afE('ar2',e=>e.textContent=m)}
 function afhAdd(kind,o){AFH.unshift(Object.assign({t:Date.now(),kind},o));AFH=AFH.slice(0,10);try{localStorage.setItem('afh',JSON.stringify(AFH))}catch(e){}afhRender()}
 function esc(x){return String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function fmtD(t){const d=new Date(t);return d.toLocaleDateString('pt-PT')+' '+d.toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'})}
@@ -1314,7 +1320,7 @@ async function plFin(){try{const d=plDec($('plc2').value);if(!plPC||d.t!='answer
 async function plJoin(){try{const d=plDec($('plp1').value);if(d.t!='offer')throw new Error('este não é o código do navegador');plSet('A gerar a resposta…');await plCam();await plIdent();const pc=plMk();plPend=$('plp1').value.replace(/\s+/g,'');
 pc.ondatachannel=plDcP;
 await pc.setRemoteDescription({type:'offer',sdp:d.s});{const a=await pc.createAnswer();a.sdp=plMung(a.sdp);await pc.setLocalDescription(a)}await plIce(pc);const code=plEnc(pc.localDescription);$('plp2').value=code;$('plp2').hidden=false;$('plp2b').hidden=false;QRG.draw($('plq2'),code,300);$('plq2').hidden=false;$('plq2t').hidden=false;plSet('Mostre o QR ao navegador para ele o ler.')}catch(e){plSet('Erro: '+(e.message||e))}}
-function plOpenHost(){plRole='host';plPrev={};plLastJ='';plLastSt='';plGap=40;plHostRx=Date.now();if(plPend){plLs('plH',plPend);plPend=''}plLs('plRolePref','h');plPaint();plRate();toast('Piloto ligado',3000);clearInterval(plTm);clearInterval(plKeyT);plTm=setInterval(()=>plPush(),250);plKeyT=setInterval(()=>plPush(true),4000);plPush(true)}
+function plOpenHost(){plRole='host';plPrev={};plLastJ='';plLastSt='';plGap=40;plHostRx=Date.now();if(plPend){plLs('plH',plPend);plPend=''}plLs('plRolePref','h');plPaint();plRate();toast('Piloto ligado',3000);clearInterval(plTm);clearInterval(plKeyT);plTm=setInterval(()=>plPush(),50);plKeyT=setInterval(()=>plPush(true),4000);plPush(true)}
 function plMsgH(e){plHostRx=Date.now();try{const m=JSON.parse(e.data);if(m.t=='p'&&plCh&&plCh.readyState=='open')plCh.send(JSON.stringify({t:'q',c:m.c}))}catch(x){}}
 function plRun(){return !$('run').hidden||!$('bk').hidden}
 function plRate(){if(!timer||($('run').hidden&&$('bk').hidden))return;clearInterval(timer);timer=setInterval(()=>{tick();try{plPush()}catch(e){}},plRole=='host'?33:67)}
@@ -1327,7 +1333,6 @@ const r=$('run'),f=plState(),ids=Object.keys(f);
 const st=JSON.stringify(ids.map(k=>[f[k][1],f[k][2],f[k][3]]));
 if(st!==plLastSt||now-plSigT>2000){if(st!==plLastSt){plLastSt=st;plSig++}plSigT=now;if(plCh.bufferedAmount<3000){try{plCh.send(JSON.stringify({S:plSig,ids,st:JSON.parse(st)}))}catch(e){return}}}
 const t=ids.map(k=>f[k][0]),bu=$('bu'),bd=$('bd'),b=bu?[bu.style.height,bd.style.height]:0,j=JSON.stringify([t,b]);
-if(j===plLastJ&&now-plBeatT<300)return;
 try{ch.send(JSON.stringify({q:++plSeq,h:now,g:plSig,v:plRun()?1:0,a:r.classList.contains('abs')?1:0,t,b}))}catch(e){return}
 plLastJ=j;plBeatT=now;plLastSend=now;if(++plOk>=20){plOk=0;plGap=Math.max(40,plGap*.85)}}
 
