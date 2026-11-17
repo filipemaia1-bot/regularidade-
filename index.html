@@ -146,7 +146,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 #sct{position:absolute;left:0;right:0;top:16px;text-align:center;font-size:19px;font-weight:700;text-shadow:0 0 6px #000}
 #scc{position:absolute;left:16px;right:16px;bottom:24px;width:auto}
 #pex{position:fixed;right:6px;top:6px;z-index:20;width:auto;padding:4px 12px;margin:0;background:#2a3038;color:var(--fg);opacity:.5}
-</style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
+</style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0c0e11">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -154,7 +154,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 
 <div id="setup">
 <div id="bk" hidden style="position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:8px"><button onclick="voltar()">Voltar à prova</button><button class="s" id="tb" onclick="endTap()">Terminar prova</button></div>
-<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 66.1</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
+<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 67</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
 <div id="pm"><div class="card"><h1>Rally</h1>
 <label style="margin-top:0">Nome do rally</label><input id="rn0" placeholder="Ex.: Rally de Fafe" aria-label="Nome do rally" onchange="setRName(this.value)">
 <label>Hora de início do rally (partida)</label><input id="h0" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0n" style="text-align:left;font-size:15px;margin-top:4px"></div>
@@ -342,7 +342,7 @@ function clkAdj(x){CLKA+=x;try{localStorage.setItem('ca',String(CLKA))}catch(e){
 function clkMan(){const q=ck($('ck3').value);if(!q){$('ck4').textContent='Escreva a hora no formato hh:mm:ss.';return}
 if(clkSrc){$('ck4').textContent='O relógio já vem do GPS; para acertar à mão desligue a Racebox e o GPS.';return}
 const a=q.split(':').map(Number),d=new Date(_DN());d.setHours(a[0],a[1],a[2],0);CLKM=d.getTime()-_DN();clkSet();$('ck3').value='';$('ck4').textContent='Relógio acertado.';clkPaint()}
-function clkPaint(){if(!$('ck1'))return;const d=new Date(Date.now()),p=v=>String(v).padStart(2,'0');
+function clkPaint(){if(plRole=='pilot'||!$('ck1'))return;const d=new Date(Date.now()),p=v=>String(v).padStart(2,'0');
 $('ck1').textContent=p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds())+','+Math.floor(d.getMilliseconds()/100);
 $('ck2').textContent='Fonte: '+clkLabel()+' · acerto fino: '+(CLKA>0?'+':CLKA<0?'−':'')+(Math.abs(CLKA)/1000).toFixed(1).replace('.',',')+' s'}
 let seq=[],cur=0,ev=[],ps=[],P=[],AB=null,cT='f',tg=[],idx=0,t0=0,end=0,lead=10,off=.6,sv=50,af=0,timer=null,wl=null;
@@ -624,7 +624,7 @@ if(ac>30){gP=null;return}
 try{mpFix(c.latitude,c.longitude,ac)}catch(e){}
 if(gP){const s=hav(gP,c),mv=(c.speed==null||isNaN(c.speed))?s>=3:c.speed>=.5;if(mv&&s<200&&useG())addD(s)}
 gP={latitude:c.latitude,longitude:c.longitude}}
-function gps(){if(gW!==null)return true;if(!('geolocation' in navigator)){gS='GPS indisponível neste navegador';return false}
+function gps(){if(plRole=='pilot')return false;if(gW!==null)return true;if(!('geolocation' in navigator)){gS='GPS indisponível neste navegador';return false}
 gS='a procurar GPS…';gT=0;try{gW=navigator.geolocation.watchPosition(gFix,gErr,{enableHighAccuracy:true,maximumAge:0,timeout:20000})}catch(e){gS='GPS indisponível neste navegador';return false}return true}
 function gOff(){try{if(gW!==null)navigator.geolocation.clearWatch(gW)}catch(e){}gW=null;gP=null;clearInterval(gti)}
 function gst(){return gT&&Date.now()-gT>3000?'GPS sem sinal':gS}
@@ -737,8 +737,7 @@ const TT={f:'FIG',h:'HECTO',a:'Absoluta',k:'TAB',n:'NEUT'};
 function topTxt(){let t='';if(lk0w||(lk&&lk.src=='z'))t='Ligação 0→1';else if(lk)t=lk.fin?'Ligação final':'Ligação '+lk.nx+'→'+(lk.nx+1);else if(st=='done')t='Fim';else if(seq[cur])t='Reg. '+(cur+1)+' · '+(TT[seq[cur].t]||'');const e=$('rtt');if(e&&e.textContent!==t)e.textContent=t;const f=$('fin');if(f){const h=!(lk&&lk.fin&&st=='run');if(f.hidden!==h){f.hidden=h;if(h){f.dataset.a='';f.textContent='Terminar prova'}}}}
 let finT=null;
 function finTap(){const f=$('fin');if(f.dataset.a){clearTimeout(finT);f.dataset.a='';cur=seq.length;init();return}f.dataset.a='1';f.textContent='Toque de novo para terminar';finT=setTimeout(()=>{f.dataset.a='';f.textContent='Terminar prova'},4000)}
-let plLive=null;
-function tick(){plLive=null;topTxt();const r=seq[cur];if(!r)return;rbWatch();
+function tick(){topTxt();const r=seq[cur];if(!r)return;rbWatch();
 if(st=='wait'&&lk0w){siUp();const rm=(sched0-Date.now())/1000;$('rl').textContent='Ligação da partida às '+hAdd(seq[0].hi,-lk0.tempo)+' · faltam';$('rc').textContent=rm>0?hms(rm):'0';$('rc').style.color='';
 if(rm<-lk0.tempo){lk0w=false;init();return}
 if(rm<=15&&!asked){asked=true;askL0()}else if(asked&&!$('pr').hidden)pqtL0();return}
@@ -780,8 +779,7 @@ if(r.t=='k')kFr();else{const dm=d-ideal(eI),ds=v>0?dm/v:0,ok=v>1?Math.abs(ds)<=.
 $('fr').style.borderColor=col;$('fs').style.color=col;$('fm').style.color=col;$('fq').style.color=col;
 $('fs').textContent=el<0?'AGUARDA INÍCIO':ok?'NO IDEAL · MANTER':ad?'ADIANTADO · TRAVAR':'ATRASADO · ACELERAR';
 $('fm').textContent=el<0?'0 m':(Math.abs(dm).toFixed(0)=='0'?'':sg)+Math.abs(dm).toFixed(0)+' m';
-$('fq').textContent=el<0?'0,0 s':(Math.abs(ds).toFixed(1)=='0.0'?'':sg)+Math.abs(ds).toFixed(1).replace('.',',')+' s';
-let ir=0;try{ir=(ideal(eI+.25)-ideal(eI))/.25}catch(x){}plLive={dm,ds,v:Math.max(0,vNow())/3.6,ir,e:el<0?1:0,d:Math.round(d+accOff),fz:fz?1:0,af,pr:0,bh:1};barUp(r,el,dm)}
+$('fq').textContent=el<0?'0,0 s':(Math.abs(ds).toFixed(1)=='0.0'?'':sg)+Math.abs(ds).toFixed(1).replace('.',',')+' s';barUp(r,el,dm)}
 if(!fz&&el>=0&&$('sg').hidden&&$('afp').hidden&&d-lastAn>=2000){const f=afF(),n=f.u.length;lastAn=d;winC=[];
 if(n&&f.s!==null){const s=f.s;if(Math.abs(s)>=1){sugV=s;$('sq').textContent='O equipamento mede '+Math.abs(s).toFixed(1).replace('.',',')+' m a '+(s>0?'menos':'mais')+' por quilómetro (com base em '+n+(n==1?' correção':' correções')+'). Aplicar correção?';$('sg').hidden=false;if(sm.includes('v'))say('Sugestão de correção da aferição');beep(1200,.3)}}}
 if(lk&&lk.fin){const rm2=(lkSched-Date.now())/1000;if(rm2<=0&&!asked){asked=true;if(sm.includes('v'))say('Chegada ao controlo horário');beep(1200,.3)}}
@@ -803,10 +801,9 @@ $('rc').textContent=vK>.5?fmtT(el+(nx-d)/vK):'—';$('rc').style.color='#ffd60a'
 if(kLn!==kL.length){kLn=kL.length;$('kl').innerHTML=kL.map(x=>'<span>'+kmf(x.m)+' km · '+hms(x.t)+'</span>').join('')}
 const nxt=seq[cur+1];if(nxt&&msOf(cur+1)-Date.now()<=15000){cur++;init()}}
 let bH=[];
-function barUp(r,el,ds){const B=$('bar');if(!B)return;if(!(r.t=='f'||r.t=='a')||el<0||fz||st!='run'){B.hidden=true;bH=[];if(plLive){plLive.bh=1;plLive.pr=0}return}
+function barUp(r,el,ds){const B=$('bar');if(!B)return;if(!(r.t=='f'||r.t=='a')||el<0||fz||st!='run'){B.hidden=true;bH=[];return}
 B.hidden=false;const tn=Date.now();bH.push([tn,ds]);while(bH.length&&tn-bH[0][0]>1500)bH.shift();
 let pr=ds;if(bH.length>=3){const a=bH[0],z=bH[bH.length-1],dt=(z[0]-a[0])/1000;if(dt>.3)pr=ds+1.5*(z[1]-a[1])/dt}
-if(plLive){plLive.bh=0;plLive.pr=pr}
 const m=Math.min(1,Math.abs(pr)/BARFULL)*(Math.abs(pr)<.3?0:1);
 $('bu').style.height=(pr<0?m*50:0)+'%';$('bd').style.height=(pr>0?m*50:0)+'%'}
 const BARFULL=10;
@@ -932,7 +929,7 @@ rd.readAsText(f)}
 
 /* ---------- Racebox (Bluetooth) ---------- */
 function rbSet(m){rb.msg=m;rbPaint()}
-function rbPaint(){const b=$('rbb');if(!b)return;b.textContent=rb.on?'✓ Racebox ligada · Desligar':rb.want?'A ligar… (parar)':'Ligar Racebox';b.className=rb.on?'gr':rb.want?'s':'';
+function rbPaint(){if(plRole=='pilot')return;const b=$('rbb');if(!b)return;b.textContent=rb.on?'✓ Racebox ligada · Desligar':rb.want?'A ligar… (parar)':'Ligar Racebox';b.className=rb.on?'gr':rb.want?'s':'';
 let t;if(rb.on){t=rbLive()?'Racebox ligada, com sinal · '+Math.round(rb.v*3.6)+' km/h · '+rb.sv+' satélites · precisão ±'+rb.acc.toFixed(1).replace('.',',')+' m'+(rb.bat!=null&&/mini/i.test(rb.model||'')?' · bateria '+rb.bat+' %'+(rb.chg?' (a carregar)':''):''):'Racebox ligada, à espera do sinal GPS ('+rb.sv+' satélites). Ponha-a ao ar livre.'}else t=rb.msg||'Racebox não ligada.';
 if($('rbs').textContent!==t)$('rbs').textContent=t}
 function rbBtn(){if(rb.on||rb.want)rbOff();else rbPick()}
@@ -1030,7 +1027,7 @@ let pgCur='',pgPushed=false,armed=false,leaving=false,ign=0;
 function pmSum(){const g=i=>$(i),n=seq.length;g('sRg').textContent=n?n+(n==1?' regularidade':' regularidades')+' na sequência':'Ainda vazia';
 g('sAf').textContent='Fator atual: '+f1(af)+' m/km';g('sCk').textContent=$('ck1')?$('ck1').textContent:'';
 g('sRb').textContent=($('rbs').textContent||'').slice(0,70);g('sVz').textContent='';g('sLg').textContent=$('lc')?$('lc').textContent.slice(0,70):''}
-setInterval(()=>{if(!$('setup').hidden&&!pgCur)try{pmSum()}catch(e){}},1000);
+setInterval(()=>{if(plRole!='pilot'&&!$('setup').hidden&&!pgCur)try{pmSum()}catch(e){}},1000);
 let hd=0;{const ps=history.pushState.bind(history);history.pushState=function(s,t,u){hd++;s=Object.assign({},s||{},{m:hd});return ps(s,t,u)}}
 addEventListener('popstate',e=>{hd=(e.state&&e.state.m)||0});
 function arm(){if(leaving||hd>=1)return;armed=true;try{history.pushState({},'')}catch(e){}}
@@ -1093,7 +1090,7 @@ const dur=(now-g.t)/1000,fl=Math.hypot((la-g.la)*111195,(lo-g.lo)*111195*Math.co
 if(dm/dur*3.6>260)return;mpMdV+=dm;const meas=dNow()-g.d,corr=Math.round(dm-meas);if(Math.abs(corr)<4)return;
 const msg='O GPS esteve '+Math.round(dur)+' s sem sinal. No mapa fizeste cerca de '+Math.round(dm)+' m nesse troço e o odómetro contou '+Math.round(meas)+' m. Corrigir '+(corr>0?'+':'−')+Math.abs(corr)+' m?';
 askC(msg,[['Corrigir '+(corr>0?'+':'−')+Math.abs(corr)+' m',()=>act('mapa (falha de GPS)',dNow()+corr,false)],['Ignorar',null]],'mapa');if(sm.includes('v'))say('Falha de GPS. Sugestão de correção no ecrã.')}
-setInterval(()=>{if(!mpOn||!MP||st!='run'||mpGap||!mpLast)return;if(Date.now()-mpLast.t>3000)mpGap={la:mpLast.la,lo:mpLast.lo,t:mpLast.t,d:dNow()}},500);
+setInterval(()=>{if(plRole=='pilot'||!mpOn||!MP||st!='run'||mpGap||!mpLast)return;if(Date.now()-mpLast.t>3000)mpGap={la:mpLast.la,lo:mpLast.lo,t:mpLast.t,d:dNow()}},500);
 
 /* fator do mapa e alerta de diferença */
 let mpRefPend=true,mpTaint=false,mpP=null,mpMd=0,mpOd0=0,mpSm=[],mpMdV=0,mpRef=0,mpCool=0,mpFm=1,mpKm=0,mpN=0,mpSeg=[],mpLim=4;
@@ -1204,7 +1201,7 @@ const ks=mpCorridor(pts,3);if(ks.length>400){mpTxt('Percurso demasiado grande ('
 function mpNeed(la,lo,r){const o=[],[iy,ix]=mpTidx(mpTk(la,lo)),n=Math.ceil(r/20000)+1;for(let dy=-n;dy<=n;dy++)for(let dx=-n;dx<=n;dx++){const k=(iy+dy)+'_'+(ix+dx);if(mpMeta[k]||mpQ.some(x=>x.k==k))continue;const d=mpDistTile(k,la,lo);if(d<=r)o.push({k,d})}return o.sort((a,b)=>a.d-b.d)}
 function mpInRace(){return!$('run').hidden}
 function mpRegular(){return st=='run'&&!lk&&!lk0w&&!(seq[cur]&&seq[cur].t=='n')}
-function mpAutoTick(){if(!mpOn||!mpPos||Date.now()-mpPos.t>60000||!mpInRace()||mpBusy||navigator.onLine===false)return;
+function mpAutoTick(){if(plRole=='pilot'||!mpOn||!mpPos||Date.now()-mpPos.t>60000||!mpInRace()||mpBusy||navigator.onLine===false)return;
 const need=mpNeed(mpPos.la,mpPos.lo,24000);if(!need.length)return;
 if(!mpRegular()){mpEnq(need.slice(0,2).map(x=>x.k),'automático',true);return}
 const near=need.filter(x=>x.d<=5000);if(near.length&&mpMeta[mpTk(mpPos.la,mpPos.lo)]&&Date.now()>mpAskT&&$('cf').hidden){mpAskT=Date.now()+600000;const ks=near.slice(0,2).map(x=>x.k);
@@ -1216,7 +1213,7 @@ function mpPf(x,force){const t=Date.now();if(!force&&t-mpPfT<3000)return;mpPfT=t
 e.textContent='Cálculo por leitura: média '+a.toFixed(1).replace('.',',')+' ms, máximo '+m.toFixed(1).replace('.',',')+' ms. Última preparação do mapa: '+Math.round(mpBuildMs)+' ms. Pontos em memória: '+(MP?MP.z.lat.length:0)+'.'}
 async function mpInit(){try{$('mpLim').value=String(mpLim).replace('.',',');mpFa();await mpMetaLoad();$('mpOn').value=mpOn?'1':'0';mpTxt(Object.keys(mpMeta).length?'Mapa guardado no telemóvel.':'Ainda sem mapa guardado.');mpSum();mpList();if(mpOn&&Object.keys(mpMeta).length&&!mpPos){const rl=localStorage.getItem('mapLastPos');if(rl){const q=JSON.parse(rl);mpAround(q[0],q[1])}}}catch(e){mpTxt('O telemóvel não deixou guardar o mapa.')}}
 function mpHereK(){let la,lo;if(mpPos&&Date.now()-mpPos.t<120000){la=mpPos.la;lo=mpPos.lo}else{try{const q=JSON.parse(localStorage.getItem('mapLastPos')||'null');if(q){la=q[0];lo=q[1]}}catch(e){}}return la===undefined?null:mpTk(la,lo)}
-function mpInd(){const e=$('mpI');if(!e)return;let h='';if(mpOn){const k=mpPos&&Date.now()-mpPos.t<120000?mpTk(mpPos.la,mpPos.lo):null;h=!k?'<span style="color:#ffd60a">● Mapa: à espera do GPS</span>':(MP&&mpMeta[k]?'<span style="color:#2ee66b">● Mapa carregado</span>':'<span style="color:#ff453a">● Sem mapa nesta zona</span>')}
+function mpInd(){if(plRole=='pilot')return;const e=$('mpI');if(!e)return;let h='';if(mpOn){const k=mpPos&&Date.now()-mpPos.t<120000?mpTk(mpPos.la,mpPos.lo):null;h=!k?'<span style="color:#ffd60a">● Mapa: à espera do GPS</span>':(MP&&mpMeta[k]?'<span style="color:#2ee66b">● Mapa carregado</span>':'<span style="color:#ff453a">● Sem mapa nesta zona</span>')}
 if(e.dataset.h!==h){e.dataset.h=h;e.innerHTML=h}const z=$('mpZ');if(z){const k=mpHereK(),t=!mpOn?'<span class="mut">Mapa da tua zona: desligado</span>':!k?'<span class="mut">Mapa da tua zona: posição desconhecida (liga o GPS)</span>':mpMeta[k]&&(mpMeta[k].ed||0)>0?'<span style="color:#1c7c3a">● Mapa da tua zona: guardado</span>':'<span style="color:#b3261e">● Mapa da tua zona: em falta</span>';if(z.dataset.h!==t){z.dataset.h=t;z.innerHTML=t}}}
 function mpSum(){try{mpInd()}catch(x){}const e=$('sMp');if(e)e.textContent=!mpOn?'Desligado':MP?'Ligado, mapa carregado':Object.keys(mpMeta).length?'Ligado, mapa guardado':'Ligado, falta descarregar'}
 function mpSetOn(){mpOn=$('mpOn').value=='1';try{localStorage.setItem('mapOn',mpOn?'1':'0')}catch(e){}mpSum();if(mpOn&&mpPos)mpAround(mpPos.la,mpPos.lo)}
@@ -1311,25 +1308,18 @@ async function plFin(){try{const d=plDec($('plc2').value);if(!plPC||d.t!='answer
 async function plJoin(){try{const d=plDec($('plp1').value);if(d.t!='offer')throw new Error('este não é o código do navegador');plSet('A gerar a resposta…');await plCam();await plIdent();const pc=plMk();plPend=$('plp1').value.replace(/\s+/g,'');
 pc.ondatachannel=plDcP;
 await pc.setRemoteDescription({type:'offer',sdp:d.s});{const a=await pc.createAnswer();a.sdp=plMung(a.sdp);await pc.setLocalDescription(a)}await plIce(pc);const code=plEnc(pc.localDescription);$('plp2').value=code;$('plp2').hidden=false;$('plp2b').hidden=false;QRG.draw($('plq2'),code,300);$('plq2').hidden=false;$('plq2t').hidden=false;plSet('Mostre o QR ao navegador para ele o ler.')}catch(e){plSet('Erro: '+(e.message||e))}}
-function plOpenHost(){plRole='host';plPrev={};plLiveWas=false;plHostRx=Date.now();if(plPend){plLs('plH',plPend);plPend=''}plLs('plRolePref','h');plPaint();plRate();toast('Piloto ligado',3000);clearInterval(plTm);clearInterval(plKeyT);plTm=setInterval(()=>plPush(),250);plKeyT=setInterval(()=>plPush(true),4000);plPush(true)}
-function plMsgH(e){plHostRx=Date.now();try{const m=JSON.parse(e.data);if(m.t=='p'&&plCh&&plCh.readyState=='open'){plCh.send(JSON.stringify({pong:1,c:m.c}));if(m.pv!==66&&!plVerW){plVerW=1;toast('O piloto tem outra versão da app. Abra a app nos dois telemóveis, com internet, para atualizar.',9000)}}}catch(x){}}
+function plOpenHost(){plRole='host';plPrev={};plLastJ='';plGap=50;plHostRx=Date.now();if(plPend){plLs('plH',plPend);plPend=''}plLs('plRolePref','h');plPaint();plRate();toast('Piloto ligado',3000);clearInterval(plTm);clearInterval(plKeyT);plTm=setInterval(()=>plPush(),250);plKeyT=setInterval(()=>plPush(true),4000);plPush(true)}
+function plMsgH(e){plHostRx=Date.now();try{const m=JSON.parse(e.data);if(m.t=='p'&&plCh&&plCh.readyState=='open')plCh.send(JSON.stringify({t:'q',c:m.c}))}catch(x){}}
 function plRun(){return !$('run').hidden||!$('bk').hidden}
 function plRate(){if(!timer||($('run').hidden&&$('bk').hidden))return;clearInterval(timer);timer=setInterval(()=>{tick();try{plPush()}catch(e){}},plRole=='host'?33:67)}
-const PLLIVE=['fm','fq','fs','fr','rd','bu','bd','bar'];
-function plState(key){const r=$('run'),o={};if(!plRun())return o;const ex=plLive&&!key?PLLIVE:[];r.querySelectorAll('[id]').forEach(e=>{if(e.id=='ar'||ex.includes(e.id))return;o[e.id]=[e.querySelector('[id]')?null:e.innerHTML,e.className,e.style.cssText,e.hidden?1:0]});return o}
-let plSeq=0,plGap=30,plLastSend=0,plOk=0,plLiveWas=false;
-function plNum(){const L=plLive,R=(x,n)=>Math.round(x*n)/n;return [R(L.dm,10),R(L.ds,100),R(L.v,100),R(L.ir,100),L.e,L.d,L.fz,R(L.pr,100),L.bh,R(L.af,100)]}
-function plPush(key){if(plRole!='host'||!plCh||plCh.readyState!='open')return;const now=Date.now(),fast=plCf&&plCf.readyState=='open'?plCf:plCh;
-if(!key){if(now-plLastSend<plGap)return;if(fast.bufferedAmount>600){plGap=Math.min(400,plGap*1.5+10);return}}else if(plCh.bufferedAmount>1500)return;
-const r=$('run'),cur=plState(key),T={},S={};let nt=0,ns=0;
-if(plLiveWas&&!plLive)PLLIVE.forEach(i=>{delete plPrev[i]});plLiveWas=!!plLive;
-for(const id in cur){const c=cur[id],o=plPrev[id];if(key||!o||o[0]!==c[0])if(c[0]!==null||key){T[id]=c[0];nt++}
-if(!o||o[1]!==c[1]||o[2]!==c[2]||o[3]!==c[3]){S[id]=[c[1],c[2],c[3]];ns++}}
-const base={v:plRun()?1:0,a:r.classList.contains('abs')?1:0,pv:66};
-if(key||ns){const m=Object.assign({k:key?1:0,kq:plSeq+1,s:S},base);if(key)m.T=T;if(plCh.bufferedAmount<4000){try{plCh.send(JSON.stringify(m))}catch(e){return}for(const id in S)plPrev[id]=(plPrev[id]||[])&&[(plPrev[id]||[])[0],cur[id][1],cur[id][2],cur[id][3]];if(key)for(const id in T)plPrev[id][0]=T[id]}}
-if(!key){const m=Object.assign({q:++plSeq,h:now},base);if(plLive)m.n=plNum();if(nt)m.t=T;
-if(!nt&&!plLive&&now-plBeatT<500)return;
-try{fast.send(JSON.stringify(m))}catch(e){return}plBeatT=now;plLastSend=now;if(++plOk>=20){plOk=0;plGap=Math.max(30,plGap*.85)}for(const id in T){plPrev[id]=plPrev[id]||[null,cur[id][1],cur[id][2],cur[id][3]];plPrev[id][0]=T[id]}}}
+const PLSKIP={ar:1,si:1,mpI:1,us:1,fin:1,zq:1};
+function plState(){const r=$('run'),o={};if(!plRun())return o;r.querySelectorAll('[id]').forEach(e=>{if(PLSKIP[e.id])return;o[e.id]=[e.querySelector('[id]')?null:e.innerHTML,e.className,e.style.cssText,e.hidden?1:0]});return o}
+let plSeq=0,plGap=50,plLastSend=0,plOk=0,plLastJ='';
+function plPush(){if(plRole!='host'||!plCh||plCh.readyState!='open')return;const ch=plCf&&plCf.readyState=='open'?plCf:plCh,now=Date.now();
+if(now-plLastSend<plGap)return;if(ch.bufferedAmount>1200){plGap=Math.min(300,plGap*1.5+10);return}
+const r=$('run'),f=plState(),j=JSON.stringify(f);if(j===plLastJ&&now-plBeatT<300)return;
+const m=JSON.stringify({q:++plSeq,h:now,v:plRun()?1:0,a:r.classList.contains('abs')?1:0,f});
+try{ch.send(m)}catch(e){return}plLastJ=j;plBeatT=now;plLastSend=now;if(++plOk>=20){plOk=0;plGap=Math.max(50,plGap*.85)}}
 
 let scnS=null,scnT=0,scnCb=null;
 async function scnOpen(cb){if(!('BarcodeDetector' in window)||!navigator.mediaDevices){toast('Este telemóvel não lê QR pela câmara. Use «Copiar e colar».',5000);return}
@@ -1339,41 +1329,26 @@ catch(e){scnClose();toast('Não consegui abrir a câmara: '+((e&&e.message)||e),
 function scnClose(){clearTimeout(scnT);$('scn').hidden=true;try{scnS&&scnS.getTracks().forEach(t=>t.stop())}catch(e){}scnS=null;scnCb=null}
 function plScan(r){scnOpen(t=>{if(r=='n'){$('plc2').value=t;plFin()}else{$('plp1').value=t;plJoin()}})}
 function plOpenPilot(){const first=plRole!='pilot';plRole='pilot';plRxT=Date.now();plBad=false;
-plQ=-1;plQd={};plRel=[];plQms=0;plTq={};plLv=null;if(!plLoop)plLoop=requestAnimationFrame(plLive2);if(first){plVis=false;plSt={};$('setup').hidden=true;const r=$('run');r.hidden=false;r.classList.add('pilot');$('pex').hidden=false;$('plr').hidden=false;try{keepAwake()}catch(e){}}
+plQ=-1;plQd=null;plHL=0;plRel=[];plQms=0;plErr='';try{if(gW!==null){navigator.geolocation.clearWatch(gW);gW=null}}catch(e){}if(first){plVis=false;plSt={};$('setup').hidden=true;const r=$('run');r.hidden=false;r.classList.add('pilot');$('pex').hidden=false;$('plr').hidden=false;try{keepAwake()}catch(e){}}
 plOv();if(plPend){plLs('plP',plPend);plPend=''}plLs('plRolePref','p');
-clearInterval(plWd);clearInterval(plPingT);plWd=setInterval(()=>{const b=Date.now()-plRxT>2500;if(b!==plBad){plBad=b;if(b)plBadT=Date.now();plOv()}},500);plPingT=setInterval(()=>{try{if(plCh&&plCh.readyState=='open')plCh.send(JSON.stringify({t:'p',c:Date.now(),pv:66}))}catch(e){}},1000)}
+clearInterval(plWd);clearInterval(plPingT);plWd=setInterval(()=>{const b=Date.now()-plRxT>2500;if(b!==plBad){plBad=b;if(b)plBadT=Date.now();plOv()}},500);plPingT=setInterval(()=>{try{if(plCh&&plCh.readyState=='open')plCh.send(JSON.stringify({t:'p',c:Date.now()}))}catch(e){}},1000)}
 function plOv(){const w=$('plw');if(plBad){w.className='bad';$('plwi').textContent='✕';$('plw1').textContent='Sem ligação';$('plw2').textContent='Sem sinal do navegador. A tentar ligar de novo… Confirma o ponto de acesso. Toca no ✕ para sair.';w.hidden=false}
 else if(!plVis){w.className='ok';$('plwi').textContent='✓';$('plw1').textContent='Ligado';$('plw2').textContent='À espera que o navegador inicie a prova…';w.hidden=false}else w.hidden=true}
 const PLFIT={rc:1,rn:1,rs:1,rv:1,fm:1,fq:1,rd:1,fs:1};
 function plFit(el){if(!el||!el.clientWidth)return;el.style.fontSize='';let f=parseFloat(getComputedStyle(el).fontSize),n=0;while(el.scrollWidth>el.clientWidth+1&&f>10&&n++<14){f*=.88;el.style.fontSize=f+'px'}}
-let plVerW=0,plVerB=0,plQ=-1,plQd={},plRaf=0,plRel=[],plQms=0,plTq={},plLv=null,plLoop=0;
-function plMsg(e){let m;try{m=JSON.parse(e.data)}catch(x){return}plRxT=Date.now();
-if(m.d!==undefined||(m.pv!==undefined&&m.pv!==66)){plVerB=1}
-if(m.pong){plRtt=Date.now()-m.c;plShowQ();return}
-const fastM=m.q!==undefined;if(fastM){if(m.q<plQ)return;plQ=m.q;
-if(m.h){const rel=plRxT-m.h;plRel.push([plRxT,rel]);while(plRel.length&&plRxT-plRel[0][0]>20000)plRel.shift();let mn=1e12;plRel.forEach(x=>{if(x[1]<mn)mn=x[1]});plQms=plQms*.7+(rel-mn)*.3;
-if(m.n)plLv={n:m.n,rx:performance.now(),a0:Math.max(0,(rel-mn)/1000)+Math.min(.15,Math.max(0,plRtt)/2000)};else plLv=null}}
-plQd.a=m.a;plQd.v=m.v;
-if(m.s){plQd.s=plQd.s||{};for(const id in m.s)plQd.s[id]=m.s[id]}
-if(m.t){plQd.t=plQd.t||{};for(const id in m.t){plQd.t[id]=m.t[id];if(fastM)plTq[id]=m.q}}
-if(m.T){plQd.T=plQd.T||{};for(const id in m.T)if((plTq[id]===undefined)||m.kq>=plTq[id])plQd.T[id]=m.T[id]}
-if(!plRaf)plRaf=requestAnimationFrame(plFlush)}
-function plShowQ(){const e=$('plr');if(!e)return;const q=Math.round(plQms);if(plVerB){e.textContent='⚠ Versões diferentes: atualize a app nos dois telemóveis';e.style.color='#ff453a';return}e.textContent='ligação '+plRtt+' ms · fila +'+q+' ms';e.style.color=q>150?'#ff453a':q>60?'#ffd60a':''}
-function plSetT(id,h){if(h==null)h='';const el=document.getElementById(id);if(!el)return false;const o=plSt[id]||(plSt[id]=[]);if(o[0]===h)return false;el.innerHTML=h;const L=(o[0]||'').length!==h.length;o[0]=h;if(L&&PLFIT[id])plFit(el);return true}
-function plFlush(){plRaf=0;const m=plQd;plQd={};$('run').classList.toggle('abs',!!m.a);const v=!!m.v;if(plBad||v!==plVis){plBad=false;plVis=v;plOv()}
-if(m.s)for(const id in m.s){const el=document.getElementById(id);if(!el)continue;const a=m.s[id],o=plSt[id]||(plSt[id]=[]);if(a[0]!==o[1]){el.className=a[0];o[1]=a[0]}if(a[1]!==o[2]){el.style.cssText=a[1];o[2]=a[1];if(o[0]!==undefined&&PLFIT[id])plFit(el)}if((a[2]?1:0)!==o[3]){el.hidden=!!a[2];o[3]=a[2]?1:0}}
-if(m.T)for(const id in m.T)plSetT(id,m.T[id]);
-if(m.t)for(const id in m.t)plSetT(id,m.t[id]);
-plShowQ();if(!plLoop)plLoop=requestAnimationFrame(plLive2)}
-function plFmt(dm,ds,v,e){const ok=v>1?Math.abs(ds)<=.3:Math.abs(dm)<=1,ad=dm>0,sg=ad?'+':'−';return{col:e?'#555':ok?'#ffd60a':ad?'#ff453a':'#2ee66b',fs:e?'AGUARDA INÍCIO':ok?'NO IDEAL · MANTER':ad?'ADIANTADO · TRAVAR':'ATRASADO · ACELERAR',fm:e?'0 m':(Math.abs(dm).toFixed(0)=='0'?'':sg)+Math.abs(dm).toFixed(0)+' m',fq:e?'0,0 s':(Math.abs(ds).toFixed(1)=='0.0'?'':sg)+Math.abs(ds).toFixed(1).replace('.',',')+' s'}}
-function plLive2(){plLoop=0;if(plRole!='pilot')return;plLoop=requestAnimationFrame(plLive2);const L=plLv;if(!L||plBad)return;
-const[dm0,ds0,v,ir,e,d0,fz,pr,bh,af]=L.n;let age=e?0:Math.min(.6,L.a0+(performance.now()-L.rx)/1000);
-const dr=fz?0:v*(1+af/1000),dmr=dr-ir,dsr=v>0?dmr/v:0,dm=dm0+dmr*age,ds=ds0+dsr*age,d=d0+dr*age;
-const F=plFmt(dm,ds,v,e);const fr=document.getElementById('fr');if(fr&&fr.style.borderColor!==F.col)fr.style.borderColor=F.col;
-['fs','fm','fq'].forEach(i=>{const el=document.getElementById(i);if(el&&el.style.color!==F.col)el.style.color=F.col});
-plSetT('fs',F.fs);plSetT('fm',F.fm);plSetT('fq',F.fq);
-plSetT('rd','<span class="dl">'+(fz?'Distância congelada':'Distância')+'</span> '+kmf(Math.round(d))+' km');const rd=document.getElementById('rd');if(rd){const c=fz?'#7fd1ff':'';if(rd.style.color!==c)rd.style.color=c}
-const B=document.getElementById('bar');if(B){B.hidden=!!bh;if(!bh){const m=Math.min(1,Math.abs(pr)/BARFULL)*(Math.abs(pr)<.3?0:1),bu=(pr<0?m*50:0)+'%',bd=(pr>0?m*50:0)+'%',U=document.getElementById('bu'),D=document.getElementById('bd');if(U&&U.style.height!==bu)U.style.height=bu;if(D&&D.style.height!==bd)D.style.height=bd}}}
+let plQ=-1,plQd=null,plRaf=0,plRel=[],plQms=0,plHL=0,plErr='';
+function plMsg(e){let m;try{m=JSON.parse(e.data)}catch(x){return}plRxT=Date.now();if(m.t=='q'){plRtt=Date.now()-m.c;plShowQ();return}
+if(m.q===undefined||!m.f)return;if(m.h<plHL-3000)plQ=-1;plHL=m.h;if(m.q<plQ)return;plQ=m.q;
+{const rel=plRxT-m.h;plRel.push([plRxT,rel]);while(plRel.length&&plRxT-plRel[0][0]>20000)plRel.shift();let mn=1e12;plRel.forEach(x=>{if(x[1]<mn)mn=x[1]});plQms=plQms*.7+(rel-mn)*.3}
+plQd=m;if(!plRaf)plRaf=requestAnimationFrame(plFlush)}
+function plShowQ(){const e=$('plr');if(!e)return;if(plErr){e.textContent='erro: '+plErr;e.style.color='#ff453a';return}const q=Math.round(plQms);e.textContent='ligação '+plRtt+' ms · fila +'+q+' ms';e.style.color=q>150?'#ff453a':q>60?'#ffd60a':''}
+function plFlush(){plRaf=0;const m=plQd;plQd=null;if(!m)return;$('run').classList.toggle('abs',!!m.a);const v=!!m.v;if(plBad||v!==plVis){plBad=false;plVis=v;plOv()}
+const fit=[];for(const id in m.f){const el=document.getElementById(id);if(!el)continue;const a=m.f[id],o=plSt[id]||(plSt[id]=[]);
+if(a[0]!==null&&a[0]!==o[0]){el.innerHTML=a[0];if(PLFIT[id]&&(o[0]||'').length!==a[0].length)fit.push(el);o[0]=a[0]}
+if(a[1]!==o[1]){el.className=a[1];o[1]=a[1]}
+if(a[2]!==o[2]){el.style.cssText=a[2];o[2]=a[2];if(PLFIT[id]&&o[0]!==undefined&&!fit.includes(el))fit.push(el)}
+const h=a[3]?1:0;if(h!==o[3]){el.hidden=!!h;o[3]=h}}
+fit.forEach(plFit);plShowQ()}
 function plExitAsk(){askC('Sair do modo piloto?',[['Não, continuar',null],['Sim, sair',()=>{plClose();location.reload()}]],'pil')}
 async function plCopy(i){try{await navigator.clipboard.writeText($(i).value);toast('Copiado')}catch(e){$(i).select();toast('Selecione e copie à mão')}}
 async function plShare(i){try{if(navigator.share)await navigator.share({text:$(i).value});else plCopy(i)}catch(e){}}
@@ -1385,7 +1360,7 @@ wl=await navigator.wakeLock.request('screen');wkOk=true;wl.addEventListener('rel
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState=='visible'){keepAwake();rbKick()}});
 addEventListener('pageshow',e=>{if(e.persisted){keepAwake();rbKick()}});
 addEventListener('pointerdown',()=>{if((!wl||wl.released)&&Date.now()-wkT>2000)keepAwake()},true);
-addEventListener('error',e=>{try{$('vs').textContent='Erro: '+e.message}catch(_){}});
+addEventListener('error',e=>{try{$('vs').textContent='Erro: '+e.message}catch(_){}if(plRole=='pilot'){plErr=String(e.message).slice(0,60);try{plShowQ()}catch(_){}}});
 lab();show();showLog();if($('fo').value!='s')testG();rbInit();keepAwake();
 if('serviceWorker' in navigator&&/^https?:/.test(location.protocol)){const had=!!navigator.serviceWorker.controller;
 navigator.serviceWorker.register('sw.js').catch(()=>{});
