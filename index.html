@@ -147,7 +147,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 #sct{position:absolute;left:0;right:0;top:16px;text-align:center;font-size:19px;font-weight:700;text-shadow:0 0 6px #000}
 #scc{position:absolute;left:16px;right:16px;bottom:24px;width:auto}
 #pex{position:fixed;right:6px;top:6px;z-index:20;width:auto;padding:4px 12px;margin:0;background:#2a3038;color:var(--fg);opacity:.5}
-</style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
+</style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0c0e11">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -155,7 +155,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 
 <div id="setup">
 <div id="bk" hidden style="position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:8px"><button onclick="voltar()">Voltar à prova</button><button class="s" id="tb" onclick="endTap()">Terminar prova</button></div>
-<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 69.1</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
+<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 70</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
 <div id="pm"><div class="card"><h1>Rally</h1>
 <label style="margin-top:0">Nome do rally</label><input id="rn0" placeholder="Ex.: Rally de Fafe" aria-label="Nome do rally" onchange="setRName(this.value)">
 <label>Hora de início do rally (partida)</label><input id="h0" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0n" style="text-align:left;font-size:15px;margin-top:4px"></div>
@@ -1236,7 +1236,7 @@ w.nodes.forEach((nid,i)=>{let k=id.get(nid);if(k===undefined){k=la.length;id.set
 return{lat:Float64Array.from(la),lon:Float64Array.from(lo),ea:Int32Array.from(ea),eb:Int32Array.from(eb),id:Float64Array.from(ni),c,date:new Date().toISOString().slice(0,10)}}
 mpInit();
 /* ---- modo piloto ---- */
-let plPC=null,plCh=null,plCf=null,plRole='',plTm=0,plKeyT=0,plWd=0,plPingT=0,plPrev={},plBeatT=0,plRxT=0,plRtt=0,plVis=false,plBad=false,plSt={};
+let plKaT=0,plPC=null,plCh=null,plCf=null,plRole='',plTm=0,plKeyT=0,plWd=0,plPingT=0,plPrev={},plBeatT=0,plRxT=0,plRtt=0,plVis=false,plBad=false,plSt={};
 function plRoleSel(r){$('plN').hidden=r!='n';$('plP').hidden=r!='p';$('plrn').className=r=='n'?'':'s';$('plrp').className=r=='p'?'':'s'}
 function plSet(t){$('pls').textContent=t}
 function plPaint(){plDgShow();try{$('plSv').textContent=plSavedTxt();$('plBrS').value=plBrOnS()?'1':'0'}catch(e){}plSet(plRole=='pilot'?'Ligado como piloto.':plRole=='host'?'Ligado: este telemóvel envia o ecrã ao piloto.':plPC?'A aguardar a ligação…':'Sem ligação.')}
@@ -1312,7 +1312,7 @@ if(pref=='h')plRecoH();else{plRoleSel('p');plSet('Aponta a câmara ao QR de reli
 function plForget(){plLs('plH',null);plLs('plP',null);plLs('plRolePref',null);plPaint();toast('Ligação guardada apagada',3000)}
 function plSavedTxt(){const pref=plLs('plRolePref');if(!pref||!(plHas('plH')||plHas('plP')))return 'Ainda sem ligação guardada. Faz a ligação por QR uma vez e fica guardada.';return 'Guardado: este telemóvel é '+(pref=='h'?'o navegador':'o piloto')+'. '+(plBrOnS()?'Se a ligação cair, religa sozinho (precisa de internet). ':'')+(pref=='h'?'Sem internet: toca em «Religar por QR» e o piloto lê só esse.':'Sem internet: toca em «Religar por QR» e lê só o QR do navegador.')}
 function plMk(){plClose();plAutoPC=false;const pc=new RTCPeerConnection(plCert?{iceServers:[],certificates:[plCert]}:{iceServers:[]});plPC=pc;pc.onconnectionstatechange=()=>{if(['failed','closed'].includes(pc.connectionState)&&plPC===pc)plLost()};return pc}
-function plClose(){clearInterval(plTm);clearInterval(plKeyT);clearInterval(plWd);clearInterval(plPingT);try{plCh&&plCh.close()}catch(e){}try{plCf&&plCf.close()}catch(e){}try{plPC&&plPC.close()}catch(e){}plPC=null;plCh=null;plCf=null}
+function plClose(){clearInterval(plKaT);clearInterval(plTm);clearInterval(plKeyT);clearInterval(plWd);clearInterval(plPingT);try{plCh&&plCh.close()}catch(e){}try{plCf&&plCf.close()}catch(e){}try{plPC&&plPC.close()}catch(e){}plPC=null;plCh=null;plCf=null}
 function plLost(){clearInterval(plTm);clearInterval(plKeyT);if(plRole=='pilot'){if(!plBad)plBadT=Date.now();plBad=true;plOv()}else if(plRole=='host'){plRole='';plSet('Ligação com o piloto perdida. A tentar ligar de novo…');toast('Piloto desligado',4000);plRate()}}
 async function plHost(){try{plSet('A criar o código…');await plCam();await plIdent();const pc=plMk(),ch=pc.createDataChannel('p'),cf=pc.createDataChannel('f',{ordered:false,maxRetransmits:0});plCh=ch;plCf=cf;ch.onopen=plOpenHost;ch.onmessage=plMsgH;ch.onclose=()=>{if(plRole=='host')plLost()};
 {const o=await pc.createOffer();o.sdp=plMung(o.sdp);await pc.setLocalDescription(o)}await plIce(pc);const code=plEnc(pc.localDescription);$('plc1').value=code;$('plc1').hidden=false;$('plc1b').hidden=false;QRG.draw($('plq1'),code,300);$('plq1').hidden=false;plSet('Mostre este QR ao piloto e depois leia o QR dele (passo 2).')}catch(e){plSet('Erro: '+(e.message||e))}}
@@ -1346,7 +1346,7 @@ function plScan(r){scnOpen(t=>{if(r=='n'){$('plc2').value=t;plFin()}else{$('plp1
 function plOpenPilot(){const first=plRole!='pilot';plRole='pilot';if(cfKind=='rb'){try{cfClose()}catch(e){}}plRxT=Date.now();plBad=false;
 plQ=-1;plQd=null;plHL=0;plSS={};plLastRx=0;plDgNew();plRel=[];plQms=0;plErr='';try{if(gW!==null){navigator.geolocation.clearWatch(gW);gW=null}}catch(e){}if(first){plVis=false;plSt={};$('setup').hidden=true;const r=$('run');r.hidden=false;r.classList.add('pilot');$('pex').hidden=false;$('plr').hidden=false;try{keepAwake()}catch(e){}}
 plOv();if(plPend){plLs('plP',plPend);plPend=''}plLs('plRolePref','p');
-clearInterval(plWd);clearInterval(plPingT);plWd=setInterval(()=>{const b=Date.now()-plRxT>2500;if(b!==plBad){plBad=b;if(b)plBadT=Date.now();plOv()}},500);plPingT=setInterval(()=>{try{if(plCh&&plCh.readyState=='open')plCh.send(JSON.stringify({t:'p',c:Date.now()}))}catch(e){}},1000)}
+clearInterval(plKaT);plKaT=setInterval(()=>{try{if(plCf&&plCf.readyState=='open'&&plCf.bufferedAmount<300)plCf.send('k')}catch(e){}},100);clearInterval(plWd);clearInterval(plPingT);plWd=setInterval(()=>{const b=Date.now()-plRxT>2500;if(b!==plBad){plBad=b;if(b)plBadT=Date.now();plOv()}},500);plPingT=setInterval(()=>{try{if(plCh&&plCh.readyState=='open')plCh.send(JSON.stringify({t:'p',c:Date.now()}))}catch(e){}},1000)}
 function plOv(){const w=$('plw');if(plBad){w.className='bad';$('plwi').textContent='✕';$('plw1').textContent='Sem ligação';$('plw2').textContent='Sem sinal do navegador. A tentar ligar de novo… Confirma o ponto de acesso. Toca no ✕ para sair.';w.hidden=false}
 else if(!plVis){w.className='ok';$('plwi').textContent='✓';$('plw1').textContent='Ligado';$('plw2').textContent='À espera que o navegador inicie a prova…';w.hidden=false}else w.hidden=true}
 const PLFIT={rc:1,rn:1,rs:1,rv:1,fm:1,fq:1,rd:1,fs:1};
@@ -1371,7 +1371,7 @@ if(m.b){const U=document.getElementById('bu'),D=document.getElementById('bd');if
 fit.forEach(plFit);plShowQ();if(plDg){plDg.rd.push(performance.now()-m.rx);if(plDg.rd.length>3000)plDg.rd.shift()}}
 function plPct(a,p){if(!a.length)return 0;const b=a.slice().sort((x,y)=>x-y);return Math.round(b[Math.min(b.length-1,Math.floor(b.length*p))]*10)/10}
 function plDgTxt(){let d=plDg;if(!d){try{return localStorage.getItem('plDiag')||'Ainda sem medições. Faz uma prova de teste com este telemóvel como piloto.'}catch(e){return ''}}
-const dur=Math.round((Date.now()-d.t0)/1000),g=d.gap;return 'Diagnóstico do piloto (versão 68)\nDuração '+dur+' s · mensagens '+d.n+' · perdidas '+d.lost+' ('+(d.n?Math.round(d.lost*1000/(d.n+d.lost))/10:0)+' %) · ecrã por desenhar '+d.skip+'\nAtraso da fila (ms): mediana '+plPct(d.q,.5)+' · 90 % '+plPct(d.q,.9)+' · 99 % '+plPct(d.q,.99)+' · máx '+plPct(d.q,1)+'\nIntervalo entre mensagens (ms): mediana '+plPct(g,.5)+' · 90 % '+plPct(g,.9)+' · máx '+plPct(g,1)+' · acima de 200 ms: '+g.filter(x=>x>200).length+' · acima de 500 ms: '+g.filter(x=>x>500).length+'\nDesenho no piloto (ms): mediana '+plPct(d.rd,.5)+' · 99 % '+plPct(d.rd,.99)+' · máx '+plPct(d.rd,1)+'\nIda e volta (ms): mediana '+plPct(d.rtt,.5)+' · 90 % '+plPct(d.rtt,.9)+' · máx '+plPct(d.rtt,1)}
+const dur=Math.round((Date.now()-d.t0)/1000),g=d.gap;return 'Diagnóstico do piloto (versão 70)\nDuração '+dur+' s · mensagens '+d.n+' ('+(dur?Math.round(d.n/dur*10)/10:0)+' por segundo) · perdidas '+d.lost+' ('+(d.n?Math.round(d.lost*1000/(d.n+d.lost))/10:0)+' %) · ecrã por desenhar '+d.skip+'\nAtraso da fila (ms): mediana '+plPct(d.q,.5)+' · 90 % '+plPct(d.q,.9)+' · 99 % '+plPct(d.q,.99)+' · máx '+plPct(d.q,1)+'\nIntervalo entre mensagens (ms): mediana '+plPct(g,.5)+' · 90 % '+plPct(g,.9)+' · máx '+plPct(g,1)+' · acima de 200 ms: '+g.filter(x=>x>200).length+' · acima de 500 ms: '+g.filter(x=>x>500).length+'\nDesenho no piloto (ms): mediana '+plPct(d.rd,.5)+' · 99 % '+plPct(d.rd,.99)+' · máx '+plPct(d.rd,1)+'\nIda e volta (ms): mediana '+plPct(d.rtt,.5)+' · 90 % '+plPct(d.rtt,.9)+' · máx '+plPct(d.rtt,1)}
 setInterval(()=>{if(plRole=='pilot'&&plDg){try{localStorage.setItem('plDiag',plDgTxt())}catch(e){}}},5000);
 function plDgShow(){try{const e=$('plDg');if(e)e.textContent=plDgTxt()}catch(x){}}
 async function plDgCopy(){try{await navigator.clipboard.writeText(plDgTxt());toast('Copiado')}catch(e){toast('Não consegui copiar')}}
