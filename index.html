@@ -147,7 +147,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 #sct{position:absolute;left:0;right:0;top:16px;text-align:center;font-size:19px;font-weight:700;text-shadow:0 0 6px #000}
 #scc{position:absolute;left:16px;right:16px;bottom:24px;width:auto}
 #pex{position:fixed;right:6px;top:6px;z-index:20;width:auto;padding:4px 12px;margin:0;background:#2a3038;color:var(--fg);opacity:.5}
-</style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
+</style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0c0e11">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -155,7 +155,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 
 <div id="setup">
 <div id="bk" hidden style="position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:8px"><button onclick="voltar()">Voltar à prova</button><button class="s" id="tb" onclick="endTap()">Terminar prova</button></div>
-<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 70.1</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
+<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 71</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
 <div id="pm"><div class="card"><h1>Rally</h1>
 <label style="margin-top:0">Nome do rally</label><input id="rn0" placeholder="Ex.: Rally de Fafe" aria-label="Nome do rally" onchange="setRName(this.value)">
 <label>Hora de início do rally (partida)</label><input id="h0" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0n" style="text-align:left;font-size:15px;margin-top:4px"></div>
@@ -253,6 +253,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 <button class="s" onclick="mpStopB()">Parar a descarga</button>
 <label>Zonas guardadas</label><div id="mpZl"></div>
 <label>Diferença mínima para sugerir correção (m)</label><input id="mpLim" inputmode="decimal" value="4" oninput="mpLimSet()"><div class="mut" style="text-align:left;font-size:14px">Só avisa quando a diferença entre o odómetro e o mapa fica estável durante 10 segundos. Enquanto varia depressa, não diz nada.</div>
+<label>Zona sinuosa: curva acumulada em 80 m (graus)</label><input id="mpAng" inputmode="decimal" value="90" oninput="mpAngSet()"><div class="mut" style="text-align:left;font-size:14px">Em ganchos e curvas seguidas a app não sugere nada. Quando a estrada volta a ficar regular, compara o mapa com o odómetro ao fim de uns 4 segundos estáveis e sugere a correção. Valor mais baixo = considera sinuoso mais cedo.</div>
 <div id="mpFa" class="mut" style="text-align:left;font-size:15px;margin-top:6px"></div><button class="s" onclick="mpFmReset()">Repor o fator do mapa</button>
 <button class="s dg2" onclick="mpDel()">Apagar todo o mapa</button>
 <div id="mpPf" class="mut" style="text-align:left;font-size:13px;margin-top:6px"></div>
@@ -1106,30 +1107,32 @@ askC(msg,[['Corrigir '+(corr>0?'+':'−')+Math.abs(corr)+' m',()=>act('mapa (fal
 setInterval(()=>{if(plRole=='pilot'||!mpOn||!MP||st!='run'||mpGap||!mpLast)return;if(Date.now()-mpLast.t>3000)mpGap={la:mpLast.la,lo:mpLast.lo,t:mpLast.t,d:dNow()}},500);
 
 /* fator do mapa e alerta de diferença */
-let mpRefPend=true,mpTaint=false,mpP=null,mpMd=0,mpOd0=0,mpSm=[],mpMdV=0,mpRef=0,mpCool=0,mpFm=1,mpKm=0,mpN=0,mpSeg=[],mpLim=4;
-try{mpSeg=JSON.parse(localStorage.getItem('mapSeg')||'[]')||[];const l=parseFloat(localStorage.getItem('mapLim'));if(l>0)mpLim=l}catch(e){}
+let mpHd=null,mpHL=[],mpWasC=false,mpCurv=false,mpAng=90,mpRefPend=true,mpTaint=false,mpP=null,mpMd=0,mpOd0=0,mpSm=[],mpMdV=0,mpRef=0,mpCool=0,mpFm=1,mpKm=0,mpN=0,mpSeg=[],mpLim=4;
+try{mpSeg=JSON.parse(localStorage.getItem('mapSeg')||'[]')||[];const l=parseFloat(localStorage.getItem('mapLim'));if(l>0)mpLim=l;const a=parseFloat(localStorage.getItem('mapAng'));if(a>0)mpAng=a}catch(e){}
 function mpFmCalc(){let a=mpSeg.filter(x=>x.m>=150&&x.o>=150);mpFm=1;mpKm=0;mpN=0;if(!a.length)return;
 if(a.length>=3){const r=a.map(x=>x.o/x.m).sort((x,y)=>x-y),n=r.length,md=n%2?r[(n-1)/2]:(r[n/2-1]+r[n/2])/2;a=a.filter(x=>Math.abs(x.o/x.m-md)<=Math.max(.01,.5*Math.abs(md-1)))}
 const o=a.reduce((x,y)=>x+y.o,0),m=a.reduce((x,y)=>x+y.m,0);if(m>0){mpFm=o/m;mpKm=m/1000;mpN=a.length}}
 function mpSaveSeg(){try{localStorage.setItem('mapSeg',JSON.stringify(mpSeg))}catch(e){}}
-function mpReset(){mpMd=0;mpOd0=dNow();mpSm=[]}
-function mpStart(){mpP=null;mpMdV=0;mpRef=0;mpRefPend=true;mpTaint=false;mpCool=0;mpReset()}
+function mpReset(){mpMd=0;mpOd0=dNow();mpSm=[];mpWasC=false}
+function mpHead(la,lo,fl){if(fl<5)return;const b=Math.atan2((lo-mpP.lo)*Math.cos(la*Math.PI/180),la-mpP.la)*180/Math.PI;if(mpHd!==null){let d=Math.abs(b-mpHd);if(d>180)d=360-d;mpHL.push([fl,d])}mpHd=b;let t=0,l=0;for(let i=mpHL.length-1;i>=0;i--){l+=mpHL[i][0];t+=mpHL[i][1];if(l>=80){mpHL.splice(0,i);break}}mpCurv=l>=40&&t>=mpAng;if(mpCurv)mpWasC=true}
+function mpStart(){mpHd=null;mpHL=[];mpCurv=false;mpP=null;mpMdV=0;mpRef=0;mpRefPend=true;mpTaint=false;mpCool=0;mpReset()}
 function mpCorr(delib,valid,after){if(delib)mpFlush();if(delib){const org=after-mpRef;if(valid&&!mpTaint&&!mpRefPend&&mpMdV>=150&&org>=150){mpSeg.push({o:Math.round(org),m:Math.round(mpMdV)});if(mpSeg.length>40)mpSeg.shift();mpSaveSeg();mpFmCalc();mpFa()}mpMdV=0;mpTaint=false;mpRef=after;mpRefPend=!mpP}mpReset()}
 function mpFlush(){if(mpOn&&MP&&mpLast&&mpP&&st=='run'&&Date.now()-mpLast.t<1500)mpStep(mpLast.la,mpLast.lo,mpLast.t,true)}
 function mpStep(la,lo,now,force){if(fz||(seq[cur]&&seq[cur].t=='n')||now<t0){mpP=null;return}
 if(mpP&&!force&&now-mpP.t<900)return;const sn0=performance.now();const s=mpSnap(la,lo);mpSnapMs=performance.now()-sn0;if(!s){mpP=null;mpTaint=true;mpReset();return}
 if(!mpP){mpP={la,lo,s,t:now};if(mpRefPend){mpRef=dNow();mpRefPend=false}mpReset();return}
-const fl=Math.hypot((la-mpP.la)*111195,(lo-mpP.lo)*111195*Math.cos(la*Math.PI/180));if(fl<(force?.5:10))return;
+const fl=Math.hypot((la-mpP.la)*111195,(lo-mpP.lo)*111195*Math.cos(la*Math.PI/180));if(fl<(force?.5:10))return;try{mpHead(la,lo,fl)}catch(x){}
 const pf0=performance.now();const dm=mpPath(mpP.s,s,3*fl+200);mpPerf(performance.now()-pf0+mpSnapMs);mpP={la,lo,s,t:now};
 if(dm===null||dm>2*fl+60||dm<.5*fl-20){mpTaint=true;mpReset();return}
 mpMd+=dm;mpMdV+=dm;const diff=mpMd*mpFm-(dNow()-mpOd0);mpSm.push([now,diff]);while(mpSm.length&&now-mpSm[0][0]>12000)mpSm.shift();mpAlert(now)}
-function mpAlert(now){if(mpKm<.5||now<mpCool||mpSm.length<6||now-mpSm[0][0]<10000)return;
-let mn=1e9,mx=-1e9;for(const x of mpSm){if(x[1]<mn)mn=x[1];if(x[1]>mx)mx=x[1]}
+function mpAlert(now){if(mpCurv)return;const W=mpWasC?5000:10000,ar=mpWasC?mpSm.filter(x=>now-x[0]<=W):mpSm;if(mpKm<.5||now<mpCool||ar.length<(mpWasC?3:6)||now-ar[0][0]<(mpWasC?3500:10000))return;
+let mn=1e9,mx=-1e9;for(const x of ar){if(x[1]<mn)mn=x[1];if(x[1]>mx)mx=x[1]}
 if(mx-mn>3)return;const m=(mn+mx)/2;if(Math.abs(m)<mpLim)return;
 if(!$('cf').hidden||!$('sg').hidden||!$('pr').hidden||!$('afp').hidden)return;
-const c=Math.round(m);mpCool=now+60000;const sg=(c>0?'+':'−')+Math.abs(c)+' m';
-askC('Pelo mapa, o odómetro está '+Math.abs(c)+' m a '+(c>0?'menos':'mais')+'. Corrigir '+sg+'?',[['Corrigir '+sg,()=>act('mapa (diferença)',dNow()+c,false)],['Ignorar',()=>mpReset()]],'mapa');if(sm.includes('v'))say('Diferença para o mapa. Sugestão de correção no ecrã.')}
+const c=Math.round(m),wc=mpWasC;mpWasC=false;mpCool=now+60000;const sg=(c>0?'+':'−')+Math.abs(c)+' m';
+askC((wc?'Sugestão da medição no mapa, depois da zona sinuosa: ':'Sugestão da medição no mapa: ')+'o odómetro está '+Math.abs(c)+' m a '+(c>0?'menos':'mais')+'. Corrigir '+sg+'?',[['Corrigir '+sg,()=>act('mapa (diferença)',dNow()+c,false)],['Ignorar',()=>mpReset()]],'mapa');if(sm.includes('v'))say('Diferença para o mapa. Sugestão de correção no ecrã.')}
 function mpFa(){const e=$('mpFa');if(!e)return;e.textContent=mpN?'Fator do mapa: '+(mpFm>=1?'+':'−')+Math.abs((mpFm-1)*100).toFixed(2).replace('.',',')+' % ('+mpN+(mpN==1?' troço':' troços')+', '+mpKm.toFixed(1).replace('.',',')+' km). O alerta só começa com pelo menos 0,5 km medidos.':'Fator do mapa: ainda por medir. Aprende com as correções válidas na prova (as mesmas da aferição).'}
+function mpAngSet(){const v=num($('mpAng').value);if(v>0){mpAng=v;try{localStorage.setItem('mapAng',String(v))}catch(e){}}}
 function mpLimSet(){const v=num($('mpLim').value);if(v>0){mpLim=v;try{localStorage.setItem('mapLim',String(v))}catch(e){}}}
 function mpFmReset(){mpSeg=[];mpSaveSeg();mpFmCalc();mpFa()}
 mpFmCalc();
@@ -1224,7 +1227,7 @@ setInterval(()=>{try{mpInd()}catch(e){}},3000);
 function mpPerf(ms){mpTm.push(ms);if(mpTm.length>60)mpTm.shift();if(ms>40){if(++mpSlow>=5){mpSlow=0;mpOn=false;try{localStorage.setItem('mapOn','0')}catch(e){}mpSum();if($('mpOn'))$('mpOn').value='0';askC('O mapa foi desligado porque o telemóvel ficou lento. A prova continua como antes.',[['OK',null]],'mapa')}}else mpSlow=0;mpPf(0)}
 function mpPf(x,force){const t=Date.now();if(!force&&t-mpPfT<3000)return;mpPfT=t;const e=$('mpPf');if(!e)return;const a=mpTm.length?mpTm.reduce((u,v)=>u+v,0)/mpTm.length:0,m=mpTm.length?Math.max(...mpTm):0;
 e.textContent='Cálculo por leitura: média '+a.toFixed(1).replace('.',',')+' ms, máximo '+m.toFixed(1).replace('.',',')+' ms. Última preparação do mapa: '+Math.round(mpBuildMs)+' ms. Pontos em memória: '+(MP?MP.z.lat.length:0)+'.'}
-async function mpInit(){try{$('mpLim').value=String(mpLim).replace('.',',');mpFa();await mpMetaLoad();$('mpOn').value=mpOn?'1':'0';mpTxt(Object.keys(mpMeta).length?'Mapa guardado no telemóvel.':'Ainda sem mapa guardado.');mpSum();mpList();if(mpOn&&Object.keys(mpMeta).length&&!mpPos){const rl=localStorage.getItem('mapLastPos');if(rl){const q=JSON.parse(rl);mpAround(q[0],q[1])}}}catch(e){mpTxt('O telemóvel não deixou guardar o mapa.')}}
+async function mpInit(){try{$('mpLim').value=String(mpLim).replace('.',',');$('mpAng').value=String(mpAng).replace('.',',');mpFa();await mpMetaLoad();$('mpOn').value=mpOn?'1':'0';mpTxt(Object.keys(mpMeta).length?'Mapa guardado no telemóvel.':'Ainda sem mapa guardado.');mpSum();mpList();if(mpOn&&Object.keys(mpMeta).length&&!mpPos){const rl=localStorage.getItem('mapLastPos');if(rl){const q=JSON.parse(rl);mpAround(q[0],q[1])}}}catch(e){mpTxt('O telemóvel não deixou guardar o mapa.')}}
 function mpHereK(){let la,lo;if(mpPos&&Date.now()-mpPos.t<120000){la=mpPos.la;lo=mpPos.lo}else{try{const q=JSON.parse(localStorage.getItem('mapLastPos')||'null');if(q){la=q[0];lo=q[1]}}catch(e){}}return la===undefined?null:mpTk(la,lo)}
 function mpInd(){if(plRole=='pilot')return;const e=$('mpI');if(!e)return;let h='';if(mpOn){const k=mpPos&&Date.now()-mpPos.t<120000?mpTk(mpPos.la,mpPos.lo):null;h=!k?'<span style="color:#ffd60a">● Mapa: à espera do GPS</span>':(MP&&mpMeta[k]?'<span style="color:#2ee66b">● Mapa carregado</span>':'<span style="color:#ff453a">● Sem mapa nesta zona</span>')}
 if(e.dataset.h!==h){e.dataset.h=h;e.innerHTML=h}const z=$('mpZ');if(z){const k=mpHereK(),t=!mpOn?'<span class="mut">Mapa da tua zona: desligado</span>':!k?'<span class="mut">Mapa da tua zona: posição desconhecida (liga o GPS)</span>':mpMeta[k]&&(mpMeta[k].ed||0)>0?'<span style="color:#1c7c3a">● Mapa da tua zona: guardado</span>':'<span style="color:#b3261e">● Mapa da tua zona: em falta</span>';if(z.dataset.h!==t){z.dataset.h=t;z.innerHTML=t}}}
