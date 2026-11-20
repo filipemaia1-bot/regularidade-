@@ -163,7 +163,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 
 <div id="setup">
 <div id="bk" hidden style="position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:8px"><button onclick="voltar()">Voltar à prova</button><button class="s" id="tb" onclick="endTap()">Terminar prova</button></div>
-<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 75</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
+<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 76</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
 <div id="pm"><div class="card"><h1>Rally</h1>
 <label style="margin-top:0">Nome do rally</label><input id="rn0" placeholder="Ex.: Rally de Fafe" aria-label="Nome do rally" onchange="setRName(this.value)">
 <label>Hora de início do rally (partida)</label><input id="h0" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0n" style="text-align:left;font-size:15px;margin-top:4px"></div>
@@ -338,7 +338,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 <button id="pn" class="s" hidden onclick="startNow()">Iniciar agora, sem esperar pela hora</button></div>
 <div id="cf" class="ov" hidden style="border-top:4px solid var(--ac);z-index:12"><div id="cft" style="font-size:19px;font-weight:700"></div><div id="cfb"></div></div>
 <div id="sg" class="ov" hidden style="border-top:4px solid #7fd1ff">
-<div id="sq" style="font-size:18px;font-weight:700"></div>
+<div id="sq" style="font-size:25px;font-weight:700;line-height:1.25"></div>
 <button onclick="aplSug()">Aplicar correção</button>
 <button class="s" onclick="recSug()">Recusar</button></div>
 
@@ -361,7 +361,7 @@ function clkPaint(){if(plRole=='pilot'||!$('ck1'))return;const d=new Date(Date.n
 $('ck1').textContent=p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds())+','+Math.floor(d.getMilliseconds()/100);
 $('ck2').textContent='Fonte: '+clkLabel()+' · acerto fino: '+(CLKA>0?'+':CLKA<0?'−':'')+(Math.abs(CLKA)/1000).toFixed(1).replace('.',',')+' s'}
 let seq=[],cur=0,ev=[],ps=[],P=[],AB=null,cT='f',tg=[],idx=0,t0=0,end=0,lead=10,off=.6,sv=50,af=0,timer=null,wl=null;
-let lk=null,lkSched=0,hk=1,L=[],winC=[],lid=0,U=[],fzU=[],fz0=null,lastAn=0,lastSeg=-1,sugV=0;
+let lk=null,lkSched=0,hk=1,L=[],winC=[],winA=[],lid=0,U=[],fzU=[],fz0=null,lastAn=0,lastSeg=-1,sugV=0;
 let pk=-1,PT=[],HT=[],pw=5,cdN=99,aw={},bkT=0,wkOk=true,wkT=0;
 let dOff=0,st='wait',sched=0,asked=false,ac=null,bp=[],bi=0,sm='vb',fz=false,fzD=0,fzEl=0,fzDr=0,ei=-1;
 try{seq=JSON.parse(localStorage.getItem('seq')||'[]')}catch(e){}
@@ -658,8 +658,8 @@ function saveL(){try{localStorage.setItem('log',JSON.stringify(L))}catch(e){}}
 function showLog(){const n=L.filter(e=>e.delib).length;
 $('lc').textContent=L.length+(L.length==1?' correção registada, ':' correções registadas, ')+n+' contam para a análise.';
 $('lg').innerHTML=L.length?L.slice().reverse().slice(0,60).map(e=>`${e.h} · reg ${e.reg} · ${e.kind} · ${e.before}→${e.after} m (${e.delta>0?'+':''}${e.delta})${e.delib?'':' · não conta'}`).join('<br>'):'Ainda sem correções.'}
-function clrLog(){L=[];winC=[];saveL();showLog()}
-function logC(id,kind,delib,before,after){const km=Math.max(0,(before-lastCorrD)/1000),e={id,h:clock(),reg:cur+1,kind,delib,before:Math.round(before),after:Math.round(after),delta:Math.round((after-before)*10)/10,km:Math.round(km*1000)/1000};if(delib)lastCorrD=after;L.push(e);const rh=kind=='marco'||!!lk||lk0w||(seq[cur]&&seq[cur].t=='h');try{trkCorr(e,delib&&!rh)}catch(x){}try{mpCorr(delib,!rh,after)}catch(x){}if(delib&&!rh)winC.push(e);saveL();showLog()}
+function clrLog(){L=[];winC=[];winA=[];saveL();showLog()}
+function logC(id,kind,delib,before,after){const km=Math.max(0,(before-lastCorrD)/1000),e={id,h:clock(),reg:cur+1,kind,delib,before:Math.round(before),after:Math.round(after),delta:Math.round((after-before)*10)/10,km:Math.round(km*1000)/1000};if(delib)lastCorrD=after;L.push(e);const rh=kind=='marco'||!!lk||lk0w||(seq[cur]&&seq[cur].t=='h');try{trkCorr(e,delib&&!rh)}catch(x){}try{mpCorr(delib,!rh,after)}catch(x){}if(delib&&!rh){winC.push(e);winA.push(e)}saveL();showLog()}
 function act(kind,newD,delib){const el=(Date.now()-t0)/1000;if(st!='run'||isNaN(newD))return;
 if(fz){fzU.push(fzD);fzD=newD;return}
 const before=dr(el)+dOff,id=++lid;U.push({dOff,id,lcd:lastCorrD});dOff=newD-dr(el);logC(id,kind,delib,before,newD)}
@@ -672,7 +672,7 @@ let unT=0;
 function unRst(){clearTimeout(unT);const b=$('un');b.dataset.a='';b.textContent='↶ Desfazer';b.style.background='';b.style.color=''}
 function unTap(){const b=$('un');if(!b.dataset.a){b.dataset.a='1';b.textContent='Toque de novo para desfazer';b.style.background='#ff9f0a';b.style.color='#000';clearTimeout(unT);unT=setTimeout(unRst,3000);return}unRst();undo()}
 function undo(){if(st!='run')return;if(fz){if(fzU.length)fzD=fzU.pop();return}
-const u=U.pop();if(!u)return;dOff=u.dOff;if(u.pk!==undefined)pk=u.pk;if(u.lcd!==undefined)lastCorrD=u.lcd;L=L.filter(e=>e.id!=u.id);winC=winC.filter(e=>e.id!=u.id);try{trkUndo(u.id)}catch(x){}saveL();showLog()}
+const u=U.pop();if(!u)return;dOff=u.dOff;if(u.pk!==undefined)pk=u.pk;if(u.lcd!==undefined)lastCorrD=u.lcd;L=L.filter(e=>e.id!=u.id);winC=winC.filter(e=>e.id!=u.id);winA=winA.filter(e=>e.id!=u.id);try{trkUndo(u.id)}catch(x){}saveL();showLog()}
 function mk(r,k){const v=r.mi+(r.sen=='d'?-1:1)*k/10;return String(Number(v.toFixed(3))).replace('.',',')}
 function hSec(k){const x=P.find(a=>Math.abs(a[1]-100*k)<.5);if(!x)return null;const v=Math.round(x[0]*10)/10%60;return String(Math.round(v*10)/10).replace('.',',')}
 function tgt(el,d){let best=null,bd=1e9;
@@ -687,13 +687,13 @@ function vNow(){if(src=='s')return Math.max(0,sv);if(src=='r'&&rbLive())return r
 function vNeed(el,d){if(el<0||el>=AB.Ttot)return null;const t2=Math.min(el+10,AB.Ttot),tt=t2-el;if(tt<=0)return null;return Math.max(0,Math.min(999,Math.round((abIdeal(t2)-d)/tt*3.6)))}
 
 function setAf(nv){const el=(Date.now()-t0)/1000,raw=rawM(el),a0=1+af/1000,dl=nv-af;
-af=nv;dOff-=raw*dl/1000;if(fz)fzDr=src=='g'?fzDr*(1+af/1000)/a0:dr(el);U=[];fzU=[];
+af=nv;winA=[];dOff-=raw*dl/1000;if(fz)fzDr=src=='g'?fzDr*(1+af/1000)/a0:dr(el);U=[];fzU=[];
 try{localStorage.setItem('af',String(af))}catch(e){}$('afv').value=af.toFixed(1).replace('.',',')}
 function aplSug(){const p=af;setAf(Math.round((af+sugV)*10)/10);afhAdd('Sugestão aceite',{f:af,prev:p});$('sg').hidden=true}
-function afF(){const all=winC.filter(e=>e.km>=.2);let u=all,g=winC.length-all.length;
+function afF(w){const W=w||winC,all=W.filter(e=>e.km>=.2);let u=all,g=W.length-all.length;
 if(all.length>=3){const r=all.map(e=>e.delta/e.km).sort((x,y)=>x-y),n=r.length,md=n%2?r[(n-1)/2]:(r[n/2-1]+r[n/2])/2,tol=Math.max(.5*Math.abs(md),5);u=all.filter(e=>Math.abs(e.delta/e.km-md)<=tol);g+=all.length-u.length}
 const km=u.reduce((a,e)=>a+e.km,0),sum=u.reduce((a,e)=>a+e.delta,0);return{u,g,km,s:u.length&&km>=.2?sum/km:null}}
-function afInfo(){const f=afF();return{km:f.km,n:f.u.length,g:f.g,s:f.s}}
+function afInfo(){const f=afF(curD>=4000?winA:winC);return{km:f.km,n:f.u.length,g:f.g,s:f.s}}
 function f1(x){return(x>0?'+':'')+x.toFixed(1).replace('.',',')}
 function afUpd(){if($('afp').hidden)return;const i=afInfo();
 $('afi').innerHTML='Fator atual: <b>'+f1(af)+' m/km</b><br>'+(i.s===null?'Erro medido: <span style="color:var(--mut)">'+(i.g?'correções muito diferentes entre si':'ainda sem correções suficientes')+'</span><br>Sugestão: —':'Erro medido: <b>'+Math.abs(i.s).toFixed(1).replace('.',',')+' m a '+(i.s>0?'menos':'mais')+' por km</b> <span style="color:var(--mut)">('+i.n+(i.n==1?' correção':' correções')+' em '+i.km.toFixed(1).replace('.',',')+' km'+(i.g?', '+i.g+(i.g==1?' ignorada':' ignoradas'):'')+')</span><br>Sugestão: fator <b>'+f1(af+i.s)+' m/km</b>');
@@ -704,13 +704,13 @@ let afPend=null;
 function afAdj(x){afPend=Math.round(((afPend===null?af:afPend)+x)*10)/10;afUpd()}
 function afSv(){if(afPend===null)return;const p=af;setAf(afPend);afhAdd('Ajuste manual',{f:af,prev:p});afPend=null;afUpd()}
 function afCn(){afPend=null;afUpd()}
-function afAcc(){const i=afInfo();if(i.s===null)return;afPend=null;const p=af;setAf(Math.round((af+i.s)*10)/10);afhAdd('Sugestão aceite',{f:af,prev:p});winC=[];lastAn=dNow();afUpd()}
+function afAcc(){const i=afInfo();if(i.s===null)return;afPend=null;const p=af;setAf(Math.round((af+i.s)*10)/10);afhAdd('Sugestão aceite',{f:af,prev:p});winC=[];winA=[];lastAn=dNow();afUpd()}
 function siUp(){try{mpInd()}catch(x){}let c,t;if(src=='r'&&rbLive()){t='RACEBOX';c='#2ee66b'}else if(src!='s'){t=src=='r'?'GPS reserva':'GPS';c=!(gT&&Date.now()-gT<=3000)?'#ff453a':gAc>30?'#ffd60a':'#2ee66b'}else{t='SIM';c='#2ee66b'}
 const h='<i style="background:'+c+'"></i>'+t+(wkOk?'':' <b style="color:#ff453a">ecrã</b>');if($('si').dataset.h!=h){$('si').dataset.h=h;$('si').innerHTML=h}}
 function recSug(){$('sg').hidden=true}
 
 let accOff=0,curD=0;
-function start(testNow,auto){if(!seq[cur])return;try{mpStart()}catch(x){}try{trkBegin()}catch(x){}accOff=0;lk=null;hk=1;pk=-1;cdN=99;aw={};gM=0;fz=false;idx=0;bi=0;dOff=0;U=[];fzU=[];lastAn=0;lastCorrD=0;winC=[];lastSeg=-1;kN=0;kL=[];t0=testNow?Date.now():sched;dStart=auto?Date.now():t0;st='run';$('pr').hidden=true;$('sg').hidden=true;blank();
+function start(testNow,auto){if(!seq[cur])return;try{mpStart()}catch(x){}try{trkBegin()}catch(x){}accOff=0;lk=null;hk=1;pk=-1;cdN=99;aw={};gM=0;fz=false;idx=0;bi=0;dOff=0;U=[];fzU=[];lastAn=0;lastCorrD=0;winC=[];winA=[];lastSeg=-1;kN=0;kL=[];t0=testNow?Date.now():sched;dStart=auto?Date.now():t0;st='run';$('pr').hidden=true;$('sg').hidden=true;blank();
 if(!testNow){const e=(Date.now()-sched)/1000;if(e>0)dOff=-dr(e)}}
 function pqt(r,sch,n,lim){const late=Math.round((Date.now()-sch)/1000);
 const nn=r.t=='n',tx=nn?'':' ('+NM[r.t]+')';$('pq').textContent=late<0?(nn?'A neutralização ':'A regularidade ')+n+tx+' começa às '+r.hi+', daqui a '+(-late)+' s. Dar início?':'Chegou a hora da '+(nn?'neutralização ':'regularidade ')+n+(nn?' ('+r.hi+')':' ('+NM[r.t]+', '+r.hi+')')+'. Dar início?';
@@ -749,7 +749,7 @@ const tt=Math.round(lk.Tl),m=Math.floor(tt/60),sc=tt%60,du=(m?m+(m==1?' minuto':
 if(sm.includes('v'))say('Fim de prova. Início da deslocação. Tem '+du+'.');if(sm.includes('b'))beep(1200,.3)}
 
 function enterLink0(){lkSched=sched;t0=sched-lk0.tempo*1000;dStart=t0;lk={D0:0,Dl:lk0.dist,Tl:lk0.tempo,te:0,nx:0,src:'z'};
-ev=[];bp=[];ps=[];idx=0;bi=0;gM=0;fz=false;dOff=0;U=[];fzU=[];lastAn=0;winC=[];st='run';asked=false;blank();$('us').hidden=true;$('rc').classList.remove('ab');
+ev=[];bp=[];ps=[];idx=0;bi=0;gM=0;fz=false;dOff=0;U=[];fzU=[];lastAn=0;winC=[];winA=[];st='run';asked=false;blank();$('us').hidden=true;$('rc').classList.remove('ab');
 $('w3').hidden=true;$('kn').textContent='Faltam';$('ks').textContent='Média a fazer';$('rt').textContent='Ligação partida → 1'}
 
 const TT={f:'FIG',h:'HECTO',a:'Absoluta',k:'TAB',n:'NEUT'};
@@ -906,7 +906,7 @@ function zqHide(){clearTimeout(zqT);const z=$('zq');if(z)z.hidden=true;document.
 function zqZero(){accOff=-Math.max(0,curD);zqHide();toast('Km a zero',2000)}
 function autoNext(){const had=!!seq[cur+1],keep=accOff+Math.max(0,curD);cur++;init();if(!had)return;start(false,true);accOff=keep;
 const z=$('zq');if(z){z.hidden=false;document.body.classList.add('zqon')}}
-function askC(t,b,k){cfKind=k||'';$('cft').textContent=t;const w=$('cfb');w.innerHTML='';
+function askC(t,b,k){cfKind=k||'';$('cft').style.fontSize='';$('cft').textContent=t;const w=$('cfb');w.innerHTML='';
 b.forEach((x,i)=>{const e=document.createElement('button');e.textContent=x[0];e.className=x[2]||(i?'s':'');e.onclick=()=>{cfClose();if(x[1])x[1]()};w.appendChild(e)});$('cf').hidden=false}
 function cfClose(){$('cf').hidden=true;cfKind=''}
 function inProva(){if(!$('bk').hidden){toast('Termine a prova primeiro.');return true}return false}
@@ -1111,14 +1111,14 @@ while(h.length){const[c,u]=pop();if(c>D[u])continue;if(c>maxC||c>=best)break;
 if(u==e.a)best=Math.min(best,c+ca);if(u==e.b)best=Math.min(best,c+cb);
 for(let k=MP.st[u];k<MP.st[u+1];k++){const i=MP.adj[k],v=z.ea[i]==u?z.eb[i]:z.ea[i],nc=c+L[i];if(nc<D[v]){D[v]=nc;push(nc,v)}}}
 return best==Infinity?null:best}
-function mpFix(la,lo,ac){if(!mpOn)return;const now=Date.now();mpPos={la,lo,t:now};if(mpTk(la,lo)!=mpActK)mpAround(la,lo);if(now-mpSv>30000){mpSv=now;try{localStorage.setItem('mapLastPos',JSON.stringify([la,lo]))}catch(e){}}if(!MP||st!='run')return;
+function mpFix(la,lo,ac){if(!mpOn)return;const now=Date.now();mpPos={la,lo,t:now};if(mpTk(la,lo)!=mpActK)mpAround(la,lo);if(now-mpSv>30000){mpSv=now;try{localStorage.setItem('mapLastPos',JSON.stringify([la,lo]))}catch(e){}}if(!MP||st!='run'||!prova())return;
 if(mpGap){const g=mpGap;mpGap=null;mpP=null;const dur=(now-g.t)/1000;if(dur>=4&&dur<=900)mpEnd(g,la,lo,now)}
 mpLast={la,lo,t:now};mpStep(la,lo,now)}
 function mpEnd(g,la,lo,now){const s=mpSnap(g.la,g.lo),e=mpSnap(la,lo);if(!s||!e)return;
 const dur=(now-g.t)/1000,fl=Math.hypot((la-g.la)*111195,(lo-g.lo)*111195*Math.cos(la*Math.PI/180)),dm=mpPath(s,e,Math.max(3*fl+1500,3000));if(dm===null)return;
 if(dm/dur*3.6>260)return;mpMdV+=dm;const meas=dNow()-g.d,corr=Math.round(dm-meas);if(Math.abs(corr)<4)return;
 const msg='O GPS esteve '+Math.round(dur)+' s sem sinal. No mapa fizeste cerca de '+Math.round(dm)+' m nesse troço e o odómetro contou '+Math.round(meas)+' m. Corrigir '+(corr>0?'+':'−')+Math.abs(corr)+' m?';
-askC(msg,[['Corrigir '+(corr>0?'+':'−')+Math.abs(corr)+' m',()=>act('mapa (falha de GPS)',dNow()+corr,false)],['Ignorar',null]],'mapa');if(sm.includes('v'))say('Falha de GPS. Sugestão de correção no ecrã.')}
+askC(msg,[['Corrigir '+(corr>0?'+':'−')+Math.abs(corr)+' m',()=>act('mapa (falha de GPS)',dNow()+corr,false)],['Ignorar',null]],'mapa');$('cft').style.fontSize='25px';if(sm.includes('v'))say('Falha de GPS. Sugestão de correção no ecrã.')}
 setInterval(()=>{if(plRole=='pilot'||!mpOn||!MP||st!='run'||mpGap||!mpLast)return;if(Date.now()-mpLast.t>3000)mpGap={la:mpLast.la,lo:mpLast.lo,t:mpLast.t,d:dNow()}},500);
 
 /* fator do mapa e alerta de diferença */
@@ -1140,12 +1140,12 @@ const fl=Math.hypot((la-mpP.la)*111195,(lo-mpP.lo)*111195*Math.cos(la*Math.PI/18
 const pf0=performance.now();const dm=mpPath(mpP.s,s,3*fl+200);mpPerf(performance.now()-pf0+mpSnapMs);mpP={la,lo,s,t:now};
 if(dm===null||dm>2*fl+60||dm<.5*fl-20){mpTaint=true;mpReset();return}
 mpMd+=dm;mpMdV+=dm;const diff=mpMd*mpFm-(dNow()-mpOd0);mpDf=diff;mpSm.push([now,diff]);while(mpSm.length&&now-mpSm[0][0]>12000)mpSm.shift();mpAlert(now)}
-function mpAlert(now){if(mpCurv)return;const W=mpWasC?5000:10000,ar=mpWasC?mpSm.filter(x=>now-x[0]<=W):mpSm;if(mpKm<.5||now<mpCool||ar.length<(mpWasC?3:6)||now-ar[0][0]<(mpWasC?3500:10000))return;
+function mpAlert(now){if(mpCurv||!prova())return;const W=mpWasC?5000:10000,ar=mpWasC?mpSm.filter(x=>now-x[0]<=W):mpSm;if(mpKm<.5||now<mpCool||ar.length<(mpWasC?3:6)||now-ar[0][0]<(mpWasC?3500:10000))return;
 let mn=1e9,mx=-1e9;for(const x of ar){if(x[1]<mn)mn=x[1];if(x[1]>mx)mx=x[1]}
 if(mx-mn>3)return;const m0=(mn+mx)/2,v=mpWasC&&mpD0!==null?m0-mpD0:m0,lim=mpWasC&&mpD0!==null?mpLim:Math.max(mpLim,20);if(Math.abs(v)<lim)return;if(Math.abs(v)>60){mpCool=now+60000;mpWasC=false;mpD0=null;return}
 if(!$('cf').hidden||!$('sg').hidden||!$('pr').hidden||!$('afp').hidden)return;
 const c=Math.round(v),wc=mpWasC;mpWasC=false;mpD0=null;mpCool=now+60000;const sg=(c>0?'+':'−')+Math.abs(c)+' m';
-askC((wc?'Sugestão da medição no mapa, depois da zona sinuosa: ':'Sugestão da medição no mapa: ')+'o odómetro está '+Math.abs(c)+' m a '+(c>0?'menos':'mais')+'. Corrigir '+sg+'?',[['Corrigir '+sg,()=>act('mapa (diferença)',dNow()+c,false)],['Ignorar',()=>mpReset()]],'mapa');if(sm.includes('v'))say('Diferença para o mapa. Sugestão de correção no ecrã.')}
+askC((wc?'Sugestão da medição no mapa, depois da zona sinuosa: ':'Sugestão da medição no mapa: ')+'o odómetro está '+Math.abs(c)+' m a '+(c>0?'menos':'mais')+'. Corrigir '+sg+'?',[['Corrigir '+sg,()=>act('mapa (diferença)',dNow()+c,false)],['Ignorar',()=>mpReset()]],'mapa');$('cft').style.fontSize='25px';if(sm.includes('v'))say('Diferença para o mapa. Sugestão de correção no ecrã.')}
 function mpFa(){const e=$('mpFa');if(!e)return;e.textContent=mpN?'Fator do mapa: '+(mpFm>=1?'+':'−')+Math.abs((mpFm-1)*100).toFixed(2).replace('.',',')+' % ('+mpN+(mpN==1?' troço':' troços')+', '+mpKm.toFixed(1).replace('.',',')+' km). O alerta só começa com pelo menos 0,5 km medidos.':'Fator do mapa: ainda por medir. Aprende com as correções válidas na prova (as mesmas da aferição).'}
 function mpAngSet(){const v=num($('mpAng').value);if(v>0){mpAng=v;try{localStorage.setItem('mapAng',String(v))}catch(e){}}}
 function mpLimSet(){const v=num($('mpLim').value);if(v>0){mpLim=v;try{localStorage.setItem('mapLim',String(v))}catch(e){}}}
