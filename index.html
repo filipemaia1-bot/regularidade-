@@ -77,6 +77,14 @@ body:has(#setup:not([hidden])){background:#e4e8ee}
 #setup .it,#setup .lr{border-bottom:1px solid #cfd5dd}
 #setup .lkr{border-left:3px solid #8a94a3}
 #setup .mc{background:#fff;color:#11151b;border:1px solid #8a94a3}
+#setup .mc{background:linear-gradient(#ffc933,#ffa800);color:#1a1200;border:1px solid rgba(0,0,0,.5);border-radius:14px;margin-bottom:16px;box-shadow:0 5px 0 #a86f00,0 9px 14px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.55);transition:transform .08s,box-shadow .08s}
+#setup .mc:active{transform:translateY(4px);box-shadow:0 1px 0 #a86f00,0 2px 5px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.55)}
+#setup .mc b{text-shadow:0 1px 0 rgba(255,255,255,.4)}
+#setup .mc span{color:#4a3500}
+#setup .mc.on{background:linear-gradient(#34c759,#1f9d42);color:#fff;box-shadow:0 5px 0 #0f5f24,0 9px 14px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.35)}
+#setup .mc.on:active{box-shadow:0 1px 0 #0f5f24,0 2px 5px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.35)}
+#setup .mc.on b{text-shadow:0 1px 0 #0a4a1b}
+#setup .mc.on span{color:#eaffef}
 #setup .gl .gx{color:#3d4856;border-color:#7d8795}
 #setup #ls .lt .eng{color:#0b4a8f;border-color:#1f6fd0}
 
@@ -147,7 +155,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 #sct{position:absolute;left:0;right:0;top:16px;text-align:center;font-size:19px;font-weight:700;text-shadow:0 0 6px #000}
 #scc{position:absolute;left:16px;right:16px;bottom:24px;width:auto}
 #pex{position:fixed;right:6px;top:6px;z-index:20;width:auto;padding:4px 12px;margin:0;background:#2a3038;color:var(--fg);opacity:.5}
-</style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
+</style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style></style><link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0c0e11">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -155,7 +163,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 
 <div id="setup">
 <div id="bk" hidden style="position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:8px"><button onclick="voltar()">Voltar à prova</button><button class="s" id="tb" onclick="endTap()">Terminar prova</button></div>
-<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 72</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
+<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 73</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
 <div id="pm"><div class="card"><h1>Rally</h1>
 <label style="margin-top:0">Nome do rally</label><input id="rn0" placeholder="Ex.: Rally de Fafe" aria-label="Nome do rally" onchange="setRName(this.value)">
 <label>Hora de início do rally (partida)</label><input id="h0" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0n" style="text-align:left;font-size:15px;margin-top:4px"></div>
@@ -1042,7 +1050,7 @@ return{make,draw}
 let pgCur='',pgPushed=false,armed=false,leaving=false,ign=0;
 function pmSum(){const g=i=>$(i),n=seq.length;g('sRg').textContent=n?n+(n==1?' regularidade':' regularidades')+' na sequência':'Ainda vazia';
 g('sAf').textContent='Fator atual: '+f1(af)+' m/km';g('sCk').textContent=$('ck1')?$('ck1').textContent:'';
-g('sRb').textContent=($('rbs').textContent||'').slice(0,70);g('sVz').textContent='';g('sLg').textContent=$('lc')?$('lc').textContent.slice(0,70):''}
+g('sRb').textContent=($('rbs').textContent||'').slice(0,70);try{g('sRb').parentNode.classList.toggle('on',!!(rb.on||(gW!==null&&gT&&Date.now()-gT<=3000)))}catch(x){}g('sVz').textContent='';g('sLg').textContent=$('lc')?$('lc').textContent.slice(0,70):''}
 setInterval(()=>{if(plRole!='pilot'&&!$('setup').hidden&&!pgCur)try{pmSum()}catch(e){}},1000);
 let hd=0;{const ps=history.pushState.bind(history);history.pushState=function(s,t,u){hd++;s=Object.assign({},s||{},{m:hd});return ps(s,t,u)}}
 addEventListener('popstate',e=>{hd=(e.state&&e.state.m)||0});
