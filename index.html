@@ -155,7 +155,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 #sct{position:absolute;left:0;right:0;top:16px;text-align:center;font-size:19px;font-weight:700;text-shadow:0 0 6px #000}
 #scc{position:absolute;left:16px;right:16px;bottom:24px;width:auto}
 #pex{position:fixed;right:6px;top:6px;z-index:20;width:auto;padding:4px 12px;margin:0;background:#2a3038;color:var(--fg);opacity:.5}
-</style><link rel="manifest" href="manifest.webmanifest">
+</style></style><link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0c0e11">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -163,7 +163,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 
 <div id="setup">
 <div id="bk" hidden style="position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:8px"><button onclick="voltar()">Voltar à prova</button><button class="s" id="tb" onclick="endTap()">Terminar prova</button></div>
-<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 79</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
+<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 80</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
 <div id="pm"><div class="card"><h1>Rally</h1>
 <label style="margin-top:0">Nome do rally</label><input id="rn0" placeholder="Ex.: Rally de Fafe" aria-label="Nome do rally" onchange="setRName(this.value)">
 <label>Hora de início do rally (partida)</label><input id="h0" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0n" style="text-align:left;font-size:15px;margin-top:4px"></div>
@@ -220,10 +220,12 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 <div class="card"><h1>Sequência</h1><div id="ls" class="mut">Ainda vazia.</div>
 <div id="er2" style="color:#ff453a;font-weight:700;margin-top:8px"></div>
 </div></div>
-<div class="pg" id="pg_vh" hidden><div class="pgh"><button class="s" onclick="pgBack()">← Preparar rally</button></div><div class="card"><h1>VHRS</h1>
-<label style="margin-top:0">Hora de início do rally (partida)</label><input id="h0v" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0vn" style="text-align:left;font-size:15px"></div></div>
+<div class="pg" id="pg_vh" hidden><div class="pgh"><button class="s" onclick="pgBack()">← Preparar rally</button></div><div class="card"><h1>Rally VHRS</h1>
+<label style="margin-top:0">Nome do rally</label><input id="rnv" placeholder="Ex.: Tour de Corse Historique" aria-label="Nome do rally VHRS" onchange="setRName(this.value)">
+<label>Hora de início do rally (partida)</label><input id="h0v" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0vn" style="text-align:left;font-size:15px"></div></div>
 <div class="card"><button class="mc" onclick="vhRecOpen()"><b>Reconhecimento</b><span id="sVr"></span></button>
-<button class="mc" onclick="vhRg()"><b>Regularidades e ligações</b><span id="sVg"></span></button></div></div>
+<button class="mc" onclick="vhRg()"><b>Regularidades e ligações</b><span id="sVg"></span></button></div>
+<div class="card"><div class="mut" style="text-align:left;font-size:15px;margin-bottom:8px">No VHRS o mapa fica sempre desligado: a distância acerta-se pelos pontos de referência por GPS.</div><button id="vgo" onclick="vgo()" style="font-size:21px;padding:18px;width:100%">Começar prova</button></div></div>
 <div class="pg" id="pg_vr" hidden><div class="pgh"><button class="s" onclick="pgShow('vh');vhSum()">← VHRS</button></div><div class="card"><h1>Reconhecimento</h1>
 <label style="margin-top:0">RSport a reconhecer</label><select id="vrs" onchange="vrSel()"></select>
 <div class="mut" id="vrd" style="font-size:28px;font-weight:700;margin-top:8px">0,000 km</div>
@@ -380,7 +382,10 @@ let dOff=0,st='wait',sched=0,asked=false,ac=null,bp=[],bi=0,sm='vb',fz=false,fzD
 try{seq=JSON.parse(localStorage.getItem('seq')||'[]')}catch(e){}
 try{L=JSON.parse(localStorage.getItem('log')||'[]');lid=L.reduce((m,e)=>Math.max(m,e.id),0)}catch(e){L=[]}
 try{const a=localStorage.getItem('af');if(a!==null){af=num(a)||0;$('afv').value=String(af).replace('.',',')}}catch(e){}
-function RN(r,n){return(r&&r.t=='n'?'neutralização ':r&&r.sp?'RSport ':'regularidade ')+n}
+function rnn(i){const r=seq[i];if(!r)return i+1;let n=0;for(let k=0;k<=i;k++)if(seq[k]&&(seq[k].t=='n')==(r.t=='n'))n++;return n}
+function rnc(i){const r=seq[i];if(!r)return seq.length;return seq.filter(x=>(x.t=='n')==(r.t=='n')).length}
+function lbl(i){return(seq[i]&&seq[i].t=='n'?'neutr. ':'')+rnn(i)}
+function RN(r,n){const i=seq.indexOf(r);if(i>=0)n=rnn(i);return(r&&r.t=='n'?'neutralização ':r&&r.sp?'RSport ':'regularidade ')+n}
 function RNs(r,n){return RN(r,n)+(r&&r.t!='n'&&!r.sp?', '+NMs(r).toLowerCase().replace('tabelas / hitos quilómetro','tabelas'):'')}
 let askT=40;const NM={f:'Figura',h:'Hectométrica',a:'Absoluta',k:'Tabelas / Hitos quilómetro',n:'Neutralização'};
 let zsI=1;const ZS=[.85,1,1.15,1.3];
@@ -589,7 +594,7 @@ function show(){recalc();try{pmSum()}catch(e){}if(ei<0&&!hiTouched)$('hi').value
 const rn=$('rn0');if(rn)rn.value=(rid&&RL[rid])?RL[rid].name||'':'';if(!$('rlist').hidden)renderRL();
 const hh=$('h0');if(hh){hh.value=seq.length?hAdd(seq[0].hi,-(lk0?lk0.tempo:0)):r0;hh.disabled=false;
 $('h0n').textContent=!seq.length?'As horas das regularidades calculam-se a partir desta hora (por defeito 00:00:00).':lk0?'A '+RN(seq[0],1)+' começa às '+seq[0].hi+' (partida + ligação de '+hms(lk0.tempo)+').':'Sem ligação da partida: a '+RN(seq[0],1)+' começa a esta hora.'}
-$('ls').innerHTML=seq.length?`<div class="lkr"><div class="lt">↓ Ligação da partida até à ${RN(seq[0],1)}</div><div class="ct"><input placeholder="Dist. (km)" inputmode="decimal" value="${lk0?kmf(lk0.dist):''}" onchange="setLk0(this)"><input placeholder="Tempo mm:ss" value="${lk0?hms(lk0.tempo):''}" onchange="setLk0(this)"></div></div>`+seq.map((x,i)=>{const nl=(x.r||[]).length,f=fimH(x);return `<div class="rg"><div class="h"><span class="n">${i+1} · ${NMs(x)}${x.man?'<span class="tg">hora fixa</span>':''}</span><span class="t">${x.t=='k'?'a cada '+(x.iv>=1000?'1 km':x.iv+' m'):x.t=='n'?hms(x.du):nl+' '+(nl==1?'linha':'linhas')}</span></div><div class="tm">${x.hi}${f?' → '+f:''}</div><div class="ct"><div class="f a"><span>Mover (± min)</span><input class="mn" placeholder="± min" inputmode="decimal" aria-label="Minutos a somar ou subtrair" onchange="shiftMin(${i},this)"><div class="adj" style="margin-top:6px"><button class="s rm" onclick="mv1(${i},-1)">−1 min</button><button class="s gp" onclick="mv1(${i},1)">+1 min</button></div></div><div class="f"><span>Hora de início</span><input value="${x.hi}" aria-label="Hora de início" title="${i&&lkT(seq[i-1])!==null?(x.man?'Hora fixa, escrita por si. Apague para voltar ao cálculo pela ligação.':'Calculada pela ligação. Escreva outra hora para a fixar.'):''}" onchange="setHi(${i},this.value)"></div></div><div class="ac">${$('bk').hidden?`<button class="ok" onclick="go(${i})">Iniciar</button>`:''}<button class="ed" onclick="edit(${i})">Editar</button><button class="dg" onclick="rem(${i})">Remover</button></div></div>`+`<div class="lkr"><div class="lt">↓ ${i<seq.length-1?'Ligação até à '+RN(seq[i+1],i+2):'Ligação final até ao controlo horário'}${fimTxt(x,1)}${x.z?' · ligação 0: a seguinte começa sozinha ao chegar à distância final':''} ${i<seq.length-1&&x.t!='n'&&x.t!='k'?'<button class="eng'+(isEng(x,i)?' on':'')+'" onclick="setEng('+i+')" aria-pressed="'+(isEng(x,i)?'true':'false')+'">Engate'+(isEng(x,i)?' ✓':'')+'</button>':''}</div><div class="ct"><input placeholder="${i<seq.length-1?'Dist. (km)':'Dist. final (km)'}" inputmode="decimal" value="${x.lk?kmf(x.lk.dist):''}" onchange="setLk(${i},this)"><input placeholder="Tempo mm:ss" value="${x.lk?hms(x.lk.tempo):''}" onchange="setLk(${i},this)"></div></div>`}).join(''):'Ainda vazia.'}
+$('ls').innerHTML=seq.length?`<div class="lkr"><div class="lt">↓ Ligação da partida até à ${RN(seq[0],1)}</div><div class="ct"><input placeholder="Dist. (km)" inputmode="decimal" value="${lk0?kmf(lk0.dist):''}" onchange="setLk0(this)"><input placeholder="Tempo mm:ss" value="${lk0?hms(lk0.tempo):''}" onchange="setLk0(this)"></div></div>`+seq.map((x,i)=>{const nl=(x.r||[]).length,f=fimH(x);return `<div class="rg"><div class="h"><span class="n">${rnn(i)} · ${NMs(x)}${x.man?'<span class="tg">hora fixa</span>':''}</span><span class="t">${x.t=='k'?'a cada '+(x.iv>=1000?'1 km':x.iv+' m'):x.t=='n'?hms(x.du):nl+' '+(nl==1?'linha':'linhas')}</span></div><div class="tm">${x.hi}${f?' → '+f:''}</div><div class="ct"><div class="f a"><span>Mover (± min)</span><input class="mn" placeholder="± min" inputmode="decimal" aria-label="Minutos a somar ou subtrair" onchange="shiftMin(${i},this)"><div class="adj" style="margin-top:6px"><button class="s rm" onclick="mv1(${i},-1)">−1 min</button><button class="s gp" onclick="mv1(${i},1)">+1 min</button></div></div><div class="f"><span>Hora de início</span><input value="${x.hi}" aria-label="Hora de início" title="${i&&lkT(seq[i-1])!==null?(x.man?'Hora fixa, escrita por si. Apague para voltar ao cálculo pela ligação.':'Calculada pela ligação. Escreva outra hora para a fixar.'):''}" onchange="setHi(${i},this.value)"></div></div><div class="ac">${$('bk').hidden?`<button class="ok" onclick="go(${i})">Iniciar</button>`:''}<button class="ed" onclick="edit(${i})">Editar</button><button class="dg" onclick="rem(${i})">Remover</button></div></div>`+`<div class="lkr"><div class="lt">↓ ${i<seq.length-1?'Ligação até à '+RN(seq[i+1],i+2):'Ligação final até ao controlo horário'}${fimTxt(x,1)}${x.z?' · ligação 0: a seguinte começa sozinha ao chegar à distância final':''} ${i<seq.length-1&&x.t!='n'&&x.t!='k'?'<button class="eng'+(isEng(x,i)?' on':'')+'" onclick="setEng('+i+')" aria-pressed="'+(isEng(x,i)?'true':'false')+'">Engate'+(isEng(x,i)?' ✓':'')+'</button>':''}</div><div class="ct"><input placeholder="${i<seq.length-1?'Dist. (km)':'Dist. final (km)'}" inputmode="decimal" value="${x.lk?kmf(x.lk.dist):''}" onchange="setLk(${i},this)"><input placeholder="Tempo mm:ss" value="${x.lk?hms(x.lk.tempo):''}" onchange="setLk(${i},this)"></div></div>`}).join(''):'Ainda vazia.'}
 
 function build(r){const e=[],p=[];P=[[0,0]];AB=null;PT=[];HT=[];if(r.t=='k'||r.t=='n')return{e,p};
 if(r.t=='f'){const f=r.r.map(x=>[x[1],x[0]]).sort((a,b)=>a[0]-b[0]);let pv=-99;
@@ -644,7 +649,7 @@ sched=msOf(cur);t0=sched;pk=-1;aw={};cdN=99;$('w3').hidden=!(r.t=='a'||r.t=='k')
 end=(r.t=='k'?1e9:r.t=='n'?r.du:r.t=='a'?AB.Ttot:(r.t=='f'?(ps.length?ps[ps.length-1]:0):r.du))+3;st='wait';asked=false;
 $('kn').textContent=r.t=='a'?'Média troço':r.t=='h'?'Próximo marco':'Próxima passagem';$('rc').classList.toggle('ab',r.t=='a');$('run').classList.toggle('abs',r.t=='a');$('ks').textContent=r.t=='a'?'Vel. necessária':'Média a fazer';
 $('us').hidden=r.t=='a'||r.t=='k';
-$('rt').textContent=r.t=='n'?'Neutralização '+(cur+1)+' de '+seq.length:'Regularidade '+(cur+1)+' de '+seq.length+' · '+NMs(r);$('kl').hidden=r.t!='k';$('rn').style.fontSize=r.t=='k'?'min(9.5vw,5.2dvh)':'';if(r.t=='k'){$('kn').textContent='Marca (km)';$('ks').textContent='Média (km/h)'}}
+$('rt').textContent=r.t=='n'?'Neutralização '+rnn(cur)+' de '+rnc(cur):'Regularidade '+rnn(cur)+' de '+rnc(cur)+' · '+NMs(r);$('kl').hidden=r.t!='k';$('rn').style.fontSize=r.t=='k'?'min(9.5vw,5.2dvh)':'';if(r.t=='k'){$('kn').textContent='Marca (km)';$('ks').textContent='Média (km/h)'}}
 
 let gAc=0,src='s',gW=null,gP=null,gM=0,gA=0,gV=0,gT=0,gS='a procurar GPS…',afOn=false,gti=null;
 function hav(a,b){const R=6371000,t=Math.PI/180,x=(b.latitude-a.latitude)*t,y=(b.longitude-a.longitude)*t,q=Math.sin(x/2)**2+Math.cos(a.latitude*t)*Math.cos(b.latitude*t)*Math.sin(y/2)**2;return 2*R*Math.asin(Math.sqrt(q))}
@@ -766,7 +771,7 @@ function skipP(){cur=lk?lk.nx+1:cur+1;init()}
 function enterLink(r){try{trkSave()}catch(x){}const nx=seq[cur+1],fin=!nx;
 lkSched=fin?msOf(cur)+r.lk.tempo*1000:msOf(cur+1);
 lk={D0:dEnd(r),Dl:r.lk.dist,Tl:Math.max(1,r.lk.tempo-(end-3)),te:end-3,nx:cur+1,src:'r',fin,nol:!!r.lk.nol};asked=false;$('us').hidden=true;$('w3').hidden=true;
-$('kn').textContent=lk.nol?'Percorridos':'Faltam';$('ks').textContent='Média a fazer';$('rt').textContent=lk.nol?'Fim da regularidade · sem ligação final':fin?'Ligação final · '+(cur+1)+' → controlo horário':'Ligação '+(cur+1)+' → '+(cur+2);
+$('kn').textContent=lk.nol?'Percorridos':'Faltam';$('ks').textContent='Média a fazer';$('rt').textContent=lk.nol?'Fim da regularidade · sem ligação final':fin?'Ligação final · '+lbl(cur)+' → controlo horário':'Ligação '+lbl(cur)+' → '+lbl(cur+1);
 if(lk.nol){asked=true;if(sm.includes('v'))say('Fim da regularidade');if(sm.includes('b'))beep(1200,.3);return}
 const tt=Math.round(lk.Tl),m=Math.floor(tt/60),sc=tt%60,du=(m?m+(m==1?' minuto':' minutos'):'')+(m&&sc?' e ':'')+(sc?sc+(sc==1?' segundo':' segundos'):'');
 if(sm.includes('v'))say('Fim de prova. Início da deslocação. Tem '+du+'.');if(sm.includes('b'))beep(1200,.3)}
@@ -776,7 +781,7 @@ ev=[];bp=[];ps=[];idx=0;bi=0;gM=0;fz=false;dOff=0;U=[];fzU=[];lastAn=0;winC=[];w
 $('w3').hidden=true;$('kn').textContent='Faltam';$('ks').textContent='Média a fazer';$('rt').textContent='Ligação partida → 1'}
 
 const TT={f:'FIG',h:'HECTO',a:'Absoluta',k:'TAB',n:'NEUT'};
-function topTxt(){let t='';if(lk0w||(lk&&lk.src=='z'))t='Ligação 0→1';else if(lk)t=lk.fin?'Ligação final':'Ligação '+lk.nx+'→'+(lk.nx+1);else if(st=='done')t='Fim';else if(seq[cur])t='Reg. '+(cur+1)+' · '+(TT[seq[cur].t]||'');const e=$('rtt');if(e&&e.textContent!==t)e.textContent=t;const f=$('fin');if(f){const h=!(lk&&lk.fin&&st=='run');if(f.hidden!==h){f.hidden=h;if(h){f.dataset.a='';f.textContent='Terminar prova'}}}}
+function topTxt(){let t='';if(lk0w||(lk&&lk.src=='z'))t='Ligação 0→1';else if(lk)t=lk.fin?'Ligação final':'Ligação '+lbl(lk.nx-1)+'→'+lbl(lk.nx);else if(st=='done')t='Fim';else if(seq[cur])t=(seq[cur].t=='n'?'Neutr. ':'Reg. ')+rnn(cur)+' · '+(TT[seq[cur].t]||'');const e=$('rtt');if(e&&e.textContent!==t)e.textContent=t;const f=$('fin');if(f){const h=!(lk&&lk.fin&&st=='run');if(f.hidden!==h){f.hidden=h;if(h){f.dataset.a='';f.textContent='Terminar prova'}}}}
 let finT=null;
 function finTap(){const f=$('fin');if(f.dataset.a){clearTimeout(finT);f.dataset.a='';cur=seq.length;init();return}f.dataset.a='1';f.textContent='Toque de novo para terminar';finT=setTimeout(()=>{f.dataset.a='';f.textContent='Terminar prova'},4000)}
 let alT=0;try{$('dvb').value=localStorage.getItem('rpDvb')=='1'?'1':'0'}catch(e){}
@@ -872,7 +877,7 @@ function chainMs(){const b=new Date(Date.now());b.setHours(0,0,0,0);let prev=-1;
 for(let j=0;j<seq.length;j++){const q=seq[j].hi.split(':').map(Number);let m=b.getTime()+((q[0]*60+q[1])*60+(q[2]||0))*1000;if(prev>=0)while(m<prev)m+=864e5;prev=m;o.push(m)}return o}
 function msOf(i){const o=chainMs();if(!o.length)return -1;const ref=Math.min(Math.max(cur,0),o.length-1),sh=o[ref]-Date.now()>18*36e5?-864e5:0;return o[Math.min(i,o.length-1)]+sh}
 function hiMs(hi){const q=hi.split(':').map(Number),d=new Date(Date.now());d.setHours(q[0],q[1],q[2]||0,0);return d.getTime()}
-function setLabels(r){$('kn').textContent=r.t=='a'?'Média troço':r.t=='h'?'Próximo marco':'Próxima passagem';$('rc').classList.toggle('ab',r.t=='a');$('run').classList.toggle('abs',r.t=='a');$('ks').textContent=r.t=='a'?'Vel. necessária':'Média a fazer';$('us').hidden=r.t=='a'||r.t=='k';$('w3').hidden=!(r.t=='a'||r.t=='k');$('rt').textContent=r.t=='n'?'Neutralização '+(cur+1)+' de '+seq.length:'Regularidade '+(cur+1)+' de '+seq.length+' · '+NMs(r);$('kl').hidden=r.t!='k';$('rn').style.fontSize=r.t=='k'?'min(9.5vw,5.2dvh)':'';if(r.t=='k'){$('kn').textContent='Marca (km)';$('ks').textContent='Média (km/h)'}}
+function setLabels(r){$('kn').textContent=r.t=='a'?'Média troço':r.t=='h'?'Próximo marco':'Próxima passagem';$('rc').classList.toggle('ab',r.t=='a');$('run').classList.toggle('abs',r.t=='a');$('ks').textContent=r.t=='a'?'Vel. necessária':'Média a fazer';$('us').hidden=r.t=='a'||r.t=='k';$('w3').hidden=!(r.t=='a'||r.t=='k');$('rt').textContent=r.t=='n'?'Neutralização '+rnn(cur)+' de '+rnc(cur):'Regularidade '+rnn(cur)+' de '+rnc(cur)+' · '+NMs(r);$('kl').hidden=r.t!='k';$('rn').style.fontSize=r.t=='k'?'min(9.5vw,5.2dvh)':'';if(r.t=='k'){$('kn').textContent='Marca (km)';$('ks').textContent='Média (km/h)'}}
 function rebuild(r,d0){const el=(Date.now()-t0)/1000;cT=r.t;const b=build(r);ev=b.e;ps=b.p;
 tg=r.t=='f'?r.r.map(x=>x[0]).sort((a,b)=>a-b):[];
 bp=ev.filter(x=>/^\d+$/.test(x.s)).map(x=>x.at).sort((a,b)=>a-b);
@@ -933,23 +938,23 @@ function askC(t,b,k){cfKind=k||'';$('cft').style.fontSize='';$('cft').textConten
 b.forEach((x,i)=>{const e=document.createElement('button');e.textContent=x[0];e.className=x[2]||(i?'s':'');e.onclick=()=>{cfClose();if(x[1])x[1]()};w.appendChild(e)});$('cf').hidden=false}
 function cfClose(){$('cf').hidden=true;cfKind=''}
 function inProva(){if(!$('bk').hidden){toast('Termine a prova primeiro.');return true}return false}
-function persistRally(){if(!rid)return;const o=RL[rid]||{id:rid,name:''};o.seq=JSON.parse(JSON.stringify(seq));o.lk0=lk0;o.r0=r0;o.vh=VH;o.ts=Date.now();RL[rid]=o;try{localStorage.setItem('rl',JSON.stringify(RL));localStorage.setItem('rid',rid)}catch(e){}}
+function persistRally(){if(!rid)return;const o=RL[rid]||{id:rid,name:''};o.vr=VHR;o.seq=JSON.parse(JSON.stringify(seq));o.lk0=lk0;o.r0=r0;o.vh=VH;o.ts=Date.now();RL[rid]=o;try{localStorage.setItem('rl',JSON.stringify(RL));localStorage.setItem('rid',rid)}catch(e){}}
 function ensureRid(){if(!rid){rid='r'+Date.now().toString(36);RL[rid]={id:rid,name:'',seq:[],lk0:null,ts:Date.now()}}return rid}
 function saveLk0(){try{localStorage.setItem('lk0',JSON.stringify(lk0))}catch(e){}}
 function setRName(v){v=v.trim().slice(0,60);if(!v&&!rid)return;ensureRid();RL[rid].name=v;persistRally();show()}
 function newRally(){if(inProva())return;if(!seq.length&&!lk0&&!rid){toast('Já está vazio.');return}
-askC('Limpar tudo e começar outro rally? O rally atual fica guardado em «Os meus rallies».',[['Limpar e começar outro',()=>{if(seq.length||lk0){ensureRid();persistRally()}rid='';try{localStorage.removeItem('rid')}catch(e){}seq=[];lk0=null;VH={rec:{}};saveLk0();r0='00:00:00';saveR0();cancelEdit();err2('');save();show();$('rmsg').textContent=''},'dg2'],['Cancelar']])}
+askC('Limpar tudo e começar outro rally? O rally atual fica guardado em «Os meus rallies».',[['Limpar e começar outro',()=>{if(seq.length||lk0){ensureRid();persistRally()}rid='';try{localStorage.removeItem('rid')}catch(e){}seq=[];lk0=null;VH={rec:{}};vhSet(false);saveLk0();r0='00:00:00';saveR0();cancelEdit();err2('');save();show();$('rmsg').textContent=''},'dg2'],['Cancelar']])}
 function toggleRL(){const e=$('rlist');e.hidden=!e.hidden;if(!e.hidden)renderRL()}
 function renderRL(){const a=Object.values(RL).sort((x,y)=>(y.ts||0)-(x.ts||0));
 $('rlist').innerHTML=a.length?a.map(x=>`<div class="lr"><div><b>${esc(x.name||'Rally sem nome')}</b>${x.id==rid?'<span class="tg">aberto</span>':''}<div class="m2">${(x.seq||[]).length} ${(x.seq||[]).length==1?'regularidade':'regularidades'} · ${fmtD(x.ts||0)}</div></div><span style="display:flex;gap:6px"><button class="s" onclick="openRally('${x.id}')">Abrir</button><button class="s" onclick="delRally('${x.id}')">Apagar</button></span></div>`).join(''):'<div class="mut">Ainda não há rallies guardados.</div>'}
 function openRally(id){if(inProva())return;const r=RL[id];if(!r)return;
 if(rid!==id&&(seq.length||lk0)){ensureRid();persistRally()}
-rid=id;seq=JSON.parse(JSON.stringify(r.seq||[]));lk0=r.lk0||null;VH=r.vh&&r.vh.rec?JSON.parse(JSON.stringify(r.vh)):{rec:{}};saveLk0();r0=r.r0||(seq.length?hAdd(seq[0].hi,-(lk0?lk0.tempo:0)):'00:00:00');saveR0();cancelEdit();err2('');save();show();toast('Rally aberto: '+(r.name||'sem nome'),2500)}
+rid=id;seq=JSON.parse(JSON.stringify(r.seq||[]));lk0=r.lk0||null;VH=r.vh&&r.vh.rec?JSON.parse(JSON.stringify(r.vh)):{rec:{}};vhSet(!!r.vr||seq.some(x=>x&&x.sp));saveLk0();r0=r.r0||(seq.length?hAdd(seq[0].hi,-(lk0?lk0.tempo:0)):'00:00:00');saveR0();cancelEdit();err2('');save();show();toast('Rally aberto: '+(r.name||'sem nome'),2500)}
 function delRally(id){const r=RL[id];if(!r)return;askC('Apagar o rally «'+(r.name||'sem nome')+'»? Não dá para recuperar.',[['Apagar',()=>{try{localStorage.removeItem('rpTk_'+id)}catch(e){}delete RL[id];if(rid==id){rid='';try{localStorage.removeItem('rid')}catch(e){}}try{localStorage.setItem('rl',JSON.stringify(RL))}catch(e){}show();renderRL()},'dg2'],['Cancelar']])}
 function expRally(){if(!seq.length){toast('Ainda não há regularidades para exportar.');return}
 const name=(rid&&RL[rid]&&RL[rid].name)||$('rn0').value.trim()||'rally';
 const slug=name.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'rally',fn='rally-'+slug+'.json';
-const blob=new Blob([JSON.stringify({app:'regularidade',v:1,name,seq,lk0,vh:VH})],{type:'application/json'});
+const blob=new Blob([JSON.stringify({app:'regularidade',v:1,name,seq,lk0,vh:VH,vr:VHR})],{type:'application/json'});
 const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fn;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);
 $('rmsg').textContent='Ficheiro «'+fn+'» guardado na pasta Transferências.'}
 function cleanRally(o){if(!o||typeof o!='object'||!Array.isArray(o.seq)||!o.seq.length||o.seq.length>60)return null;
@@ -964,12 +969,12 @@ else y.du=fin(x.du)&&x.du>0?x.du:600;
 if(x.lk){if(!fin(x.lk.dist)||!fin(x.lk.tempo)||!(x.lk.dist>0)||!(x.lk.tempo>0))return null;y.lk={dist:x.lk.dist,tempo:x.lk.tempo}}
 if(x.z===true&&!y.lk){y.z=true;if(x.ac===true)y.ac=true}if(x.ask===true&&!y.lk)y.ask=true;if(x.man===true)y.man=true;if(x.sp===true&&x.t=='a'&&typeof x.sid=='string'){y.sp=true;y.sid=x.sid.slice(0,30)}out.push(y)}
 let l0=null;if(o.lk0){if(!fin(o.lk0.dist)||!fin(o.lk0.tempo)||!(o.lk0.dist>0)||!(o.lk0.tempo>0))return null;l0={dist:o.lk0.dist,tempo:o.lk0.tempo}}
-return{vh:cleanVh(o.vh),name:typeof o.name=='string'&&o.name.trim()?o.name.trim().slice(0,60):'Rally importado',seq:out,lk0:l0}}
+return{vh:cleanVh(o.vh),name:typeof o.name=='string'&&o.name.trim()?o.name.trim().slice(0,60):'Rally importado',seq:out,lk0:l0,vr:o.vr===true}}
 function impRally(inp){const f=inp.files&&inp.files[0];inp.value='';if(!f)return;if(inProva())return;
 const rd=new FileReader();rd.onerror=()=>{$('rmsg').textContent='Não consegui ler o ficheiro.'};
 rd.onload=()=>{let o;try{o=JSON.parse(String(rd.result))}catch(e){$('rmsg').textContent='Esse ficheiro não é um rally desta aplicação.';return}
 const c=cleanRally(o);if(!c){$('rmsg').textContent='Esse ficheiro não é um rally desta aplicação, ou está incompleto.';return}
-const put=(id,suf)=>{const nid=id||('r'+Date.now().toString(36)+Math.floor(Math.random()*99));RL[nid]={id:nid,name:c.name+(suf||''),seq:c.seq,lk0:c.lk0,vh:c.vh,ts:Date.now()};try{localStorage.setItem('rl',JSON.stringify(RL))}catch(e){}openRally(nid);$('rmsg').textContent='Rally «'+RL[nid].name+'» importado.'};
+const put=(id,suf)=>{const nid=id||('r'+Date.now().toString(36)+Math.floor(Math.random()*99));RL[nid]={id:nid,name:c.name+(suf||''),seq:c.seq,lk0:c.lk0,vh:c.vh,vr:c.vr,ts:Date.now()};try{localStorage.setItem('rl',JSON.stringify(RL))}catch(e){}openRally(nid);$('rmsg').textContent='Rally «'+RL[nid].name+'» importado.'};
 const ex=Object.values(RL).find(x=>x.name&&x.name.toLowerCase()==c.name.toLowerCase());
 if(ex)askC('Já existe um rally chamado «'+c.name+'». O que quer fazer?',[['Substituir',()=>put(ex.id)],['Guardar como cópia',()=>put(null,' (cópia)')],['Cancelar']]);else put(null)};
 rd.readAsText(f)}
@@ -1287,8 +1292,8 @@ async function mpInit(){try{$('mpLim').value=String(mpLim).replace('.',',');$('m
 function mpHereK(){let la,lo;if(mpPos&&Date.now()-mpPos.t<120000){la=mpPos.la;lo=mpPos.lo}else{try{const q=JSON.parse(localStorage.getItem('mapLastPos')||'null');if(q){la=q[0];lo=q[1]}}catch(e){}}return la===undefined?null:mpTk(la,lo)}
 function mpInd(){if(plRole=='pilot')return;const e=$('mpI');if(!e)return;let h='';if(mpOn){const k=mpPos&&Date.now()-mpPos.t<120000?mpTk(mpPos.la,mpPos.lo):null;h=!k?'<span style="color:#ffd60a">● Mapa: à espera do GPS</span>':(MP&&mpMeta[k]?'<span style="color:#2ee66b">● Mapa carregado</span>':'<span style="color:#ff453a">● Sem mapa nesta zona</span>')}
 if(e.dataset.h!==h){e.dataset.h=h;e.innerHTML=h}const z=$('mpZ');if(z){const k=mpHereK(),t=!mpOn?'<span class="mut">Mapa da tua zona: desligado</span>':!k?'<span class="mut">Mapa da tua zona: posição desconhecida (liga o GPS)</span>':mpMeta[k]&&(mpMeta[k].ed||0)>0?'<span style="color:#1c7c3a">● Mapa da tua zona: guardado</span>':'<span style="color:#b3261e">● Mapa da tua zona: em falta</span>';if(z.dataset.h!==t){z.dataset.h=t;z.innerHTML=t}}}
-function mpSum(){try{mpInd()}catch(x){}const e=$('sMp');if(e)e.textContent=!mpOn?'Desligado':MP?'Ligado, mapa carregado':Object.keys(mpMeta).length?'Ligado, mapa guardado':'Ligado, falta descarregar'}
-function mpSetOn(){mpOn=$('mpOn').value=='1';try{localStorage.setItem('mapOn',mpOn?'1':'0')}catch(e){}mpSum();if(mpOn&&mpPos)mpAround(mpPos.la,mpPos.lo)}
+function mpSum(){try{mpInd()}catch(x){}const e=$('sMp');if(e)e.textContent=!mpOn?(VHR?'Desligado no VHRS':'Desligado'):MP?'Ligado, mapa carregado':Object.keys(mpMeta).length?'Ligado, mapa guardado':'Ligado, falta descarregar'}
+function mpSetOn(){if(VHR){mpOn=false;$('mpOn').value='0';toast('No VHRS o mapa fica sempre desligado.',3000);mpSum();return}mpOn=$('mpOn').value=='1';try{localStorage.setItem('mapOn',mpOn?'1':'0')}catch(e){}mpSum();if(mpOn&&mpPos)mpAround(mpPos.la,mpPos.lo)}
 function mpHere(){if(!navigator.geolocation){mpTxt('GPS indisponível.');return}mpTxt('A procurar a tua posição…');navigator.geolocation.getCurrentPosition(p=>{$('mpLat').value=p.coords.latitude.toFixed(5).replace('.',',');$('mpLon').value=p.coords.longitude.toFixed(5).replace('.',',');mpTxt('Posição preenchida.')},()=>mpTxt('Não consegui a posição. Escreve a latitude e a longitude.'),{enableHighAccuracy:true,timeout:15000})}
 function mpPack(j,c){const id=new Map(),la=[],lo=[],ea=[],eb=[],ni=[];
 (j.elements||[]).forEach(w=>{if(!w.geometry||!w.nodes||w.nodes.length!=w.geometry.length)return;let p=-1;
@@ -1443,18 +1448,24 @@ async function plPaste(i){try{$(i).value=await navigator.clipboard.readText()}ca
 function toast(m,ms){const t=$('toast');t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>{t.hidden=true},ms||2500)}
 /* ---------- v79: VHRS, reconhecimento, acerto GPS, repetição de percurso ---------- */
 function NMs(x){return x&&x.sp?'RSport':NM[x.t==null?'':x.t]}
+let VHR=false;try{VHR=localStorage.getItem('vhr')=='1'}catch(e){}if(VHR)mpOn=false;
 let VH={rec:{}},vhMode=false,vhFrom=false,rcOn=false,rcM=0,rcSid='',LL=null,vqS=null,vhR={k:'',i:0,pf:null};
 let RP=[],rpRid='',rpRun=0,rpA=null,rpPf=null;
 const TPO='<option value="f">Figura</option><option value="h">Hectométrica</option><option value="a">Absoluta</option><option value="k">Tabelas / Hitos quilómetro</option><option value="n">Neutralização</option>';
 function vhSel(on){const s=$('tp');if(!s)return;s.innerHTML=on?'<option value="a">RSport</option><option value="n">Neutralização</option>':TPO;s.value='a';lab()}
 function rgOpen(){vhMode=false;vhFrom=false;vhSel(false);$('rgBk').textContent='← Preparar rally';cancelEdit();pgOpen('rg')}
-function vhOpen(){pgOpen('vh');vhSum()}
+function vhSet(b){VHR=!!b;try{localStorage.setItem('vhr',VHR?'1':'0')}catch(e){}let on=false;try{on=localStorage.getItem('mapOn')=='1'}catch(e){}const w=mpOn;mpOn=on&&!VHR;const m=$('mpOn');if(m)m.value=mpOn?'1':'0';if(mpOn&&!w&&mpPos)mpAround(mpPos.la,mpPos.lo);try{mpSum()}catch(e){}}
+function vhGo(){pgOpen('vh');vhSum()}
+function vhNew(){if(inProva())return;ensureRid();persistRally();rid='';try{localStorage.removeItem('rid')}catch(e){}seq=[];lk0=null;VH={rec:{}};saveLk0();r0='00:00:00';saveR0();cancelEdit();err2('');save();show();vhSet(true)}
+function vhOpen(){if(!VHR&&(seq.length||lk0)){const nm=(rid&&RL[rid]&&RL[rid].name)||'sem nome';askC('Tem um rally normal aberto («'+nm+'»). Abrir um novo rally VHRS? O rally atual fica guardado em «Rallies guardados».',[['Novo rally VHRS',()=>{vhNew();vhGo()}],['Continuar neste',()=>{vhSet(true);vhGo()}]],'vhq');return}
+if(!VHR)vhSet(true);vhGo()}
+function vgo(){if(!seq.length){toast('Adicione pelo menos uma RSport em «Regularidades e ligações».',4000);return}pgReset();go()}
 function vhRg(){vhMode=true;vhFrom=true;vhSel(true);$('rgBk').textContent='← VHRS';cancelEdit();pgShow('rg');show()}
 function pgBackV(){if(vhFrom){vhFrom=false;vhMode=false;pgShow('vh');vhSum();return}pgBack()}
-function vhSum(){const n=seq.filter(x=>x.sp).length,k=Object.values(VH.rec||{}).filter(r=>r&&r.pts&&r.pts.length).length;const a=$('sVh');if(a)a.textContent=n?n+' RSport · '+k+' com reconhecimento':'Reconhecimento e RSport';const b=$('sVg');if(b)b.textContent=seq.length?seq.length+(seq.length==1?' regularidade':' regularidades')+' na sequência':'Ainda vazia';const c=$('sVr');if(c)c.textContent=k?k+(k==1?' RSport reconhecida':' RSport reconhecidas'):'Marcar início, pontos e fim';const h=$('h0v');if(h&&document.activeElement!==h)h.value=seq.length?hAdd(seq[0].hi,-(lk0?lk0.tempo:0)):r0;const hn=$('h0vn');if(hn)hn.textContent='É a mesma hora de início do Preparar rally; mudar aqui muda lá.'}
+function vhSum(){const rv=$('rnv');if(rv&&document.activeElement!==rv)rv.value=(rid&&RL[rid])?RL[rid].name||'':'';const n=seq.filter(x=>x.sp).length,k=Object.values(VH.rec||{}).filter(r=>r&&r.pts&&r.pts.length).length;const a=$('sVh');if(a)a.textContent=n?n+' RSport · '+k+' com reconhecimento':'Reconhecimento e RSport';const b=$('sVg');if(b)b.textContent=seq.length?seq.length+(seq.length==1?' regularidade':' regularidades')+' na sequência':'Ainda vazia';const c=$('sVr');if(c)c.textContent=k?k+(k==1?' RSport reconhecida':' RSport reconhecidas'):'Marcar início, pontos e fim';const h=$('h0v');if(h&&document.activeElement!==h)h.value=seq.length?hAdd(seq[0].hi,-(lk0?lk0.tempo:0)):r0;const hn=$('h0vn');if(hn)hn.textContent='É a mesma hora de início do Preparar rally; mudar aqui muda lá.'}
 function mv1(i,m){shiftBy(i,m*60);err2('');save();show()}
 function xing(p,a,b){const k=Math.cos(p.la*Math.PI/180)*111195,ax=(a.lo-p.lo)*k,ay=(a.la-p.la)*111195,bx=(b.lo-p.lo)*k,by=(b.la-p.la)*111195,vx=bx-ax,vy=by-ay,l2=vx*vx+vy*vy;if(l2<.25)return null;const f=-(ax*vx+ay*vy)/l2;if(f<-.002||f>1.002)return null;const cx=ax+f*vx,cy=ay+f*vy,d=Math.hypot(cx,cy);return{f,d}}
-function llFix(la,lo){LL={la,lo,t:Date.now()};vhFix(la,lo);rpFix(la,lo)}
+function llFix(la,lo){let h=null;if(LL){const k=Math.cos(la*Math.PI/180)*111195,dx=(lo-LL.lo)*k,dy=(la-LL.la)*111195;h=Math.hypot(dx,dy)>=3?Math.atan2(dx,dy)*180/Math.PI:(typeof LL.h=='number'?LL.h:null)}LL={la,lo,t:Date.now(),h};vhFix(la,lo);rpFix(la,lo)}
 function rcDist(){return rcM*(1+af/1000)}
 function vrList(){const o=[];seq.forEach((x,i)=>{if(x.sp)o.push([x.sid,'RSport '+(i+1)])});return o}
 function vhRecOpen(){const o=vrList(),s=$('vrs');s.innerHTML=o.length?o.map(a=>'<option value="'+a[0]+'">'+a[1]+'</option>').join(''):'<option value="">Ainda não há RSport</option>';if(o.length){if(!o.some(a=>a[0]==rcSid))rcSid=o[0][0];s.value=rcSid}else rcSid='';if($('fo').value!='s')try{gps()}catch(e){}pgShow('vr');vrPaint(false,true)}
@@ -1465,9 +1476,9 @@ if(rcOn)return;if(!vrFixOk()){toast('Sem posição GPS. Ligue o GPS do telemóve
 const go1=()=>{src=$('fo').value;sv=+$('sv').value||0;if(src!='s')gps();rcM=0;rcOn=true;VH.rec[rcSid]={a:{la:LL.la,lo:LL.lo},pts:[],b:null,t:Date.now()};ensureRid();persistRally();try{keepAwake()}catch(e){}vrPaint(false,true)};
 if(VH.rec[rcSid]&&VH.rec[rcSid].pts&&VH.rec[rcSid].pts.length)askC('Esta RSport já tem reconhecimento. Substituir por um novo?',[['Substituir',go1,'dg2'],['Cancelar']]);else go1()}
 function vrPt(){if(!rcOn)return;if(!vrFixOk()){toast('Sem posição GPS neste momento.');return}
-vqS={la:LL.la,lo:LL.lo,m:rcDist()};$('vqt').textContent='Ponto de referência a '+kmf(vqS.m)+' km';$('vqd').value=kmf(vqS.m);$('vq').hidden=false}
+vqS={la:LL.la,lo:LL.lo,m:rcDist(),h:LL.h};$('vqt').textContent='Ponto de referência a '+kmf(vqS.m)+' km';$('vqd').value=kmf(vqS.m);$('vq').hidden=false}
 function vqOk(){const v=num($('vqd').value);if(isNaN(v)||!(v>=0)){toast('Distância inválida. Ex.: 1,250');return}const m=Math.round(v*1000),rec=VH.rec[rcSid];if(!rec||!vqS)return;
-rec.pts.push({la:vqS.la,lo:vqS.lo,d:m,o:Math.abs(m-vqS.m)>=1?1:0});rec.pts.sort((a,b)=>a.d-b.d);vqS=null;$('vq').hidden=true;persistRally();vrPaint(false,true)}
+const np={la:vqS.la,lo:vqS.lo,d:m,o:Math.abs(m-vqS.m)>=1?1:0};if(typeof vqS.h=='number')np.h=Math.round(vqS.h);rec.pts.push(np);rec.pts.sort((a,b)=>a.d-b.d);vqS=null;$('vq').hidden=true;persistRally();vrPaint(false,true)}
 function vqNo(){vqS=null;$('vq').hidden=true}
 function vrFim(){if(!rcOn)return;if(!vrFixOk()){toast('Sem posição GPS neste momento.');return}const rec=VH.rec[rcSid];rec.b={la:LL.la,lo:LL.lo,d:Math.round(rcDist())};rcOn=false;persistRally();vrPaint(false,true);const x=seq.find(v=>v.sid==rcSid);toast('Reconhecimento guardado: '+rec.pts.length+' pontos, '+kmf(rec.b.d)+' km'+(x&&x.dtot?' (quadro: '+kmf(x.dtot)+' km)':''),6000)}
 function vrDel(i){const rec=VH.rec[rcSid];if(!rec||!rec.pts[i])return;askC('Apagar o ponto a '+kmf(rec.pts[i].d)+' km?',[['Apagar',()=>{rec.pts.splice(i,1);persistRally();vrPaint(false,true)},'dg2'],['Cancelar']])}
@@ -1480,11 +1491,16 @@ $('vr1').disabled=rcOn||!rcSid;$('vr2').disabled=!rcOn;$('vr3').disabled=!rcOn;$
 const pts=(rec&&rec.pts)||[];$('vrl').innerHTML=rec?'<div class="mut" style="text-align:left">'+pts.length+(pts.length==1?' ponto':' pontos')+(rec.b?' · fim aos '+kmf(rec.b.d)+' km':rcOn?' · a gravar':'')+'</div>'+pts.map((p,i)=>'<div class="lr"><div><b>'+kmf(p.d)+' km</b>'+(p.o?' · organização':'')+(x?'<div class="m2">tempo ideal '+hms(Math.round(absT(x,p.d)))+' · às '+hAdd(x.hi,Math.round(absT(x,p.d)))+'</div>':'')+'</div><button class="s" onclick="vrDel('+i+')">Apagar</button></div>').join(''):''}
 setInterval(()=>{if(rcOn&&$('fo').value=='s'&&src=='s')rcM+=Math.max(0,sv)/3.6*.5;if(pgCur=='vr')vrPaint(true)},500);
 function vhFix(la,lo){const r=seq[cur];if(st!='run'||lk||lk0w||!r||!r.sp||Date.now()<t0||fz)return;const rec=VH.rec[r.sid];if(!rec||!rec.pts||!rec.pts.length)return;
-const key=r.sid+'|'+t0;if(vhR.k!==key){vhR={k:key,i:0,pf:null}}
+const key=r.sid+'|'+t0;if(vhR.k!==key){vhR={k:key,i:0,pf:null,hd:null}}
 const f={la,lo,d:dNow()},pf=vhR.pf;vhR.pf=f;if(!pf)return;const pts=rec.pts;
-while(vhR.i<pts.length&&pts[vhR.i].d<f.d-80)vhR.i++;const p=pts[vhR.i];if(!p)return;
-const x=xing(p,pf,f);if(!x||x.d>12)return;const dAt=pf.d+(f.d-pf.d)*x.f,delta=p.d-dAt;vhR.i++;
-if(Math.abs(delta)>250)return;const n=Math.round(delta),sg=(n>=0?'+':'−')+Math.abs(n);
+const kk=Math.cos(la*Math.PI/180)*111195,dx=(lo-pf.lo)*kk,dy=(la-pf.la)*111195;if(Math.hypot(dx,dy)>=3)vhR.hd=Math.atan2(dx,dy)*180/Math.PI;
+let bj=-1,bx=null;
+for(let j=vhR.i;j<pts.length;j++){const p=pts[j];if(Math.abs(p.la-la)>.0006&&Math.abs(p.la-pf.la)>.0006)continue;
+const x=xing(p,pf,f);if(!x||x.d>12)continue;
+if(typeof p.h=='number'&&vhR.hd!==null){let e=Math.abs(p.h-vhR.hd)%360;if(e>180)e=360-e;if(e>60)continue}
+if(!bx||x.d<bx.d){bx=x;bj=j}}
+if(bj<0)return;const p=pts[bj],dAt=pf.d+(f.d-pf.d)*bx.f,delta=p.d-dAt;vhR.i=bj+1;
+if(Math.abs(delta)>3000)return;const n=Math.round(delta),sg=(n>=0?'+':'−')+Math.abs(n);
 act('referência (GPS)',dNow()+delta,false);toast('Referência: '+sg+' m',3000);if(sm.includes('b'))beep(1000,.1,.3)}
 function rpStart(){if(rpRid!==rid){rpRid=rid;try{RP=JSON.parse(localStorage.getItem('rpRp_'+rid)||'[]')}catch(e){RP=[]}if(!Array.isArray(RP))RP=[]}rpRun=Date.now();rpA=null;rpPf=null}
 function rpSave(){try{if(rid)localStorage.setItem('rpRp_'+rid,JSON.stringify(RP.slice(-400)))}catch(e){}}
@@ -1501,7 +1517,7 @@ rpA={i,raw:rawAt};if(sug)rpAsk(q);break}}
 function rpAsk(q){if(!$('cf').hidden||!$('sg').hidden||!$('pr').hidden||!$('afp').hidden)return;const n=Math.round(q.dl),sg=(n>=0?'+':'−')+Math.abs(n);
 askC('Percurso repetido. Última correção neste ponto: '+sg+' m.',[['Aceitar '+sg+' m',()=>{if(st=='run')act('repetição de percurso',dNow()+q.dl,false)}],['Recusar',null,'s']],'rep');$('cft').style.fontSize='25px';if(sm.includes('v'))say('Percurso repetido. Correção sugerida no ecrã.')}
 function cleanVh(v){const o={rec:{}};if(!v||typeof v!='object'||!v.rec||typeof v.rec!='object')return o;const fin=n=>typeof n=='number'&&isFinite(n);
-for(const k of Object.keys(v.rec).slice(0,60)){const r=v.rec[k];if(!r||!Array.isArray(r.pts)||r.pts.length>400)continue;const pts=r.pts.filter(p=>p&&fin(p.la)&&fin(p.lo)&&fin(p.d)).map(p=>({la:p.la,lo:p.lo,d:p.d,o:p.o?1:0}));
+for(const k of Object.keys(v.rec).slice(0,60)){const r=v.rec[k];if(!r||!Array.isArray(r.pts)||r.pts.length>400)continue;const pts=r.pts.filter(p=>p&&fin(p.la)&&fin(p.lo)&&fin(p.d)).map(p=>{const q={la:p.la,lo:p.lo,d:p.d,o:p.o?1:0};if(fin(p.h))q.h=Math.round(p.h);return q});
 o.rec[String(k).slice(0,30)]={a:r.a&&fin(r.a.la)&&fin(r.a.lo)?{la:r.a.la,lo:r.a.lo}:null,b:r.b&&fin(r.b.la)&&fin(r.b.lo)&&fin(r.b.d)?{la:r.b.la,lo:r.b.lo,d:r.b.d}:null,pts,t:fin(r.t)?r.t:0}}return o}
 try{if(rid&&RL[rid]&&RL[rid].vh)VH=RL[rid].vh}catch(e){}
 
