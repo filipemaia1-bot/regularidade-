@@ -117,7 +117,7 @@ body:has(#setup:not([hidden])){background:#e4e8ee}
 .lr{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #262c34;text-align:left}
 .lr>div{min-width:0}.lr button{width:auto;margin:0;padding:10px 12px;font-size:16px}
 .lr .m2{color:var(--mut);font-size:14px}
-#cfb button{margin-top:8px}
+#cfb{display:flex;flex-wrap:wrap;gap:20px}#cfb button{flex:1 1 40%;min-height:70px;font-size:22px;margin-top:14px}#sg{display:flex;flex-wrap:wrap;gap:20px}#sg[hidden]{display:none}#sg #sq{flex:1 0 100%}#sg button{flex:1 1 40%;min-height:70px;font-size:22px;margin-top:6px}
 button.dg2{background:#c62828;color:#fff}
 button.gr{background:#1c7c3a;color:#fff;font-weight:800}
 #run .ar{display:flex;gap:8px;flex:1.1 1 0;min-height:40px}
@@ -163,7 +163,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 
 <div id="setup">
 <div id="bk" hidden style="position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:8px"><button onclick="voltar()">Voltar à prova</button><button class="s" id="tb" onclick="endTap()">Terminar prova</button></div>
-<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 78</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
+<div class="hd"><h1>RallyPace <small style="font-size:15px;color:var(--mut);font-weight:400">versão 79</small></h1><div class="zs"><button class="s" onclick="setZ(-1)" aria-label="Letras mais pequenas">A−</button><button class="s" onclick="setZ(1)" aria-label="Letras maiores">A+</button></div></div>
 <div id="pm"><div class="card"><h1>Rally</h1>
 <label style="margin-top:0">Nome do rally</label><input id="rn0" placeholder="Ex.: Rally de Fafe" aria-label="Nome do rally" onchange="setRName(this.value)">
 <label>Hora de início do rally (partida)</label><input id="h0" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0n" style="text-align:left;font-size:15px;margin-top:4px"></div>
@@ -171,7 +171,8 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 <div class="card"><h1>Preparar</h1>
 <button class="mc" onclick="pgOpen('af')"><b>Aferição</b><span id="sAf"></span></button>
 <button class="mc" onclick="pgOpen('ck')"><b>Relógio</b><span id="sCk"></span></button>
-<button class="mc" onclick="pgOpen('rg')"><b>Regularidades e ligações</b><span id="sRg"></span></button>
+<button class="mc" onclick="rgOpen()"><b>Regularidades e ligações</b><span id="sRg"></span></button>
+<button class="mc" onclick="vhOpen()"><b>VHRS</b><span id="sVh">Reconhecimento e RSport</span></button>
 <button class="mc" onclick="pgOpen('rb')"><b>Racebox e distância</b><span id="sRb"></span></button>
 <button class="mc" onclick="pgOpen('mp')"><b>Mapa (falhas de GPS)</b><span id="sMp">Desligado</span></button>
 <button class="mc" onclick="pgOpen('vz')"><b>Voz e avisos</b><span id="sVz"></span></button>
@@ -199,7 +200,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 <div class="adj" style="margin-top:8px"><button class="s rm" onclick="clkAdj(-100)">−0,1 s</button><button class="s gp" onclick="clkAdj(100)">+0,1 s</button></div>
 <label>Hora oficial (hh:mm:ss) para acertar sem GPS</label><div class="r2"><input id="ck3" placeholder="hh:mm:ss" inputmode="numeric" style="flex:1;min-width:0"><button onclick="clkMan()">Acertar agora</button></div><div class="mut" id="ck4" style="font-size:15px;text-align:left"></div></div>
 </div>
-<div class="pg" id="pg_rg" hidden><div class="pgh"><button class="s" onclick="pgBack()">← Preparar rally</button></div><div class="card">
+<div class="pg" id="pg_rg" hidden><div class="pgh"><button class="s" id="rgBk" onclick="pgBackV()">← Preparar rally</button></div><div class="card">
 <label>Tipo de regularidade</label>
 <select id="tp" onchange="lab()"><option value="f">Figura</option><option value="h">Hectométrica</option><option value="a">Absoluta</option><option value="k">Tabelas / Hitos quilómetro</option><option value="n">Neutralização</option></select>
 <label>Hora de início (calculada pela regularidade anterior; pode mudar)</label><input id="hi" value="10:00:00">
@@ -219,6 +220,17 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 <div class="card"><h1>Sequência</h1><div id="ls" class="mut">Ainda vazia.</div>
 <div id="er2" style="color:#ff453a;font-weight:700;margin-top:8px"></div>
 </div></div>
+<div class="pg" id="pg_vh" hidden><div class="pgh"><button class="s" onclick="pgBack()">← Preparar rally</button></div><div class="card"><h1>VHRS</h1>
+<label style="margin-top:0">Hora de início do rally (partida)</label><input id="h0v" inputmode="numeric" placeholder="hh:mm:ss" aria-label="Hora de início do rally" onchange="setStart(this.value)"><div class="mut" id="h0vn" style="text-align:left;font-size:15px"></div></div>
+<div class="card"><button class="mc" onclick="vhRecOpen()"><b>Reconhecimento</b><span id="sVr"></span></button>
+<button class="mc" onclick="vhRg()"><b>Regularidades e ligações</b><span id="sVg"></span></button></div></div>
+<div class="pg" id="pg_vr" hidden><div class="pgh"><button class="s" onclick="pgShow('vh');vhSum()">← VHRS</button></div><div class="card"><h1>Reconhecimento</h1>
+<label style="margin-top:0">RSport a reconhecer</label><select id="vrs" onchange="vrSel()"></select>
+<div class="mut" id="vrd" style="font-size:28px;font-weight:700;margin-top:8px">0,000 km</div>
+<div class="mut" id="vrg" style="text-align:left;font-size:15px"></div>
+<div class="mut" style="text-align:left;font-size:15px">Marque o início, vá marcando os pontos de referência (pode parar para marcar com precisão) e termine no fim.</div>
+<button id="vr1" onclick="vrIni()">Início</button><button id="vr2" class="s" onclick="vrPt()" disabled>Ponto de referência</button><button id="vr3" class="s" onclick="vrFim()" disabled>Fim</button>
+<div id="vrl" style="margin-top:8px"></div></div></div>
 <div class="pg" id="pg_rb" hidden><div class="pgh"><button class="s" onclick="pgBack()">← Preparar rally</button></div><div class="card" id="rbc"><h1>Racebox</h1>
 <div class="mut" id="rbs" style="text-align:left;font-size:16px">Racebox não ligada.</div>
 <button id="rbb" onclick="rbBtn()">Ligar Racebox</button>
@@ -231,7 +243,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 <div class="pg" id="pg_vz" hidden><div class="pgh"><button class="s" onclick="pgBack()">← Preparar rally</button></div><div class="card"><h1>Voz e avisos</h1><label>A contagem começa quantos segundos antes</label><input id="le" type="number" value="5">
 <label>Antecipação da voz (s): a voz diz o número este tempo antes de ele aparecer</label><input id="vo" type="number" step="0.1" value="0.6">
 <label>Botão «Passei» ativo (segundos antes e depois da passagem; 0 = sempre ativo)</label><input id="pw" type="number" value="5">
-<label>Som da contagem</label><select id="sm"><option value="vb">Voz e bip</option><option value="v">Só voz</option><option value="b">Só bip</option></select>
+<label>Aviso de arranque da regularidade seguinte: segundos antes da hora</label><input id="ast" type="number" value="40" onchange="astSet()"><label>Som da contagem</label><select id="sm"><option value="vb">Voz e bip</option><option value="v">Só voz</option><option value="b">Só bip</option></select>
 <label>Bip de desvio (aviso suave quando se afasta do tempo ideal)</label><select id="dvb" onchange="try{localStorage.setItem('rpDvb',this.value)}catch(e){}"><option value="0">Desligado</option><option value="1">Ligado</option></select>
 <div class="mut" id="vi" style="text-align:left;font-size:15px;margin-top:8px"></div>
 <button class="s" onclick="sm=$('sm').value;beep(880,.15);say('Teste de voz. Dez, onze, doze.');setTimeout(()=>{$('vi').textContent=voiceInfo()+' · '+$('vs').textContent},700)">Testar voz</button></div>
@@ -336,6 +348,7 @@ details.alt{margin-top:12px}details.alt summary{color:var(--mut);padding:6px 0}
 <div id="pq" style="font-size:20px;font-weight:700"></div>
 <button id="pb" onclick="startAny()">Confirmar</button>
 <button id="pn" class="s" hidden onclick="startNow()">Iniciar agora, sem esperar pela hora</button></div>
+<div id="vq" class="ov" hidden style="border-top:4px solid #7fd1ff;z-index:13"><div id="vqt" style="font-size:20px;font-weight:700"></div><input id="vqd" inputmode="decimal" aria-label="Distância do ponto (km)" style="margin-top:8px"><div class="mut" style="text-align:left;font-size:15px">Se o ponto é da organização, escreva a distância exata dela. Se é vosso, deixe a distância medida.</div><div style="display:flex;gap:20px;margin-top:8px"><button style="flex:1;min-height:64px;font-size:21px" onclick="vqOk()">Guardar</button><button class="s" style="flex:1;min-height:64px;font-size:21px" onclick="vqNo()">Cancelar</button></div></div>
 <div id="cf" class="ov" hidden style="border-top:4px solid var(--ac);z-index:12"><div id="cft" style="font-size:19px;font-weight:700"></div><div id="cfb"></div></div>
 <div id="sg" class="ov" hidden style="border-top:4px solid #7fd1ff">
 <div id="sq" style="font-size:25px;font-weight:700;line-height:1.25"></div>
@@ -367,9 +380,9 @@ let dOff=0,st='wait',sched=0,asked=false,ac=null,bp=[],bi=0,sm='vb',fz=false,fzD
 try{seq=JSON.parse(localStorage.getItem('seq')||'[]')}catch(e){}
 try{L=JSON.parse(localStorage.getItem('log')||'[]');lid=L.reduce((m,e)=>Math.max(m,e.id),0)}catch(e){L=[]}
 try{const a=localStorage.getItem('af');if(a!==null){af=num(a)||0;$('afv').value=String(af).replace('.',',')}}catch(e){}
-function RN(r,n){return(r&&r.t=='n'?'neutralização ':'regularidade ')+n}
-function RNs(r,n){return RN(r,n)+(r&&r.t!='n'?', '+NM[r.t].toLowerCase().replace('tabelas / hitos quilómetro','tabelas'):'')}
-const NM={f:'Figura',h:'Hectométrica',a:'Absoluta',k:'Tabelas / Hitos quilómetro',n:'Neutralização'};
+function RN(r,n){return(r&&r.t=='n'?'neutralização ':r&&r.sp?'RSport ':'regularidade ')+n}
+function RNs(r,n){return RN(r,n)+(r&&r.t!='n'&&!r.sp?', '+NMs(r).toLowerCase().replace('tabelas / hitos quilómetro','tabelas'):'')}
+let askT=40;const NM={f:'Figura',h:'Hectométrica',a:'Absoluta',k:'Tabelas / Hitos quilómetro',n:'Neutralização'};
 let zsI=1;const ZS=[.85,1,1.15,1.3];
 try{const g=localStorage.getItem('zs');if(g!==null&&+g>=0&&+g<=3)zsI=+g}catch(e){}
 function applyZ(){document.documentElement.style.setProperty('--zs',ZS[zsI])}
@@ -453,7 +466,7 @@ r.push(x)}
 let du=600,mi,sen,dtot,qh=null;
 if(t=='h'){qh=r;mi=qh[0][0];sen=qh[0][2]>qh[0][0]?'c':'d';let T=0;r=qh.map(x=>{const a=[T,360/x[1]];T+=Math.abs(x[2]-x[0])*1000/(x[1]/3.6);return a});du=T}
 if(t=='a'){if(endL===null){err('Falta o fim da regularidade: escreva uma última linha só com a distância, sem média. Por exemplo: 5000');return}dtot=endL;if(!(dtot>r[r.length-1][0])){err('O fim da regularidade ('+dtot+' m) tem de ser maior que o início do último troço ('+r[r.length-1][0]+' m).');return}}
-const o={t,hi,r,du:du>0?du:600,mi,sen,dtot};if(qh)o.q=qh;if(ei>=0&&seq[ei].lk)o.lk=seq[ei].lk;if(ei>=0&&seq[ei].z)o.z=true;if(ei>=0&&seq[ei].ask)o.ask=true;if(ei>=0&&seq[ei].ac)o.ac=true;if(ei>=0&&seq[ei].man)o.man=true;
+const o={t,hi,r,du:du>0?du:600,mi,sen,dtot};if(qh)o.q=qh;if(ei>=0&&seq[ei].lk)o.lk=seq[ei].lk;if(ei>=0&&seq[ei].z)o.z=true;if(ei>=0&&seq[ei].ask)o.ask=true;if(ei>=0&&seq[ei].ac)o.ac=true;if(ei>=0&&seq[ei].man)o.man=true;if(t=='a'&&(ei>=0?seq[ei].sp:vhMode)){o.sp=true;o.sid=(ei>=0&&seq[ei].sid)||('s'+Date.now().toString(36))}
 const ix=ei>=0?ei:seq.length;if(ei>=0)seq[ei]=o;else{if(ix>0&&seq[ix-1].t!='k'&&seq[ix-1].t!='n'&&!seq[ix-1].lk&&!seq[ix-1].z&&hiTouched===false)seq[ix-1].z=true;seq.push(o)}
 if(ix>0&&lkT(seq[ix-1])!==null){const c=hAdd(seq[ix-1].hi,lkT(seq[ix-1]));if(ei<0)o.hi=c;else if(c!=hi)o.man=true}
 cancelEdit();save();show()}
@@ -524,12 +537,12 @@ setInterval(clkPaint,200);
 function hiProp(){if(!seq.length)return hAdd(r0,lk0?lk0.tempo:0);const a=seq[seq.length-1];let d=lkT(a);if(d===null){try{d=durOf(a)}catch(e){d=0}}return hAdd(a.hi,d||0)}
 function nowDef(){hiTouched=false;$('hi').value=hiProp()}
 $('hi').addEventListener('input',()=>{hiTouched=true});
-function edit(i){const x=seq[i];ei=i;$('tp').value=x.t;lab();if(x.t=='k')$('iv').value=String(x.iv||100);$('au').value='k';$('aoo').value='d';$('hi').value=x.hi;
+function edit(i){const x=seq[i];ei=i;if(vhMode)vhSel(!!(x.sp||x.t=='n'));$('tp').value=x.t;lab();if(x.t=='k')$('iv').value=String(x.iv||100);$('au').value='k';$('aoo').value='d';$('hi').value=x.hi;
 $('dt').value=x.t=='f'?x.r.map(a=>kmf(a[0])+' '+hms(a[1])).join('\n'):x.t=='h'?(x.q?x.q.map(a=>a.map(v=>String(v).replace('.',',')).join(' ')).join('\n'):''):x.r.map((a,i)=>kmf(a[0])+' '+kmf(i<x.r.length-1?x.r[i+1][0]:x.dtot)+' '+String(a[1]).replace('.',',')).join('\n');
 $('du').value=hms(x.du);if(x.t=='h'){$('mi').value=String(x.mi==null?0:x.mi).replace('.',',');$('sen').value=x.sen||'c'}
 if(x.t=='a')$('dtot').value=x.dtot||'';
 $('ab').textContent='Guardar alterações da '+RN(seq[i],i+1);$('cb').hidden=false;err('');scrollTo(0,0)}
-function rem(i){if(!seq[i])return;askC('Remover a '+RN(seq[i],i+1)+(seq[i].t=='n'?'':' ('+NM[seq[i].t]+')')+'?',[['Remover',()=>rem2(i),'dg2'],['Cancelar']])}
+function rem(i){if(!seq[i])return;askC('Remover a '+RN(seq[i],i+1)+(seq[i].t=='n'?'':' ('+NMs(seq[i])+')')+'?',[['Remover',()=>rem2(i),'dg2'],['Cancelar']])}
 function rem2(i){seq.splice(i,1);if(ei==i)cancelEdit();else if(ei>i)ei--;save();show()}
 function err2(m){$('er2').textContent=m}
 function setHi(i,v){if(!v.trim()&&i>0){delete seq[i].man;err2('');save();show();return}
@@ -576,7 +589,7 @@ function show(){recalc();try{pmSum()}catch(e){}if(ei<0&&!hiTouched)$('hi').value
 const rn=$('rn0');if(rn)rn.value=(rid&&RL[rid])?RL[rid].name||'':'';if(!$('rlist').hidden)renderRL();
 const hh=$('h0');if(hh){hh.value=seq.length?hAdd(seq[0].hi,-(lk0?lk0.tempo:0)):r0;hh.disabled=false;
 $('h0n').textContent=!seq.length?'As horas das regularidades calculam-se a partir desta hora (por defeito 00:00:00).':lk0?'A '+RN(seq[0],1)+' começa às '+seq[0].hi+' (partida + ligação de '+hms(lk0.tempo)+').':'Sem ligação da partida: a '+RN(seq[0],1)+' começa a esta hora.'}
-$('ls').innerHTML=seq.length?`<div class="lkr"><div class="lt">↓ Ligação da partida até à ${RN(seq[0],1)}</div><div class="ct"><input placeholder="Dist. (km)" inputmode="decimal" value="${lk0?kmf(lk0.dist):''}" onchange="setLk0(this)"><input placeholder="Tempo mm:ss" value="${lk0?hms(lk0.tempo):''}" onchange="setLk0(this)"></div></div>`+seq.map((x,i)=>{const nl=(x.r||[]).length,f=fimH(x);return `<div class="rg"><div class="h"><span class="n">${i+1} · ${NM[x.t]}${x.man?'<span class="tg">hora fixa</span>':''}</span><span class="t">${x.t=='k'?'a cada '+(x.iv>=1000?'1 km':x.iv+' m'):x.t=='n'?hms(x.du):nl+' '+(nl==1?'linha':'linhas')}</span></div><div class="tm">${x.hi}${f?' → '+f:''}</div><div class="ct"><div class="f a"><span>Mover (± min)</span><input class="mn" placeholder="± min" inputmode="decimal" aria-label="Minutos a somar ou subtrair" onchange="shiftMin(${i},this)"></div><div class="f"><span>Hora de início</span><input value="${x.hi}" aria-label="Hora de início" title="${i&&lkT(seq[i-1])!==null?(x.man?'Hora fixa, escrita por si. Apague para voltar ao cálculo pela ligação.':'Calculada pela ligação. Escreva outra hora para a fixar.'):''}" onchange="setHi(${i},this.value)"></div></div><div class="ac">${$('bk').hidden?`<button class="ok" onclick="go(${i})">Iniciar</button>`:''}<button class="ed" onclick="edit(${i})">Editar</button><button class="dg" onclick="rem(${i})">Remover</button></div></div>`+`<div class="lkr"><div class="lt">↓ ${i<seq.length-1?'Ligação até à '+RN(seq[i+1],i+2):'Ligação final até ao controlo horário'}${fimTxt(x,1)}${x.z?' · ligação 0: a seguinte começa sozinha ao chegar à distância final':''} ${i<seq.length-1&&x.t!='n'&&x.t!='k'?'<button class="eng'+(isEng(x,i)?' on':'')+'" onclick="setEng('+i+')" aria-pressed="'+(isEng(x,i)?'true':'false')+'">Engate'+(isEng(x,i)?' ✓':'')+'</button>':''}</div><div class="ct"><input placeholder="${i<seq.length-1?'Dist. (km)':'Dist. final (km)'}" inputmode="decimal" value="${x.lk?kmf(x.lk.dist):''}" onchange="setLk(${i},this)"><input placeholder="Tempo mm:ss" value="${x.lk?hms(x.lk.tempo):''}" onchange="setLk(${i},this)"></div></div>`}).join(''):'Ainda vazia.'}
+$('ls').innerHTML=seq.length?`<div class="lkr"><div class="lt">↓ Ligação da partida até à ${RN(seq[0],1)}</div><div class="ct"><input placeholder="Dist. (km)" inputmode="decimal" value="${lk0?kmf(lk0.dist):''}" onchange="setLk0(this)"><input placeholder="Tempo mm:ss" value="${lk0?hms(lk0.tempo):''}" onchange="setLk0(this)"></div></div>`+seq.map((x,i)=>{const nl=(x.r||[]).length,f=fimH(x);return `<div class="rg"><div class="h"><span class="n">${i+1} · ${NMs(x)}${x.man?'<span class="tg">hora fixa</span>':''}</span><span class="t">${x.t=='k'?'a cada '+(x.iv>=1000?'1 km':x.iv+' m'):x.t=='n'?hms(x.du):nl+' '+(nl==1?'linha':'linhas')}</span></div><div class="tm">${x.hi}${f?' → '+f:''}</div><div class="ct"><div class="f a"><span>Mover (± min)</span><input class="mn" placeholder="± min" inputmode="decimal" aria-label="Minutos a somar ou subtrair" onchange="shiftMin(${i},this)"><div class="adj" style="margin-top:6px"><button class="s rm" onclick="mv1(${i},-1)">−1 min</button><button class="s gp" onclick="mv1(${i},1)">+1 min</button></div></div><div class="f"><span>Hora de início</span><input value="${x.hi}" aria-label="Hora de início" title="${i&&lkT(seq[i-1])!==null?(x.man?'Hora fixa, escrita por si. Apague para voltar ao cálculo pela ligação.':'Calculada pela ligação. Escreva outra hora para a fixar.'):''}" onchange="setHi(${i},this.value)"></div></div><div class="ac">${$('bk').hidden?`<button class="ok" onclick="go(${i})">Iniciar</button>`:''}<button class="ed" onclick="edit(${i})">Editar</button><button class="dg" onclick="rem(${i})">Remover</button></div></div>`+`<div class="lkr"><div class="lt">↓ ${i<seq.length-1?'Ligação até à '+RN(seq[i+1],i+2):'Ligação final até ao controlo horário'}${fimTxt(x,1)}${x.z?' · ligação 0: a seguinte começa sozinha ao chegar à distância final':''} ${i<seq.length-1&&x.t!='n'&&x.t!='k'?'<button class="eng'+(isEng(x,i)?' on':'')+'" onclick="setEng('+i+')" aria-pressed="'+(isEng(x,i)?'true':'false')+'">Engate'+(isEng(x,i)?' ✓':'')+'</button>':''}</div><div class="ct"><input placeholder="${i<seq.length-1?'Dist. (km)':'Dist. final (km)'}" inputmode="decimal" value="${x.lk?kmf(x.lk.dist):''}" onchange="setLk(${i},this)"><input placeholder="Tempo mm:ss" value="${x.lk?hms(x.lk.tempo):''}" onchange="setLk(${i},this)"></div></div>`}).join(''):'Ainda vazia.'}
 
 function build(r){const e=[],p=[];P=[[0,0]];AB=null;PT=[];HT=[];if(r.t=='k'||r.t=='n')return{e,p};
 if(r.t=='f'){const f=r.r.map(x=>[x[1],x[0]]).sort((a,b)=>a[0]-b[0]);let pv=-99;
@@ -631,14 +644,14 @@ sched=msOf(cur);t0=sched;pk=-1;aw={};cdN=99;$('w3').hidden=!(r.t=='a'||r.t=='k')
 end=(r.t=='k'?1e9:r.t=='n'?r.du:r.t=='a'?AB.Ttot:(r.t=='f'?(ps.length?ps[ps.length-1]:0):r.du))+3;st='wait';asked=false;
 $('kn').textContent=r.t=='a'?'Média troço':r.t=='h'?'Próximo marco':'Próxima passagem';$('rc').classList.toggle('ab',r.t=='a');$('run').classList.toggle('abs',r.t=='a');$('ks').textContent=r.t=='a'?'Vel. necessária':'Média a fazer';
 $('us').hidden=r.t=='a'||r.t=='k';
-$('rt').textContent=r.t=='n'?'Neutralização '+(cur+1)+' de '+seq.length:'Regularidade '+(cur+1)+' de '+seq.length+' · '+NM[r.t];$('kl').hidden=r.t!='k';$('rn').style.fontSize=r.t=='k'?'min(9.5vw,5.2dvh)':'';if(r.t=='k'){$('kn').textContent='Marca (km)';$('ks').textContent='Média (km/h)'}}
+$('rt').textContent=r.t=='n'?'Neutralização '+(cur+1)+' de '+seq.length:'Regularidade '+(cur+1)+' de '+seq.length+' · '+NMs(r);$('kl').hidden=r.t!='k';$('rn').style.fontSize=r.t=='k'?'min(9.5vw,5.2dvh)':'';if(r.t=='k'){$('kn').textContent='Marca (km)';$('ks').textContent='Média (km/h)'}}
 
 let gAc=0,src='s',gW=null,gP=null,gM=0,gA=0,gV=0,gT=0,gS='a procurar GPS…',afOn=false,gti=null;
 function hav(a,b){const R=6371000,t=Math.PI/180,x=(b.latitude-a.latitude)*t,y=(b.longitude-a.longitude)*t,q=Math.sin(x/2)**2+Math.cos(a.latitude*t)*Math.cos(b.latitude*t)*Math.sin(y/2)**2;return 2*R*Math.asin(Math.sqrt(q))}
 function gErr(e){gS=e.code==1?'GPS sem permissão':e.code==2?'GPS sem sinal':'GPS sem resposta';gV=0;gT=0}
 function gFix(p){const c=p.coords,ac=c.accuracy||99;if(p.timestamp>1.6e12)clkIn('g',p.timestamp);gAc=ac;gT=Date.now();gV=c.speed>0?c.speed:0;gS='GPS ±'+Math.round(ac)+' m · '+Math.round(gV*3.6)+' km/h';
 if(ac>30){gP=null;return}
-try{mpFix(c.latitude,c.longitude,ac)}catch(e){}if(!rbLive())try{trkAdd(c.latitude,c.longitude,c.altitude,c.speed)}catch(e){}
+try{mpFix(c.latitude,c.longitude,ac)}catch(e){}if(!rbLive()){try{llFix(c.latitude,c.longitude)}catch(e){}try{trkAdd(c.latitude,c.longitude,c.altitude,c.speed)}catch(e){}}
 if(gP){const s=hav(gP,c),mv=(c.speed==null||isNaN(c.speed))?s>=3:c.speed>=.5;if(mv&&s<200&&useG())addD(s)}
 gP={latitude:c.latitude,longitude:c.longitude}}
 function gps(){if(plRole=='pilot')return false;if(gW!==null)return true;if(!('geolocation' in navigator)){gS='GPS indisponível neste navegador';return false}
@@ -646,7 +659,7 @@ gS='a procurar GPS…';gT=0;try{gW=navigator.geolocation.watchPosition(gFix,gErr
 function gOff(){try{if(gW!==null)navigator.geolocation.clearWatch(gW)}catch(e){}gW=null;gP=null;clearInterval(gti)}
 function gst(){return gT&&Date.now()-gT>3000?'GPS sem sinal':gS}
 function foCh(){const v=$('fo').value;if(v=='r'&&!rb.on){$('fo').value='g';rbSet('Ligue primeiro a Racebox (botão «Ligar Racebox»).');return}if(v=='s'){gOff();$('gt').textContent=''}else testG()}
-function addD(m){if(st=='run'&&Date.now()>=dStart)gM+=m;if(afOn)gA+=m}
+function addD(m){if(st=='run'&&Date.now()>=dStart)gM+=m;if(afOn)gA+=m;if(rcOn)rcM+=m}
 function useG(){return src=='g'||(src=='r'&&!rbLive())}
 function rbLive(){return rb.on&&rb.good>=LIVE_N&&Date.now()-rb.t<1500}
 function dst(){return src=='r'&&rbLive()?'Racebox ±'+Math.round(rb.acc)+' m':(src=='r'?'Racebox perdida · ':'')+gst()}
@@ -662,7 +675,7 @@ function showLog(){const R=lgRows(),n=R.filter(e=>e.delib).length;
 $('lc').textContent=R.length+(R.length==1?' correção registada, ':' correções registadas, ')+n+' contam para a análise.';
 $('lg').innerHTML=R.length?R.slice().reverse().slice(0,60).map(e=>e.kind=='ajuste de ligação'?`${e.h} · ligação · ajuste ${e.delta>0?'+':''}${e.delta} m${e.n>1?' ('+e.n+' toques)':''} · não conta`:`${e.h} · reg ${e.reg} · ${e.kind} · ${e.before}→${e.after} m (${e.delta>0?'+':''}${e.delta})${e.delib?'':' · não conta'}`).join('<br>'):'Ainda sem correções.'}
 function clrLog(){L=[];winC=[];winA=[];saveL();showLog()}
-function logC(id,kind,delib,before,after){const km=Math.max(0,(before-lastCorrD)/1000),e={id,h:clock(),ts:Date.now(),reg:cur+1,kind,delib,before:Math.round(before),after:Math.round(after),delta:Math.round((after-before)*10)/10,km:Math.round(km*1000)/1000};if(delib)lastCorrD=after;L.push(e);const rh=kind=='marco'||!!lk||lk0w||(seq[cur]&&seq[cur].t=='h');try{trkCorr(e,delib&&!rh)}catch(x){}try{mpCorr(delib,!rh,after)}catch(x){}if(delib&&!rh){winC.push(e);winA.push(e)}saveL();showLog()}
+function logC(id,kind,delib,before,after){const km=Math.max(0,(before-lastCorrD)/1000),e={id,h:clock(),ts:Date.now(),reg:cur+1,kind,delib,before:Math.round(before),after:Math.round(after),delta:Math.round((after-before)*10)/10,km:Math.round(km*1000)/1000};if(delib)lastCorrD=after;L.push(e);const rh=kind=='marco'||!!lk||lk0w||(seq[cur]&&seq[cur].t=='h');try{trkCorr(e,delib&&!rh)}catch(x){}try{rpRec(e)}catch(x){}try{mpCorr(delib,!rh,after)}catch(x){}if(delib&&!rh){winC.push(e);winA.push(e)}saveL();showLog()}
 function act(kind,newD,delib){const el=(Date.now()-t0)/1000;if(st!='run'||isNaN(newD))return;
 if(fz){fzU.push(fzD);fzD=newD;return}
 const before=dr(el)+dOff,id=++lid;U.push({dOff,id,lcd:lastCorrD});dOff=newD-dr(el);logC(id,kind,delib,before,newD)}
@@ -675,7 +688,7 @@ let unT=0;
 function unRst(){clearTimeout(unT);const b=$('un');b.dataset.a='';b.textContent='↶ Desfazer';b.style.background='';b.style.color=''}
 function unTap(){const b=$('un');if(!b.dataset.a){b.dataset.a='1';b.textContent='Toque de novo para desfazer';b.style.background='#ff9f0a';b.style.color='#000';clearTimeout(unT);unT=setTimeout(unRst,3000);return}unRst();undo()}
 function undo(){if(st!='run')return;if(fz){if(fzU.length)fzD=fzU.pop();return}
-const u=U.pop();if(!u)return;dOff=u.dOff;if(u.pk!==undefined)pk=u.pk;if(u.lcd!==undefined)lastCorrD=u.lcd;L=L.filter(e=>e.id!=u.id);winC=winC.filter(e=>e.id!=u.id);winA=winA.filter(e=>e.id!=u.id);try{trkUndo(u.id)}catch(x){}saveL();showLog()}
+const u=U.pop();if(!u)return;dOff=u.dOff;if(u.pk!==undefined)pk=u.pk;if(u.lcd!==undefined)lastCorrD=u.lcd;L=L.filter(e=>e.id!=u.id);winC=winC.filter(e=>e.id!=u.id);winA=winA.filter(e=>e.id!=u.id);try{trkUndo(u.id)}catch(x){}try{rpUndo(u.id)}catch(x){}saveL();showLog()}
 function mk(r,k){const v=r.mi+(r.sen=='d'?-1:1)*k/10;return String(Number(v.toFixed(3))).replace('.',',')}
 function hSec(k){const x=P.find(a=>Math.abs(a[1]-100*k)<.5);if(!x)return null;const v=Math.round(x[0]*10)/10%60;return String(Math.round(v*10)/10).replace('.',',')}
 function tgt(el,d){let best=null,bd=1e9;
@@ -720,10 +733,10 @@ const h='<i style="background:'+c+'"></i>'+t+(wkOk?'':' <b style="color:#ff453a"
 function recSug(){$('sg').hidden=true}
 
 let accOff=0,curD=0;
-function start(testNow,auto){if(!seq[cur])return;try{mpStart()}catch(x){}try{trkBegin()}catch(x){}accOff=0;lk=null;hk=1;pk=-1;cdN=99;aw={};gM=0;fz=false;idx=0;bi=0;dOff=0;U=[];fzU=[];lastAn=0;lastCorrD=0;winC=[];winA=[];lastSeg=-1;kN=0;kL=[];t0=testNow?Date.now():sched;dStart=auto?Date.now():t0;st='run';$('pr').hidden=true;$('sg').hidden=true;blank();
+function start(testNow,auto){if(!seq[cur])return;try{mpStart()}catch(x){}try{trkBegin()}catch(x){}try{rpStart()}catch(x){}accOff=0;lk=null;hk=1;pk=-1;cdN=99;aw={};gM=0;fz=false;idx=0;bi=0;dOff=0;U=[];fzU=[];lastAn=0;lastCorrD=0;winC=[];winA=[];lastSeg=-1;kN=0;kL=[];t0=testNow?Date.now():sched;dStart=auto?Date.now():t0;st='run';$('pr').hidden=true;$('sg').hidden=true;blank();
 if(!testNow){const e=(Date.now()-sched)/1000;if(e>0)dOff=-dr(e)}}
 function pqt(r,sch,n,lim){const late=Math.round((Date.now()-sch)/1000);
-const nn=r.t=='n',tx=nn?'':' ('+NM[r.t]+')';$('pq').textContent=late<0?(nn?'A neutralização ':'A regularidade ')+n+tx+' começa às '+r.hi+', daqui a '+(-late)+' s. Dar início?':'Chegou a hora da '+(nn?'neutralização ':'regularidade ')+n+(nn?' ('+r.hi+')':' ('+NM[r.t]+', '+r.hi+')')+'. Dar início?';
+const nn=r.t=='n',tx=nn?'':' ('+NMs(r)+')';$('pq').textContent=late<0?(nn?'A neutralização ':'A regularidade ')+n+tx+' começa às '+r.hi+', daqui a '+(-late)+' s. Dar início?':'Chegou a hora da '+(nn?'neutralização ':'regularidade ')+n+(nn?' ('+r.hi+')':' ('+NMs(r)+', '+r.hi+')')+'. Dar início?';
 $('pb').hidden=false;$('pn').hidden=true;$('pb').textContent=late<0?'Confirmar: arranca às '+r.hi:'Dar início: tempo da hora oficial, km 0 agora (atraso de '+late+' s)'}
 function ask(r,sch,n,lim){if($('run').hidden&&!$('setup').hidden&&!$('bk').hidden)voltar();pqt(r,sch,n,lim);$('pr').hidden=false;if(sm.includes('v'))say('Dar início à '+RNs(r,n)+'?');beep(1200,.3)}
 function pqtL0(){const late=Math.round((Date.now()-sched0)/1000),h=hAdd(seq[0].hi,-lk0.tempo);
@@ -770,9 +783,9 @@ let alT=0;try{$('dvb').value=localStorage.getItem('rpDvb')=='1'?'1':'0'}catch(e)
 function tick(){topTxt();const r=seq[cur];if(!r)return;rbWatch();
 if(st=='wait'&&lk0w){siUp();const rm=(sched0-Date.now())/1000;$('rl').textContent='Ligação da partida às '+hAdd(seq[0].hi,-lk0.tempo)+' · faltam';$('rc').textContent=rm>0?hms(rm):'0';$('rc').style.color='';
 if(rm<-lk0.tempo){lk0w=false;init();return}
-if(rm<=15&&!asked){asked=true;askL0()}else if(asked&&!$('pr').hidden)pqtL0();return}
+if(rm<=askT&&!asked){asked=true;askL0()}else if(asked&&!$('pr').hidden)pqtL0();return}
 if(st=='wait'){siUp();const rm=(sched-Date.now())/1000;$('rl').textContent='Início às '+r.hi+' · faltam';$('rc').textContent=rm>0?hms(rm):'0';$('rc').style.color='';
-if(rm<=15&&!asked){asked=true;ask(r,sched,cur+1,end-3)}else if(asked&&!$('pr').hidden)pqt(r,sched,cur+1,end-3);return}
+if(rm<=askT&&!asked){asked=true;ask(r,sched,cur+1,end-3)}else if(asked&&!$('pr').hidden)pqt(r,sched,cur+1,end-3);return}
 const el=(Date.now()-t0)/1000,fl=Math.floor(el),v=Math.max(0,sv)/3.6,d=dr(el)+dOff,eI=el;
 if(r.t=='n'&&!lk){tickN(r,el);return}
 $('rl').textContent=el<0?'Arranca em':'Minuto '+Math.floor(fl/60)+' · segundo';
@@ -809,12 +822,12 @@ if(r.t=='k')kFr();else{const dm=d-ideal(eI),ds=v>0?dm/v:0,ok=v>1?Math.abs(ds)<=.
 $('fr').style.borderColor=col;$('fs').style.color=col;$('fm').style.color=col;$('fq').style.color=col;
 $('fs').textContent=el<0?'AGUARDA INÍCIO':ok?'NO IDEAL · MANTER':ad?'ADIANTADO · TRAVAR':'ATRASADO · ACELERAR';
 $('fm').textContent=el<0?'0 m':(Math.abs(dm).toFixed(0)=='0'?'':sg)+Math.abs(dm).toFixed(0)+' m';
-if($('dvb').value=='1'&&sm.includes('b')&&el>=3&&v>1&&!fz&&st=='run'&&!(window.speechSynthesis&&speechSynthesis.speaking)){const a=Math.abs(ds),T=Date.now(),lv=a>=1.5?2:a>=.5?1:0;if(lv&&T-alT>(lv==2?1000:2000)){alT=T;plim(lv)}}
+if($('dvb').value=='1'&&sm.includes('b')&&el>=3&&v>1&&!fz&&!lk&&!lk0w&&st=='run'&&!(window.speechSynthesis&&speechSynthesis.speaking)){const a=Math.abs(ds),T=Date.now(),lv=a>=1.5?2:a>=.5?1:0;if(lv&&T-alT>(lv==2?1000:2000)){alT=T;plim(lv)}}
 $('fq').textContent=el<0?'0,0 s':(Math.abs(ds).toFixed(1)=='0.0'?'':sg)+Math.abs(ds).toFixed(1).replace('.',',')+' s';barUp(r,el,dm)}
 if(!fz&&el>=0&&$('sg').hidden&&$('afp').hidden&&d-lastAn>=2000){const f=afF(),n=f.u.length;lastAn=d;winC=[];
 if(n&&f.s!==null){const s=f.s;if(Math.abs(s)>=1){sugV=s;$('sq').textContent='O equipamento mede '+Math.abs(s).toFixed(1).replace('.',',')+' m a '+(s>0?'menos':'mais')+' por quilómetro (com base em '+n+(n==1?' correção':' correções')+'). Aplicar correção?';$('sg').hidden=false;if(sm.includes('v'))say('Sugestão de correção da aferição');beep(1200,.3)}}}
 if(lk&&lk.fin){const rm2=(lkSched-Date.now())/1000;if(rm2<=0&&!asked){asked=true;if(sm.includes('v'))say('Chegada ao controlo horário');beep(1200,.3)}}
-else if(lk){const rm2=(lkSched-Date.now())/1000;if(rm2<=15&&!asked){asked=true;ask(seq[lk.nx],lkSched,lk.nx+1,1e9)}else if(asked&&!$('pr').hidden)pqt(seq[lk.nx],lkSched,lk.nx+1,1e9)}
+else if(lk){const rm2=(lkSched-Date.now())/1000;if(rm2<=askT&&!asked){asked=true;ask(seq[lk.nx],lkSched,lk.nx+1,1e9)}else if(asked&&!$('pr').hidden)pqt(seq[lk.nx],lkSched,lk.nx+1,1e9)}
 else if(cur==seq.length-1&&r.t!='n'&&(!r.lk||(!r.lk.dist&&!r.lk.tempo))){if((r.t!='k'&&r.z)?(d>=dEnd(r)||el>=end):el>end)enterLink(Object.assign({},r,{lk:{dist:0,tempo:0,nol:1}}))}
 else if(isEng(r,cur)){if(d>=dEnd(r)||el>=end)autoNext()}
 else if((r.lk?el>end-3:el>end)&&cur<seq.length){if(r.lk)enterLink(r);else{cur++;init()}}}
@@ -859,7 +872,7 @@ function chainMs(){const b=new Date(Date.now());b.setHours(0,0,0,0);let prev=-1;
 for(let j=0;j<seq.length;j++){const q=seq[j].hi.split(':').map(Number);let m=b.getTime()+((q[0]*60+q[1])*60+(q[2]||0))*1000;if(prev>=0)while(m<prev)m+=864e5;prev=m;o.push(m)}return o}
 function msOf(i){const o=chainMs();if(!o.length)return -1;const ref=Math.min(Math.max(cur,0),o.length-1),sh=o[ref]-Date.now()>18*36e5?-864e5:0;return o[Math.min(i,o.length-1)]+sh}
 function hiMs(hi){const q=hi.split(':').map(Number),d=new Date(Date.now());d.setHours(q[0],q[1],q[2]||0,0);return d.getTime()}
-function setLabels(r){$('kn').textContent=r.t=='a'?'Média troço':r.t=='h'?'Próximo marco':'Próxima passagem';$('rc').classList.toggle('ab',r.t=='a');$('run').classList.toggle('abs',r.t=='a');$('ks').textContent=r.t=='a'?'Vel. necessária':'Média a fazer';$('us').hidden=r.t=='a'||r.t=='k';$('w3').hidden=!(r.t=='a'||r.t=='k');$('rt').textContent=r.t=='n'?'Neutralização '+(cur+1)+' de '+seq.length:'Regularidade '+(cur+1)+' de '+seq.length+' · '+NM[r.t];$('kl').hidden=r.t!='k';$('rn').style.fontSize=r.t=='k'?'min(9.5vw,5.2dvh)':'';if(r.t=='k'){$('kn').textContent='Marca (km)';$('ks').textContent='Média (km/h)'}}
+function setLabels(r){$('kn').textContent=r.t=='a'?'Média troço':r.t=='h'?'Próximo marco':'Próxima passagem';$('rc').classList.toggle('ab',r.t=='a');$('run').classList.toggle('abs',r.t=='a');$('ks').textContent=r.t=='a'?'Vel. necessária':'Média a fazer';$('us').hidden=r.t=='a'||r.t=='k';$('w3').hidden=!(r.t=='a'||r.t=='k');$('rt').textContent=r.t=='n'?'Neutralização '+(cur+1)+' de '+seq.length:'Regularidade '+(cur+1)+' de '+seq.length+' · '+NMs(r);$('kl').hidden=r.t!='k';$('rn').style.fontSize=r.t=='k'?'min(9.5vw,5.2dvh)':'';if(r.t=='k'){$('kn').textContent='Marca (km)';$('ks').textContent='Média (km/h)'}}
 function rebuild(r,d0){const el=(Date.now()-t0)/1000;cT=r.t;const b=build(r);ev=b.e;ps=b.p;
 tg=r.t=='f'?r.r.map(x=>x[0]).sort((a,b)=>a-b):[];
 bp=ev.filter(x=>/^\d+$/.test(x.s)).map(x=>x.at).sort((a,b)=>a-b);
@@ -920,23 +933,23 @@ function askC(t,b,k){cfKind=k||'';$('cft').style.fontSize='';$('cft').textConten
 b.forEach((x,i)=>{const e=document.createElement('button');e.textContent=x[0];e.className=x[2]||(i?'s':'');e.onclick=()=>{cfClose();if(x[1])x[1]()};w.appendChild(e)});$('cf').hidden=false}
 function cfClose(){$('cf').hidden=true;cfKind=''}
 function inProva(){if(!$('bk').hidden){toast('Termine a prova primeiro.');return true}return false}
-function persistRally(){if(!rid)return;const o=RL[rid]||{id:rid,name:''};o.seq=JSON.parse(JSON.stringify(seq));o.lk0=lk0;o.r0=r0;o.ts=Date.now();RL[rid]=o;try{localStorage.setItem('rl',JSON.stringify(RL));localStorage.setItem('rid',rid)}catch(e){}}
+function persistRally(){if(!rid)return;const o=RL[rid]||{id:rid,name:''};o.seq=JSON.parse(JSON.stringify(seq));o.lk0=lk0;o.r0=r0;o.vh=VH;o.ts=Date.now();RL[rid]=o;try{localStorage.setItem('rl',JSON.stringify(RL));localStorage.setItem('rid',rid)}catch(e){}}
 function ensureRid(){if(!rid){rid='r'+Date.now().toString(36);RL[rid]={id:rid,name:'',seq:[],lk0:null,ts:Date.now()}}return rid}
 function saveLk0(){try{localStorage.setItem('lk0',JSON.stringify(lk0))}catch(e){}}
 function setRName(v){v=v.trim().slice(0,60);if(!v&&!rid)return;ensureRid();RL[rid].name=v;persistRally();show()}
 function newRally(){if(inProva())return;if(!seq.length&&!lk0&&!rid){toast('Já está vazio.');return}
-askC('Limpar tudo e começar outro rally? O rally atual fica guardado em «Os meus rallies».',[['Limpar e começar outro',()=>{if(seq.length||lk0){ensureRid();persistRally()}rid='';try{localStorage.removeItem('rid')}catch(e){}seq=[];lk0=null;saveLk0();r0='00:00:00';saveR0();cancelEdit();err2('');save();show();$('rmsg').textContent=''},'dg2'],['Cancelar']])}
+askC('Limpar tudo e começar outro rally? O rally atual fica guardado em «Os meus rallies».',[['Limpar e começar outro',()=>{if(seq.length||lk0){ensureRid();persistRally()}rid='';try{localStorage.removeItem('rid')}catch(e){}seq=[];lk0=null;VH={rec:{}};saveLk0();r0='00:00:00';saveR0();cancelEdit();err2('');save();show();$('rmsg').textContent=''},'dg2'],['Cancelar']])}
 function toggleRL(){const e=$('rlist');e.hidden=!e.hidden;if(!e.hidden)renderRL()}
 function renderRL(){const a=Object.values(RL).sort((x,y)=>(y.ts||0)-(x.ts||0));
 $('rlist').innerHTML=a.length?a.map(x=>`<div class="lr"><div><b>${esc(x.name||'Rally sem nome')}</b>${x.id==rid?'<span class="tg">aberto</span>':''}<div class="m2">${(x.seq||[]).length} ${(x.seq||[]).length==1?'regularidade':'regularidades'} · ${fmtD(x.ts||0)}</div></div><span style="display:flex;gap:6px"><button class="s" onclick="openRally('${x.id}')">Abrir</button><button class="s" onclick="delRally('${x.id}')">Apagar</button></span></div>`).join(''):'<div class="mut">Ainda não há rallies guardados.</div>'}
 function openRally(id){if(inProva())return;const r=RL[id];if(!r)return;
 if(rid!==id&&(seq.length||lk0)){ensureRid();persistRally()}
-rid=id;seq=JSON.parse(JSON.stringify(r.seq||[]));lk0=r.lk0||null;saveLk0();r0=r.r0||(seq.length?hAdd(seq[0].hi,-(lk0?lk0.tempo:0)):'00:00:00');saveR0();cancelEdit();err2('');save();show();toast('Rally aberto: '+(r.name||'sem nome'),2500)}
+rid=id;seq=JSON.parse(JSON.stringify(r.seq||[]));lk0=r.lk0||null;VH=r.vh&&r.vh.rec?JSON.parse(JSON.stringify(r.vh)):{rec:{}};saveLk0();r0=r.r0||(seq.length?hAdd(seq[0].hi,-(lk0?lk0.tempo:0)):'00:00:00');saveR0();cancelEdit();err2('');save();show();toast('Rally aberto: '+(r.name||'sem nome'),2500)}
 function delRally(id){const r=RL[id];if(!r)return;askC('Apagar o rally «'+(r.name||'sem nome')+'»? Não dá para recuperar.',[['Apagar',()=>{try{localStorage.removeItem('rpTk_'+id)}catch(e){}delete RL[id];if(rid==id){rid='';try{localStorage.removeItem('rid')}catch(e){}}try{localStorage.setItem('rl',JSON.stringify(RL))}catch(e){}show();renderRL()},'dg2'],['Cancelar']])}
 function expRally(){if(!seq.length){toast('Ainda não há regularidades para exportar.');return}
 const name=(rid&&RL[rid]&&RL[rid].name)||$('rn0').value.trim()||'rally';
 const slug=name.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'rally',fn='rally-'+slug+'.json';
-const blob=new Blob([JSON.stringify({app:'regularidade',v:1,name,seq,lk0})],{type:'application/json'});
+const blob=new Blob([JSON.stringify({app:'regularidade',v:1,name,seq,lk0,vh:VH})],{type:'application/json'});
 const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fn;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);
 $('rmsg').textContent='Ficheiro «'+fn+'» guardado na pasta Transferências.'}
 function cleanRally(o){if(!o||typeof o!='object'||!Array.isArray(o.seq)||!o.seq.length||o.seq.length>60)return null;
@@ -949,14 +962,14 @@ else if(x.t=='k'){y.iv=fin(x.iv)&&x.iv>=100&&x.iv<=1000?Math.round(x.iv/100)*100
 else if(x.t=='a'){if(!fin(x.dtot)||!(x.dtot>0))return null;y.dtot=x.dtot;y.du=fin(x.du)&&x.du>0?x.du:600}
 else y.du=fin(x.du)&&x.du>0?x.du:600;
 if(x.lk){if(!fin(x.lk.dist)||!fin(x.lk.tempo)||!(x.lk.dist>0)||!(x.lk.tempo>0))return null;y.lk={dist:x.lk.dist,tempo:x.lk.tempo}}
-if(x.z===true&&!y.lk){y.z=true;if(x.ac===true)y.ac=true}if(x.ask===true&&!y.lk)y.ask=true;if(x.man===true)y.man=true;out.push(y)}
+if(x.z===true&&!y.lk){y.z=true;if(x.ac===true)y.ac=true}if(x.ask===true&&!y.lk)y.ask=true;if(x.man===true)y.man=true;if(x.sp===true&&x.t=='a'&&typeof x.sid=='string'){y.sp=true;y.sid=x.sid.slice(0,30)}out.push(y)}
 let l0=null;if(o.lk0){if(!fin(o.lk0.dist)||!fin(o.lk0.tempo)||!(o.lk0.dist>0)||!(o.lk0.tempo>0))return null;l0={dist:o.lk0.dist,tempo:o.lk0.tempo}}
-return{name:typeof o.name=='string'&&o.name.trim()?o.name.trim().slice(0,60):'Rally importado',seq:out,lk0:l0}}
+return{vh:cleanVh(o.vh),name:typeof o.name=='string'&&o.name.trim()?o.name.trim().slice(0,60):'Rally importado',seq:out,lk0:l0}}
 function impRally(inp){const f=inp.files&&inp.files[0];inp.value='';if(!f)return;if(inProva())return;
 const rd=new FileReader();rd.onerror=()=>{$('rmsg').textContent='Não consegui ler o ficheiro.'};
 rd.onload=()=>{let o;try{o=JSON.parse(String(rd.result))}catch(e){$('rmsg').textContent='Esse ficheiro não é um rally desta aplicação.';return}
 const c=cleanRally(o);if(!c){$('rmsg').textContent='Esse ficheiro não é um rally desta aplicação, ou está incompleto.';return}
-const put=(id,suf)=>{const nid=id||('r'+Date.now().toString(36)+Math.floor(Math.random()*99));RL[nid]={id:nid,name:c.name+(suf||''),seq:c.seq,lk0:c.lk0,ts:Date.now()};try{localStorage.setItem('rl',JSON.stringify(RL))}catch(e){}openRally(nid);$('rmsg').textContent='Rally «'+RL[nid].name+'» importado.'};
+const put=(id,suf)=>{const nid=id||('r'+Date.now().toString(36)+Math.floor(Math.random()*99));RL[nid]={id:nid,name:c.name+(suf||''),seq:c.seq,lk0:c.lk0,vh:c.vh,ts:Date.now()};try{localStorage.setItem('rl',JSON.stringify(RL))}catch(e){}openRally(nid);$('rmsg').textContent='Rally «'+RL[nid].name+'» importado.'};
 const ex=Object.values(RL).find(x=>x.name&&x.name.toLowerCase()==c.name.toLowerCase());
 if(ex)askC('Já existe um rally chamado «'+c.name+'». O que quer fazer?',[['Substituir',()=>put(ex.id)],['Guardar como cópia',()=>put(null,' (cópia)')],['Cancelar']]);else put(null)};
 rd.readAsText(f)}
@@ -994,7 +1007,7 @@ rb.buf=i<b.length?b.slice(i):null;if(rb.buf&&rb.buf.length>1100)rb.buf=null}
 function rbMsg(dv){const it=dv.getUint32(0,true),fix=dv.getUint8(20),fl=dv.getUint8(21),ok=fix==3&&(fl&1)==1,v=Math.max(0,dv.getInt32(48,true)/1000),dt=rb.it?((it-rb.it+604800000)%604800000)/1000:0,bt=dv.getUint8(67);
 {const vf=dv.getUint8(11),yy=dv.getUint16(4,true);if((vf&3)==3&&yy>=2020&&yy<2100)clkIn('r',Date.UTC(yy,dv.getUint8(6)-1,dv.getUint8(7),dv.getUint8(8),dv.getUint8(9),dv.getUint8(10))+dv.getInt32(16,true)/1e6)}
 rb.it=it;rb.t=Date.now();rb.n++;rb.fix=fix;rb.sv=dv.getUint8(23);rb.acc=dv.getUint32(40,true)/1000;rb.bat=bt&127;rb.chg=!!(bt&128);
-if(ok){try{mpFix(dv.getInt32(28,true)/1e7,dv.getInt32(24,true)/1e7,rb.acc)}catch(e){}try{trkAdd(dv.getInt32(28,true)/1e7,dv.getInt32(24,true)/1e7,dv.getInt32(36,true)/1000,v)}catch(e){}rb.good++;if(rb.pv!==null&&dt>0&&dt<=.5&&src=='r'&&rb.good>=LIVE_N)addD((rb.pv+v)/2*dt);rb.pv=v;rb.v=v}else{rb.good=0;rb.pv=null;rb.v=0}}
+if(ok){try{mpFix(dv.getInt32(28,true)/1e7,dv.getInt32(24,true)/1e7,rb.acc)}catch(e){}try{llFix(dv.getInt32(28,true)/1e7,dv.getInt32(24,true)/1e7)}catch(e){}try{trkAdd(dv.getInt32(28,true)/1e7,dv.getInt32(24,true)/1e7,dv.getInt32(36,true)/1000,v)}catch(e){}rb.good++;if(rb.pv!==null&&dt>0&&dt<=.5&&src=='r'&&rb.good>=LIVE_N)addD((rb.pv+v)/2*dt);rb.pv=v;rb.v=v}else{rb.good=0;rb.pv=null;rb.v=0}}
 function say2(m){toast(m,5000);if(sm.includes('v'))say(m)}
 function rbWatch(){if(src!='r')return;const lv=rbLive();if(lv===rbWas)return;rbWas=lv;
 if(!lv){rbDown=true;if(st=='run'&&Date.now()>=dStart)gM+=rb.v*Math.min((Date.now()-rb.t)/1000,1.5);gP=null;say2('Racebox perdida. A usar o GPS do telemóvel.')}
@@ -1058,7 +1071,7 @@ return{make,draw}
 
 /* ===== páginas do Preparar rally, botão retroceder, modo piloto ===== */
 let pgCur='',pgPushed=false,armed=false,leaving=false,ign=0;
-function pmSum(){const g=i=>$(i),n=seq.length;g('sRg').textContent=n?n+(n==1?' regularidade':' regularidades')+' na sequência':'Ainda vazia';
+function pmSum(){const g=i=>$(i),n=seq.length;try{vhSum()}catch(e){}g('sRg').textContent=n?n+(n==1?' regularidade':' regularidades')+' na sequência':'Ainda vazia';
 g('sAf').textContent='Fator atual: '+f1(af)+' m/km';g('sCk').textContent=$('ck1')?$('ck1').textContent:'';
 try{const e=g('sRb'),fo=$('fo').value,gOk=gW!==null&&gT&&Date.now()-gT<=3000;let tx,ok,big=false;
 if(fo=='s'){tx='Velocidade simulada';ok=false}
@@ -1152,10 +1165,10 @@ if(dm===null||dm>2*fl+60||dm<.5*fl-20){mpTaint=true;mpReset();return}
 mpMd+=dm;mpMdV+=dm;const diff=mpMd*mpFm-(dNow()-mpOd0);mpDf=diff;mpSm.push([now,diff]);while(mpSm.length&&now-mpSm[0][0]>12000)mpSm.shift();mpAlert(now)}
 function mpAlert(now){if(mpCurv||!prova())return;const W=mpWasC?5000:10000,ar=mpWasC?mpSm.filter(x=>now-x[0]<=W):mpSm;if(mpKm<.5||now<mpCool||ar.length<(mpWasC?3:6)||now-ar[0][0]<(mpWasC?3500:10000))return;
 let mn=1e9,mx=-1e9;for(const x of ar){if(x[1]<mn)mn=x[1];if(x[1]>mx)mx=x[1]}
-if(mx-mn>3)return;const m0=(mn+mx)/2,v=mpWasC&&mpD0!==null?m0-mpD0:m0,lim=mpWasC&&mpD0!==null?mpLim:Math.max(mpLim,20);if(Math.abs(v)<lim)return;if(Math.abs(v)>60){mpCool=now+60000;mpWasC=false;mpD0=null;return}
+if(mx-mn>3)return;if(!(mpWasC&&mpD0!==null))return;const m0=(mn+mx)/2,v=mpWasC&&mpD0!==null?m0-mpD0:m0,lim=mpWasC&&mpD0!==null?mpLim:Math.max(mpLim,20);if(Math.abs(v)<lim)return;if(Math.abs(v)>60){mpCool=now+60000;mpWasC=false;mpD0=null;return}
 if(!$('cf').hidden||!$('sg').hidden||!$('pr').hidden||!$('afp').hidden)return;
 const c=Math.round(v),wc=mpWasC;mpWasC=false;mpD0=null;mpCool=now+60000;const sg=(c>0?'+':'−')+Math.abs(c)+' m';
-askC((wc?'Sugestão da medição no mapa, depois da zona sinuosa: ':'Sugestão da medição no mapa: ')+'o odómetro está '+Math.abs(c)+' m a '+(c>0?'menos':'mais')+'. Corrigir '+sg+'?',[['Corrigir '+sg,()=>act('mapa (diferença)',dNow()+c,false)],['Ignorar',()=>mpReset()]],'mapa');$('cft').style.fontSize='25px';if(sm.includes('v'))say('Diferença para o mapa. Sugestão de correção no ecrã.')}
+askC((wc?'Sugestão da medição no mapa, depois da zona sinuosa: ':'Sugestão da medição no mapa: ')+'o odómetro está '+Math.abs(c)+' m a '+(c>0?'menos':'mais')+'. Corrigir '+sg+'?',[['Corrigir '+sg,()=>act('mapa (diferença)',dNow()+c,false)],['Ignorar',()=>{try{trkIgn(c)}catch(x){}mpReset()}]],'mapa');$('cft').style.fontSize='25px';if(sm.includes('v'))say('Diferença para o mapa. Sugestão de correção no ecrã.')}
 function mpFa(){const e=$('mpFa');if(!e)return;e.textContent=mpN?'Fator do mapa: '+(mpFm>=1?'+':'−')+Math.abs((mpFm-1)*100).toFixed(2).replace('.',',')+' % ('+mpN+(mpN==1?' troço':' troços')+', '+mpKm.toFixed(1).replace('.',',')+' km). O alerta só começa com pelo menos 0,5 km medidos.':'Fator do mapa: ainda por medir. Aprende com as correções válidas na prova (as mesmas da aferição).'}
 function mpAngSet(){const v=num($('mpAng').value);if(v>0){mpAng=v;try{localStorage.setItem('mapAng',String(v))}catch(e){}}}
 function mpLimSet(){const v=num($('mpLim').value);if(v>0){mpLim=v;try{localStorage.setItem('mapLim',String(v))}catch(e){}}}
@@ -1163,12 +1176,13 @@ let trk={},trkI=-1,trkRid='@',trkLast=0,trkSv=0;
 function trkKey(){return'rpTk_'+rid}
 function trkSync(){if(trkRid!==rid){trkRid=rid;trk={};try{trk=JSON.parse(localStorage.getItem(trkKey())||'{}')||{}}catch(e){trk={}}}}
 function trkBegin(){if(!seq[cur]||seq[cur].t=='n'){trkI=-1;return}ensureRid();trkSync();trkI=cur;trk[cur]={n:RN(seq[cur],cur+1),d:Date.now(),p:[]}}
-function trkAdd(la,lo,el,sp){if(trkI<0||trkI!=cur||st!='run'||lk||lk0w||Date.now()<dStart)return;const T=Date.now();if(T-trkLast<900)return;const a=trk[cur];if(!a)return;trkLast=T;a.p.push([T,Math.round(la*1e6),Math.round(lo*1e6),el==null||isNaN(el)?null:Math.round(el*10),sp==null||isNaN(sp)?null:Math.round(sp*100)]);if(T-trkSv>10000){trkSv=T;trkSave()}}
+function trkAdd(la,lo,el,sp){if(trkI<0||trkI!=cur||st!='run'||lk||lk0w||Date.now()<dStart)return;const T=Date.now();if(T-trkLast<900)return;const a=trk[cur];if(!a)return;trkLast=T;a.p.push([T,Math.round(la*1e6),Math.round(lo*1e6),el==null||isNaN(el)?null:Math.round(el*10),sp==null||isNaN(sp)?null:Math.round(sp*100),mpOn&&mpP&&isFinite(mpDf)?Math.round(mpDf*10):null]);if(T-trkSv>10000){trkSv=T;trkSave()}}
 function trkCorr(e,cont){if(trkI<0||trkI!=cur)return;const a=trk[cur];if(!a)return;const q=a.p.length?a.p[a.p.length-1]:null;if(!a.c)a.c=[];a.c.push([Date.now(),e.id,q?q[1]:null,q?q[2]:null,e.kind,e.delib?1:0,cont?1:0,e.before,e.after,e.delta,Math.abs(e.delta)>=10?1:0]);trkSave()}
+function trkIgn(c){if(trkI<0||trkI!=cur)return;const a=trk[cur];if(!a)return;if(!a.c)a.c=[];const q=a.p.length?a.p[a.p.length-1]:null,d=dNow();a.c.push([Date.now(),0,q?q[1]:null,q?q[2]:null,'sugestão do mapa ignorada',0,0,d,d+c,c,0]);trkSave()}
 function trkUndo(id){const a=trk[trkI];if(!a||!a.c)return;a.c=a.c.filter(c=>c[1]!=id);trkSave()}
 function trkSave(){try{if(rid&&trkRid===rid)localStorage.setItem(trkKey(),JSON.stringify(trk))}catch(e){}}
-function trkGpx(ids){let x='<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="RallyPace" xmlns="http://www.topografix.com/GPX/1/1">\n';ids.forEach(i=>{const a=trk[i];if(!a||!a.c)return;const G=[];a.c.forEach(c=>{const p=G[G.length-1];if(c[4]=='ajuste de ligação'&&p&&p[4]=='ajuste de ligação'&&c[0]-p[11]<=3000){p[9]=Math.round((p[9]+c[9])*10)/10;p[8]=c[8];p[11]=c[0];p[12]++}else G.push(c.slice(0,11).concat([c[0],1]))});G.forEach(c=>{if(c[2]===null)return;const d=c[9],sg=(d>0?'+':d<0?'−':'')+Math.abs(d).toFixed(1).replace('.',',');if(c[4]=='ajuste de ligação'){x+='<wpt lat="'+(c[2]/1e6).toFixed(6)+'" lon="'+(c[3]/1e6).toFixed(6)+'"><time>'+new Date(c[0]).toISOString()+'</time><name>Ligação '+sg+' m</name><desc>'+esc('Ajuste de ligação · '+sg+' m'+(c[12]>1?' ('+c[12]+' toques)':'')+' · não conta para a aferição · a RallyPace marcava '+Math.round(c[7])+' m e passou a '+Math.round(c[8])+' m')+'</desc></wpt>\n';return}x+='<wpt lat="'+(c[2]/1e6).toFixed(6)+'" lon="'+(c[3]/1e6).toFixed(6)+'"><time>'+new Date(c[0]).toISOString()+'</time><name>Correção '+sg+' m</name><desc>'+esc(a.n+' · '+c[4]+' · '+sg+' m · '+(c[5]?'deliberada':'não deliberada')+' · '+(c[6]?(c[10]?'grande: conta só se for erro sistemático':'conta para a aferição'):'não conta para a aferição')+' · a RallyPace marcava '+Math.round(c[7])+' m e passou a '+Math.round(c[8])+' m')+'</desc></wpt>\n'})});
-ids.forEach(i=>{const a=trk[i];if(!a)return;x+='<trk><name>'+esc(a.n)+'</name><trkseg>';a.p.forEach(q=>{x+='<trkpt lat="'+(q[1]/1e6).toFixed(6)+'" lon="'+(q[2]/1e6).toFixed(6)+'">'+(q[3]!==null?'<ele>'+(q[3]/10).toFixed(1)+'</ele>':'')+'<time>'+new Date(q[0]).toISOString()+'</time>'+(q[4]!=null?'<extensions><speed>'+(q[4]/100).toFixed(2)+'</speed></extensions>':'')+'</trkpt>'});x+='</trkseg></trk>\n'});return x+'</gpx>'}
+function trkGpx(ids){let x='<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="RallyPace" xmlns="http://www.topografix.com/GPX/1/1">\n';ids.forEach(i=>{const a=trk[i];if(!a||!a.c)return;const G=[];a.c.forEach(c=>{const p=G[G.length-1];if(c[4]=='ajuste de ligação'&&p&&p[4]=='ajuste de ligação'&&c[0]-p[11]<=3000){p[9]=Math.round((p[9]+c[9])*10)/10;p[8]=c[8];p[11]=c[0];p[12]++}else G.push(c.slice(0,11).concat([c[0],1]))});G.forEach(c=>{if(c[2]===null)return;const d=c[9],sg=(d>0?'+':d<0?'−':'')+Math.abs(d).toFixed(1).replace('.',',');if(c[4]=='sugestão do mapa ignorada'){x+='<wpt lat="'+(c[2]/1e6).toFixed(6)+'" lon="'+(c[3]/1e6).toFixed(6)+'"><time>'+new Date(c[0]).toISOString()+'</time><name>Mapa ignorado '+sg+' m</name><desc>'+esc('Sugestão do mapa ignorada · '+sg+' m · não foi aplicada')+'</desc></wpt>\n';return}if(c[4]=='ajuste de ligação'){x+='<wpt lat="'+(c[2]/1e6).toFixed(6)+'" lon="'+(c[3]/1e6).toFixed(6)+'"><time>'+new Date(c[0]).toISOString()+'</time><name>Ligação '+sg+' m</name><desc>'+esc('Ajuste de ligação · '+sg+' m'+(c[12]>1?' ('+c[12]+' toques)':'')+' · não conta para a aferição · a RallyPace marcava '+Math.round(c[7])+' m e passou a '+Math.round(c[8])+' m')+'</desc></wpt>\n';return}x+='<wpt lat="'+(c[2]/1e6).toFixed(6)+'" lon="'+(c[3]/1e6).toFixed(6)+'"><time>'+new Date(c[0]).toISOString()+'</time><name>Correção '+sg+' m</name><desc>'+esc(a.n+' · '+c[4]+' · '+sg+' m · '+(c[5]?'deliberada':'não deliberada')+' · '+(c[6]?(c[10]?'grande: conta só se for erro sistemático':'conta para a aferição'):'não conta para a aferição')+' · a RallyPace marcava '+Math.round(c[7])+' m e passou a '+Math.round(c[8])+' m')+'</desc></wpt>\n'})});
+ids.forEach(i=>{const a=trk[i];if(!a)return;x+='<trk><name>'+esc(a.n)+'</name><trkseg>';a.p.forEach(q=>{x+='<trkpt lat="'+(q[1]/1e6).toFixed(6)+'" lon="'+(q[2]/1e6).toFixed(6)+'">'+(q[3]!==null?'<ele>'+(q[3]/10).toFixed(1)+'</ele>':'')+'<time>'+new Date(q[0]).toISOString()+'</time>'+((q[4]!=null||q[5]!=null)?'<extensions>'+(q[4]!=null?'<speed>'+(q[4]/100).toFixed(2)+'</speed>':'')+(q[5]!=null?'<mapdiff>'+(q[5]/10).toFixed(1)+'</mapdiff>':'')+'</extensions>':'')+'</trkpt>'});x+='</trkseg></trk>\n'});return x+'</gpx>'}
 function trkDown(ids,nm){const b=new Blob([trkGpx(ids)],{type:'application/gpx+xml'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=nm+'.gpx';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}
 function trkName(){const r=RL[rid];return'rallypace_'+((r&&r.name)||'rally').replace(/[^A-Za-z0-9]+/g,'_').slice(0,30)}
 function trkOne(i){trkSync();trkDown([i],trkName()+'_regularidade_'+(+i+1))}
@@ -1427,6 +1441,72 @@ async function plCopy(i){try{await navigator.clipboard.writeText($(i).value);toa
 async function plShare(i){try{if(navigator.share)await navigator.share({text:$(i).value});else plCopy(i)}catch(e){}}
 async function plPaste(i){try{$(i).value=await navigator.clipboard.readText()}catch(e){toast('Cole à mão no campo (toque longo)')}}
 function toast(m,ms){const t=$('toast');t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>{t.hidden=true},ms||2500)}
+/* ---------- v79: VHRS, reconhecimento, acerto GPS, repetição de percurso ---------- */
+function NMs(x){return x&&x.sp?'RSport':NM[x.t==null?'':x.t]}
+let VH={rec:{}},vhMode=false,vhFrom=false,rcOn=false,rcM=0,rcSid='',LL=null,vqS=null,vhR={k:'',i:0,pf:null};
+let RP=[],rpRid='',rpRun=0,rpA=null,rpPf=null;
+const TPO='<option value="f">Figura</option><option value="h">Hectométrica</option><option value="a">Absoluta</option><option value="k">Tabelas / Hitos quilómetro</option><option value="n">Neutralização</option>';
+function vhSel(on){const s=$('tp');if(!s)return;s.innerHTML=on?'<option value="a">RSport</option><option value="n">Neutralização</option>':TPO;s.value='a';lab()}
+function rgOpen(){vhMode=false;vhFrom=false;vhSel(false);$('rgBk').textContent='← Preparar rally';cancelEdit();pgOpen('rg')}
+function vhOpen(){pgOpen('vh');vhSum()}
+function vhRg(){vhMode=true;vhFrom=true;vhSel(true);$('rgBk').textContent='← VHRS';cancelEdit();pgShow('rg');show()}
+function pgBackV(){if(vhFrom){vhFrom=false;vhMode=false;pgShow('vh');vhSum();return}pgBack()}
+function vhSum(){const n=seq.filter(x=>x.sp).length,k=Object.values(VH.rec||{}).filter(r=>r&&r.pts&&r.pts.length).length;const a=$('sVh');if(a)a.textContent=n?n+' RSport · '+k+' com reconhecimento':'Reconhecimento e RSport';const b=$('sVg');if(b)b.textContent=seq.length?seq.length+(seq.length==1?' regularidade':' regularidades')+' na sequência':'Ainda vazia';const c=$('sVr');if(c)c.textContent=k?k+(k==1?' RSport reconhecida':' RSport reconhecidas'):'Marcar início, pontos e fim';const h=$('h0v');if(h&&document.activeElement!==h)h.value=seq.length?hAdd(seq[0].hi,-(lk0?lk0.tempo:0)):r0;const hn=$('h0vn');if(hn)hn.textContent='É a mesma hora de início do Preparar rally; mudar aqui muda lá.'}
+function mv1(i,m){shiftBy(i,m*60);err2('');save();show()}
+function xing(p,a,b){const k=Math.cos(p.la*Math.PI/180)*111195,ax=(a.lo-p.lo)*k,ay=(a.la-p.la)*111195,bx=(b.lo-p.lo)*k,by=(b.la-p.la)*111195,vx=bx-ax,vy=by-ay,l2=vx*vx+vy*vy;if(l2<.25)return null;const f=-(ax*vx+ay*vy)/l2;if(f<-.002||f>1.002)return null;const cx=ax+f*vx,cy=ay+f*vy,d=Math.hypot(cx,cy);return{f,d}}
+function llFix(la,lo){LL={la,lo,t:Date.now()};vhFix(la,lo);rpFix(la,lo)}
+function rcDist(){return rcM*(1+af/1000)}
+function vrList(){const o=[];seq.forEach((x,i)=>{if(x.sp)o.push([x.sid,'RSport '+(i+1)])});return o}
+function vhRecOpen(){const o=vrList(),s=$('vrs');s.innerHTML=o.length?o.map(a=>'<option value="'+a[0]+'">'+a[1]+'</option>').join(''):'<option value="">Ainda não há RSport</option>';if(o.length){if(!o.some(a=>a[0]==rcSid))rcSid=o[0][0];s.value=rcSid}else rcSid='';if($('fo').value!='s')try{gps()}catch(e){}pgShow('vr');vrPaint(false,true)}
+function vrSel(){if(rcOn){$('vrs').value=rcSid;toast('Termine primeiro o reconhecimento em curso.');return}rcSid=$('vrs').value;vrPaint()}
+function vrFixOk(){return LL&&Date.now()-LL.t<3000}
+function vrIni(){if(!rcSid){toast('Crie primeiro uma RSport em «Regularidades e ligações».');return}
+if(rcOn)return;if(!vrFixOk()){toast('Sem posição GPS. Ligue o GPS do telemóvel ou a Racebox.');return}
+const go1=()=>{src=$('fo').value;sv=+$('sv').value||0;if(src!='s')gps();rcM=0;rcOn=true;VH.rec[rcSid]={a:{la:LL.la,lo:LL.lo},pts:[],b:null,t:Date.now()};ensureRid();persistRally();try{keepAwake()}catch(e){}vrPaint(false,true)};
+if(VH.rec[rcSid]&&VH.rec[rcSid].pts&&VH.rec[rcSid].pts.length)askC('Esta RSport já tem reconhecimento. Substituir por um novo?',[['Substituir',go1,'dg2'],['Cancelar']]);else go1()}
+function vrPt(){if(!rcOn)return;if(!vrFixOk()){toast('Sem posição GPS neste momento.');return}
+vqS={la:LL.la,lo:LL.lo,m:rcDist()};$('vqt').textContent='Ponto de referência a '+kmf(vqS.m)+' km';$('vqd').value=kmf(vqS.m);$('vq').hidden=false}
+function vqOk(){const v=num($('vqd').value);if(isNaN(v)||!(v>=0)){toast('Distância inválida. Ex.: 1,250');return}const m=Math.round(v*1000),rec=VH.rec[rcSid];if(!rec||!vqS)return;
+rec.pts.push({la:vqS.la,lo:vqS.lo,d:m,o:Math.abs(m-vqS.m)>=1?1:0});rec.pts.sort((a,b)=>a.d-b.d);vqS=null;$('vq').hidden=true;persistRally();vrPaint(false,true)}
+function vqNo(){vqS=null;$('vq').hidden=true}
+function vrFim(){if(!rcOn)return;if(!vrFixOk()){toast('Sem posição GPS neste momento.');return}const rec=VH.rec[rcSid];rec.b={la:LL.la,lo:LL.lo,d:Math.round(rcDist())};rcOn=false;persistRally();vrPaint(false,true);const x=seq.find(v=>v.sid==rcSid);toast('Reconhecimento guardado: '+rec.pts.length+' pontos, '+kmf(rec.b.d)+' km'+(x&&x.dtot?' (quadro: '+kmf(x.dtot)+' km)':''),6000)}
+function vrDel(i){const rec=VH.rec[rcSid];if(!rec||!rec.pts[i])return;askC('Apagar o ponto a '+kmf(rec.pts[i].d)+' km?',[['Apagar',()=>{rec.pts.splice(i,1);persistRally();vrPaint(false,true)},'dg2'],['Cancelar']])}
+function absT(x,d){const A=[];let T=0;x.r.forEach((a,i)=>{if(i){const q=A[i-1];T=q.T+(a[0]-q.s)/q.v}A.push({s:a[0],v:a[1]/3.6,T})});let k=0;for(let i=A.length-1;i>=0;i--){if(d>=A[i].s){k=i;break}}return A[k].T+(d-A[k].s)/A[k].v}
+function vrPaint(live,full){if(pgCur!='vr')return;const rec=VH.rec[rcSid],x=seq.find(v=>v.sid==rcSid&&v.sp);
+$('vrd').textContent=kmf(rcOn?rcDist():(rec&&rec.b?rec.b.d:0))+' km';
+$('vrg').textContent=(rcOn?'A gravar · ':'')+dst();
+if(live&&!full)return;
+$('vr1').disabled=rcOn||!rcSid;$('vr2').disabled=!rcOn;$('vr3').disabled=!rcOn;$('vrs').disabled=rcOn;
+const pts=(rec&&rec.pts)||[];$('vrl').innerHTML=rec?'<div class="mut" style="text-align:left">'+pts.length+(pts.length==1?' ponto':' pontos')+(rec.b?' · fim aos '+kmf(rec.b.d)+' km':rcOn?' · a gravar':'')+'</div>'+pts.map((p,i)=>'<div class="lr"><div><b>'+kmf(p.d)+' km</b>'+(p.o?' · organização':'')+(x?'<div class="m2">tempo ideal '+hms(Math.round(absT(x,p.d)))+' · às '+hAdd(x.hi,Math.round(absT(x,p.d)))+'</div>':'')+'</div><button class="s" onclick="vrDel('+i+')">Apagar</button></div>').join(''):''}
+setInterval(()=>{if(rcOn&&$('fo').value=='s'&&src=='s')rcM+=Math.max(0,sv)/3.6*.5;if(pgCur=='vr')vrPaint(true)},500);
+function vhFix(la,lo){const r=seq[cur];if(st!='run'||lk||lk0w||!r||!r.sp||Date.now()<t0||fz)return;const rec=VH.rec[r.sid];if(!rec||!rec.pts||!rec.pts.length)return;
+const key=r.sid+'|'+t0;if(vhR.k!==key){vhR={k:key,i:0,pf:null}}
+const f={la,lo,d:dNow()},pf=vhR.pf;vhR.pf=f;if(!pf)return;const pts=rec.pts;
+while(vhR.i<pts.length&&pts[vhR.i].d<f.d-80)vhR.i++;const p=pts[vhR.i];if(!p)return;
+const x=xing(p,pf,f);if(!x||x.d>12)return;const dAt=pf.d+(f.d-pf.d)*x.f,delta=p.d-dAt;vhR.i++;
+if(Math.abs(delta)>250)return;const n=Math.round(delta),sg=(n>=0?'+':'−')+Math.abs(n);
+act('referência (GPS)',dNow()+delta,false);toast('Referência: '+sg+' m',3000);if(sm.includes('b'))beep(1000,.1,.3)}
+function rpStart(){if(rpRid!==rid){rpRid=rid;try{RP=JSON.parse(localStorage.getItem('rpRp_'+rid)||'[]')}catch(e){RP=[]}if(!Array.isArray(RP))RP=[]}rpRun=Date.now();rpA=null;rpPf=null}
+function rpSave(){try{if(rid)localStorage.setItem('rpRp_'+rid,JSON.stringify(RP.slice(-400)))}catch(e){}}
+function rpRec(e){if(lk||lk0w||!seq[cur]||seq[cur].sp||seq[cur].t=='n'||e.kind=='ajuste de ligação'||e.kind=='referência (GPS)'||Math.abs(e.delta)<1||!LL||Date.now()-LL.t>4000||!rid)return;
+RP.push({la:LL.la,lo:LL.lo,dl:Math.round(e.delta*10)/10,k:e.kind,run:rpRun,id:e.id,o:Math.round(rawM((Date.now()-t0)/1000))});if(RP.length>400){RP.shift();rpA=null}rpSave()}
+function rpUndo(id){const n=RP.length;RP=RP.filter(x=>!(x.run===rpRun&&x.id==id));if(RP.length!==n){rpA=null;rpSave()}}
+function rpFix(la,lo){if(st!='run'||lk||lk0w||!seq[cur]||seq[cur].sp||seq[cur].t=='n'||Date.now()<t0||!RP.length)return;
+const f={la,lo,raw:rawM((Date.now()-t0)/1000)},pf=rpPf;rpPf=f;if(!pf)return;
+for(let i=0;i<RP.length;i++){const q=RP[i];if(q.run===rpRun)continue;if(Math.abs(q.la-la)>.0005||Math.abs(q.lo-lo)>.0007)continue;
+if(rpA&&q.run===RP[rpA.i].run&&i<=rpA.i)continue;
+const x=xing(q,pf,f);if(!x||x.d>20)continue;const rawAt=pf.raw+(f.raw-pf.raw)*x.f;
+let sug=false;if(rpA){const a=RP[rpA.i];if(a&&a.run===q.run&&i>rpA.i&&i-rpA.i<=3){const de=q.o-a.o,dn=rawAt-rpA.raw;if(Math.abs(dn-de)<=Math.max(30,.15*Math.abs(de)))sug=true}}
+rpA={i,raw:rawAt};if(sug)rpAsk(q);break}}
+function rpAsk(q){if(!$('cf').hidden||!$('sg').hidden||!$('pr').hidden||!$('afp').hidden)return;const n=Math.round(q.dl),sg=(n>=0?'+':'−')+Math.abs(n);
+askC('Percurso repetido. Última correção neste ponto: '+sg+' m.',[['Aceitar '+sg+' m',()=>{if(st=='run')act('repetição de percurso',dNow()+q.dl,false)}],['Recusar',null,'s']],'rep');$('cft').style.fontSize='25px';if(sm.includes('v'))say('Percurso repetido. Correção sugerida no ecrã.')}
+function cleanVh(v){const o={rec:{}};if(!v||typeof v!='object'||!v.rec||typeof v.rec!='object')return o;const fin=n=>typeof n=='number'&&isFinite(n);
+for(const k of Object.keys(v.rec).slice(0,60)){const r=v.rec[k];if(!r||!Array.isArray(r.pts)||r.pts.length>400)continue;const pts=r.pts.filter(p=>p&&fin(p.la)&&fin(p.lo)&&fin(p.d)).map(p=>({la:p.la,lo:p.lo,d:p.d,o:p.o?1:0}));
+o.rec[String(k).slice(0,30)]={a:r.a&&fin(r.a.la)&&fin(r.a.lo)?{la:r.a.la,lo:r.a.lo}:null,b:r.b&&fin(r.b.la)&&fin(r.b.lo)&&fin(r.b.d)?{la:r.b.la,lo:r.b.lo,d:r.b.d}:null,pts,t:fin(r.t)?r.t:0}}return o}
+try{if(rid&&RL[rid]&&RL[rid].vh)VH=RL[rid].vh}catch(e){}
+
+function astSet(){const v=Math.max(15,Math.min(120,Math.round(+$('ast').value)||40));askT=v;$('ast').value=v;try{localStorage.setItem('rpAst',String(v))}catch(e){}}
+try{const q=+localStorage.getItem('rpAst');if(q>=15&&q<=120){askT=q;$('ast').value=q}}catch(e){}
 function prova(){return st!='done'&&(!$('run').hidden||!$('bk').hidden)}
 async function keepAwake(){wkT=Date.now();try{if(!navigator.wakeLock)throw 0;if(wl&&!wl.released){wkOk=true;return}
 wl=await navigator.wakeLock.request('screen');wkOk=true;wl.addEventListener('release',()=>{if(document.visibilityState=='visible')setTimeout(keepAwake,300)})}catch(e){wkOk=false}}
